@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>hu.beni</groupId>
-	<artifactId>amusement-park-monolithic</artifactId>
+	<artifactId>amusement-park</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>amusement-park-monolithic</name>
+	<name>amusement-park</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
