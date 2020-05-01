@@ -72,15 +72,8 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Override
 	public Visitor enterPark(Long amusementParkId, String visitorEmail) {
-		return enterPark(findAmusementParkIdAndEntranceFeeByIdExceptionIfNotFound(amusementParkId), visitorEmail);
-	}
-
-	private AmusementPark findAmusementParkIdAndEntranceFeeByIdExceptionIfNotFound(Long amusementParkId) {
-		return ifNull(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId),
+		AmusementPark amusementPark = ifNull(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId),
 				NO_AMUSEMENT_PARK_WITH_ID);
-	}
-
-	private Visitor enterPark(AmusementPark amusementPark, String visitorEmail) {
 		Visitor visitor = ifNull(visitorRepository.findById(visitorEmail), VISITOR_NOT_SIGNED_UP);
 		checkIfVisitorAbleToEnterPark(amusementPark.getEntranceFee(), visitor);
 		addToKnownVisitorsIfFirstEnter(amusementPark, visitor);
@@ -89,8 +82,7 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	private void checkIfVisitorAbleToEnterPark(Integer entranceFee, Visitor visitor) {
-		Integer spendingMoney = visitor.getSpendingMoney();
-		ifFirstLessThanSecond(spendingMoney, entranceFee, NOT_ENOUGH_MONEY);
+		ifFirstLessThanSecond(visitor.getSpendingMoney(), entranceFee, NOT_ENOUGH_MONEY);
 		ifNotNull(visitor.getAmusementPark(), VISITOR_IS_IN_A_PARK);
 	}
 
@@ -109,16 +101,8 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Override
 	public Visitor getOnMachine(Long amusementParkId, Long machineId, String visitorEmail) {
-		return getOnMachine(amusementParkId,
-				findMachineByIdAndAmusementParkIdExceptionIfNotFound(amusementParkId, machineId), visitorEmail);
-	}
-
-	private Machine findMachineByIdAndAmusementParkIdExceptionIfNotFound(Long amusementParkId, Long machineId) {
-		return ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId),
+		Machine machine = ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId),
 				NO_MACHINE_IN_PARK_WITH_ID);
-	}
-
-	private Visitor getOnMachine(Long amusementParkId, Machine machine, String visitorEmail) {
 		Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail),
 				NO_VISITOR_IN_PARK_WITH_ID);
 		checkIfVisitorAbleToGetOnMachine(machine, visitor);
