@@ -11,8 +11,8 @@ import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 import hu.beni.amusementpark.controller.AmusementParkController;
+import hu.beni.amusementpark.dto.resource.AmusementParkResource;
 import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.clientsupport.resource.AmusementParkResource;
 
 @Component
 @ConditionalOnWebApplication
@@ -24,7 +24,8 @@ public class AmusementParkMapper extends EntityMapper<AmusementPark, AmusementPa
 
 	@Override
 	public AmusementParkResource toResource(AmusementPark entity) {
-		return AmusementParkResource.builder() //@formatter:off
+		return AmusementParkResource
+				.builder() //@formatter:off
 				.identifier(entity.getId())
 				.name(entity.getName())
 				.capital(entity.getCapital())
@@ -35,7 +36,8 @@ public class AmusementParkMapper extends EntityMapper<AmusementPark, AmusementPa
 
 	@Override
 	public AmusementPark toEntity(AmusementParkResource resource) {
-		return AmusementPark.builder() //@formatter:off
+		return AmusementPark
+				.builder() //@formatter:off
 				.id(resource.getIdentifier())
 				.name(resource.getName())
 				.capital(resource.getCapital())

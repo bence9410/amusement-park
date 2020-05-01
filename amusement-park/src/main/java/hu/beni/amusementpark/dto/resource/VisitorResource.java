@@ -1,4 +1,4 @@
-package hu.beni.clientsupport.resource;
+package hu.beni.amusementpark.dto.resource;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
-import hu.beni.clientsupport.constraint.PasswordConfirmPasswordSameConstraint;
+import hu.beni.amusementpark.constraint.PasswordConfirmPasswordSameConstraint;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

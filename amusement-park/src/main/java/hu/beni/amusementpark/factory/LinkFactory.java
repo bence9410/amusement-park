@@ -1,18 +1,18 @@
 package hu.beni.amusementpark.factory;
 
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.ADD_REGISTRY;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.AMUSEMENT_PARK;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_OFF_MACHINE;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_ON_MACHINE;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGIN;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGOUT;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.MACHINE;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.ME;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.SIGN_UP;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.UPLOAD_MONEY;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
+import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.ADD_REGISTRY;
+import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.AMUSEMENT_PARK;
+import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.GET_OFF_MACHINE;
+import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.GET_ON_MACHINE;
+import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.LOGIN;
+import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.LOGOUT;
+import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.MACHINE;
+import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.ME;
+import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.SIGN_UP;
+import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.UPLOAD_MONEY;
+import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.VISITOR;
+import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
+import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 

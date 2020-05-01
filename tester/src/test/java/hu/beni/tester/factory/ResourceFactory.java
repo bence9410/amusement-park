@@ -1,48 +1,57 @@
 package hu.beni.tester.factory;
 
+import static hu.beni.tester.constants.Constants.DATE_OF_BIRTH;
+import static hu.beni.tester.constants.Constants.PASSWORD;
+
 import org.springframework.stereotype.Component;
 
-import hu.beni.clientsupport.factory.ValidResourceFactory;
-import hu.beni.clientsupport.resource.AmusementParkResource;
-import hu.beni.clientsupport.resource.MachineResource;
-import hu.beni.clientsupport.resource.VisitorResource;
 import hu.beni.tester.properties.AmusementParkDataProperties;
 import hu.beni.tester.properties.ApplicationProperties;
 import hu.beni.tester.properties.DataProperties;
 import hu.beni.tester.properties.MachineDataProperties;
-import hu.beni.tester.properties.VisitorDataProperties;
+import hu.beni.tester.resource.AmusementParkResource;
+import hu.beni.tester.resource.MachineResource;
+import hu.beni.tester.resource.VisitorResource;
 
 @Component
 public class ResourceFactory {
 
 	private final AmusementParkDataProperties amusementPark;
 	private final MachineDataProperties machine;
-	private final VisitorDataProperties visitor;
 
 	public ResourceFactory(ApplicationProperties applicationProperties) {
 		DataProperties data = applicationProperties.getData();
 		amusementPark = data.getAmusementPark();
 		machine = data.getMachine();
-		visitor = data.getVisitor();
 	}
 
 	public AmusementParkResource createAmusementPark() {
-		AmusementParkResource amusementParkResource = ValidResourceFactory.createAmusementPark();
-		amusementParkResource.setCapital(amusementPark.getCapital());
-		amusementParkResource.setEntranceFee(amusementPark.getEntranceFee());
-		return amusementParkResource;
+		return AmusementParkResource
+				.builder() //@formatter:off
+				.name("Beni parkja")
+				.capital(amusementPark.getCapital())
+				.totalArea(1000)
+				.entranceFee(amusementPark.getEntranceFee()).build(); //@formatter:on
 	}
 
 	public MachineResource createMachine() {
-		MachineResource machineResource = ValidResourceFactory.createMachine();
-		machineResource.setPrice(machine.getPrice());
-		machineResource.setTicketPrice(machine.getTicketPrice());
-		return machineResource;
+		return MachineResource
+				.builder() //@formatter:off
+				.fantasyName("Nagy hajó")
+				.size(100)
+				.price(machine.getPrice())
+				.numberOfSeats(30)
+				.minimumRequiredAge(18)
+				.ticketPrice(machine.getTicketPrice())
+				.type("CAROUSEL").build(); //@formatter:on
 	}
 
-	public VisitorResource createVisitor() {
-		VisitorResource visitorResource = ValidResourceFactory.createVisitor();
-		visitorResource.setSpendingMoney(visitor.getSpendingMoney());
-		return visitorResource;
+	public VisitorResource createVisitor(String email) {
+		return VisitorResource
+				.builder() //@formatter:off
+				.email(email)
+				.password(PASSWORD)
+				.confirmPassword(PASSWORD)
+				.dateOfBirth(DATE_OF_BIRTH).build(); //@formatter:on
 	}
 }

@@ -29,12 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
+import hu.beni.amusementpark.dto.resource.AmusementParkResource;
 import hu.beni.amusementpark.dto.response.AmusementParkPageResponseDto;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.factory.LinkFactory;
 import hu.beni.amusementpark.mapper.AmusementParkMapper;
 import hu.beni.amusementpark.service.AmusementParkService;
-import hu.beni.clientsupport.resource.AmusementParkResource;
 import lombok.RequiredArgsConstructor;
 
 @RestController

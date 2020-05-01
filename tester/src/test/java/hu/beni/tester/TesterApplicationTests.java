@@ -27,10 +27,10 @@ import hu.beni.tester.service.AsyncService;
 import hu.beni.tester.validator.CapitalAndSpendingMoneySumValidator;
 import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@SpringBootApplication
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
-@SpringBootApplication
-@Slf4j
 public class TesterApplicationTests {
 
 	@Autowired
@@ -61,12 +61,12 @@ public class TesterApplicationTests {
 
 		loginAndSignUp();
 
-		IntStream.range(0, properties.getNumberOf().getRuns()).forEach(i -> actualTestWithClearBeforeAndLogAfter());
+		IntStream.range(0, properties.getNumberOf().getRuns()).forEach(i -> performanceTest());
 
 		logout();
 	}
 
-	private void actualTestWithClearBeforeAndLogAfter() {
+	private void performanceTest() {
 		uploadMoney();
 
 		timeTo = new TimeTo();
@@ -90,7 +90,7 @@ public class TesterApplicationTests {
 	}
 
 	private void loginAndSignUp() {
-		log.info("login");
+		log.info("login and sign up");
 		executeAdminsAsyncAndJoin(AsyncService::login);
 		executeVisitorsAsyncAndJoin(AsyncService::signUp);
 	}

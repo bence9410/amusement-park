@@ -19,10 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import hu.beni.amusementpark.controller.VisitorController;
+import hu.beni.amusementpark.dto.resource.VisitorResource;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
-import hu.beni.clientsupport.resource.VisitorResource;
 
 @Component
 @ConditionalOnWebApplication
@@ -37,7 +37,8 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 
 	@Override
 	public VisitorResource toResource(Visitor entity) {
-		return VisitorResource.builder() //@formatter:off
+		return VisitorResource
+				.builder() //@formatter:off
 				.email(entity.getEmail())
 				.authority(entity.getAuthority())
 				.dateOfBirth(entity.getDateOfBirth())
@@ -48,7 +49,8 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 
 	@Override
 	public Visitor toEntity(VisitorResource resource) {
-		return Visitor.builder() //@formatter:off
+		return Visitor
+				.builder() //@formatter:off
 				.email(resource.getEmail())
 				.password(passwordEncoder.encode(resource.getPassword()))
 				.dateOfBirth(resource.getDateOfBirth())

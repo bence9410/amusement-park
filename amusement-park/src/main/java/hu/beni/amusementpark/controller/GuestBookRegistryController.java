@@ -24,11 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hu.beni.amusementpark.dto.request.GuestBookRegistrySearchRequestDto;
+import hu.beni.amusementpark.dto.resource.GuestBookRegistryResource;
 import hu.beni.amusementpark.dto.response.GuestBookRegistrySearchResponseDto;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.mapper.GuestBookRegistryMapper;
 import hu.beni.amusementpark.service.GuestBookRegistryService;
-import hu.beni.clientsupport.resource.GuestBookRegistryResource;
 import lombok.RequiredArgsConstructor;
 
 @RestController

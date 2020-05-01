@@ -1,6 +1,6 @@
 package hu.beni.tester.output;
 
-import static hu.beni.tester.constant.Constants.SEMICOLON;
+import static hu.beni.tester.constants.Constants.SEMICOLON;
 
 import java.io.File;
 import java.io.FileNotFoundException;

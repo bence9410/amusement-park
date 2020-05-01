@@ -9,8 +9,8 @@ import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 import hu.beni.amusementpark.controller.GuestBookRegistryController;
+import hu.beni.amusementpark.dto.resource.GuestBookRegistryResource;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
-import hu.beni.clientsupport.resource.GuestBookRegistryResource;
 
 @Component
 @ConditionalOnWebApplication
@@ -22,7 +22,8 @@ public class GuestBookRegistryMapper extends EntityMapper<GuestBookRegistry, Gue
 
 	@Override
 	public GuestBookRegistryResource toResource(GuestBookRegistry entity) {
-		return GuestBookRegistryResource.builder() //@formatter:off
+		return GuestBookRegistryResource
+				.builder() //@formatter:off
 				.identifier(entity.getId())
 				.textOfRegistry(entity.getTextOfRegistry())
 				.dateOfRegistry(entity.getDateOfRegistry())
@@ -31,7 +32,8 @@ public class GuestBookRegistryMapper extends EntityMapper<GuestBookRegistry, Gue
 
 	@Override
 	public GuestBookRegistry toEntity(GuestBookRegistryResource resource) {
-		return GuestBookRegistry.builder() //@formatter:off
+		return GuestBookRegistry
+				.builder() //@formatter:off
 				.id(resource.getIdentifier())
 				.textOfRegistry(resource.getTextOfRegistry())
 				.dateOfRegistry(resource.getDateOfRegistry()).build(); //@formatter:on

@@ -1,4 +1,4 @@
-package hu.beni.clientsupport.resource;
+package hu.beni.amusementpark.dto.resource;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

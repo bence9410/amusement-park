@@ -1,4 +1,4 @@
-package hu.beni.clientsupport.constants;
+package hu.beni.amusementpark.constants;
 
 public class HATEOASLinkRelConstants {
 

@@ -28,12 +28,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hu.beni.amusementpark.dto.request.MachineSearchRequestDto;
+import hu.beni.amusementpark.dto.resource.MachineResource;
 import hu.beni.amusementpark.dto.response.MachineSearchResponseDto;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.factory.LinkFactory;
 import hu.beni.amusementpark.mapper.MachineMapper;
 import hu.beni.amusementpark.service.MachineService;
-import hu.beni.clientsupport.resource.MachineResource;
 import lombok.RequiredArgsConstructor;
 
 @RestController

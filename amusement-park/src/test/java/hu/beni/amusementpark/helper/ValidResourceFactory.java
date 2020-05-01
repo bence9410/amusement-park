@@ -1,15 +1,16 @@
-package hu.beni.clientsupport.factory;
+package hu.beni.amusementpark.helper;
 
 import java.time.LocalDate;
 
-import hu.beni.clientsupport.resource.AmusementParkResource;
-import hu.beni.clientsupport.resource.MachineResource;
-import hu.beni.clientsupport.resource.VisitorResource;
+import hu.beni.amusementpark.dto.resource.AmusementParkResource;
+import hu.beni.amusementpark.dto.resource.MachineResource;
+import hu.beni.amusementpark.dto.resource.VisitorResource;
 
 public class ValidResourceFactory {
 
 	public static MachineResource createMachine() {
-		return MachineResource.builder() //@formatter:off
+		return MachineResource
+				.builder() //@formatter:off
 				.fantasyName("Nagy hajó")
 				.size(100)
 				.price(250)
@@ -20,7 +21,8 @@ public class ValidResourceFactory {
 	}
 
 	public static VisitorResource createVisitor() {
-		return VisitorResource.builder() //@formatter:off
+		return VisitorResource
+				.builder() //@formatter:off
 				.email("nembence1994@gmail.com")
     			.password("password")
     			.confirmPassword("password")
@@ -28,7 +30,8 @@ public class ValidResourceFactory {
 	}
 
 	public static AmusementParkResource createAmusementPark() {
-		return AmusementParkResource.builder() //@formatter:off
+		return AmusementParkResource
+				.builder() //@formatter:off
 				.name("Beni parkja")
 				.capital(3000)
 				.totalArea(1000)

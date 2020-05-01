@@ -1,8 +1,8 @@
 package hu.beni.tester.config;
 
-import static hu.beni.tester.constant.Constants.ADMIN;
-import static hu.beni.tester.constant.Constants.GMAIL;
-import static hu.beni.tester.constant.Constants.VISITOR;
+import static hu.beni.tester.constants.Constants.ADMIN;
+import static hu.beni.tester.constants.Constants.GMAIL;
+import static hu.beni.tester.constants.Constants.VISITOR;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -13,8 +13,8 @@ import java.util.stream.Stream;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
-import hu.beni.clientsupport.Client;
 import hu.beni.tester.factory.ResourceFactory;
 import hu.beni.tester.properties.ApplicationProperties;
 import hu.beni.tester.service.AsyncService;
@@ -56,7 +56,7 @@ public class AsyncServiceConfig {
 	}
 
 	private AsyncService createAsyncService(String email) {
-		return ctx.getBean(AsyncService.class, ctx.getBean(Client.class), email, resourceFactory, properties);
+		return ctx.getBean(AsyncService.class, ctx.getBean(RestTemplate.class), email, resourceFactory, properties);
 	}
 
 }

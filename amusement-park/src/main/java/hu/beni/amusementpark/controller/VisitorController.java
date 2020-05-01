@@ -26,11 +26,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import hu.beni.amusementpark.constants.HATEOASLinkRelConstants;
+import hu.beni.amusementpark.dto.resource.VisitorResource;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.mapper.VisitorMapper;
 import hu.beni.amusementpark.service.VisitorService;
-import hu.beni.clientsupport.constants.HATEOASLinkRelConstants;
-import hu.beni.clientsupport.resource.VisitorResource;
 import lombok.RequiredArgsConstructor;
 
 @RestController

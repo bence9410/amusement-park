@@ -1,10 +1,10 @@
-package hu.beni.clientsupport.validator;
+package hu.beni.amusementpark.validator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import hu.beni.clientsupport.constraint.PasswordConfirmPasswordSameConstraint;
-import hu.beni.clientsupport.resource.VisitorResource;
+import hu.beni.amusementpark.constraint.PasswordConfirmPasswordSameConstraint;
+import hu.beni.amusementpark.dto.resource.VisitorResource;
 
 public class PasswordConfirmPasswordSameValidator
 		implements ConstraintValidator<PasswordConfirmPasswordSameConstraint, VisitorResource> {

@@ -36,12 +36,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>hu.beni</groupId>
-			<artifactId>client-support</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<scope>test</scope>

@@ -15,10 +15,10 @@ import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 import hu.beni.amusementpark.controller.MachineController;
+import hu.beni.amusementpark.dto.resource.MachineResource;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.enums.MachineType;
 import hu.beni.amusementpark.exception.AmusementParkException;
-import hu.beni.clientsupport.resource.MachineResource;
 
 @Component
 @ConditionalOnWebApplication
@@ -30,7 +30,8 @@ public class MachineMapper extends EntityMapper<Machine, MachineResource> {
 
 	@Override
 	public MachineResource toResource(Machine entity) {
-		return MachineResource.builder() //@formatter:off
+		return MachineResource
+				.builder() //@formatter:off
 				.identifier(entity.getId())
 				.fantasyName(entity.getFantasyName())
 				.size(entity.getSize())
@@ -44,7 +45,8 @@ public class MachineMapper extends EntityMapper<Machine, MachineResource> {
 
 	@Override
 	public Machine toEntity(MachineResource resource) {
-		return Machine.builder() //@formatter:off
+		return Machine
+				.builder() //@formatter:off
 				.id(resource.getIdentifier())
 				.fantasyName(resource.getFantasyName())
 				.size(resource.getSize())
