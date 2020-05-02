@@ -1,5 +1,6 @@
 package hu.beni.amusementpark.test.unit;
 
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.CAN_NOT_DELETE_ADMIN;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.EMAIL_ALREADY_TAKEN;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NOT_ENOUGH_MONEY;
@@ -24,15 +25,12 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
@@ -450,23 +448,48 @@ public class VisitorServiceUnitTests {
 
 	@Test
 	public void findAllPositive() {
-		Page<Visitor> page = new PageImpl<>(Arrays.asList(Visitor.builder().email("benike@gmail.com").build(),
-				Visitor.builder().email("jenike@gmail.com").build()));
-		Pageable pageable = PageRequest.of(0, 10);
+		List<Visitor> visitors = Arrays.asList(Visitor.builder().email("benike@gmail.com").build(),
+				Visitor.builder().email("jenike@gmail.com").build());
 
-		when(visitorRepository.findAll(pageable)).thenReturn(page);
+		when(visitorRepository.findAllVisitor()).thenReturn(visitors);
 
-		assertEquals(page, visitorService.findAll(pageable));
+		assertEquals(visitors, visitorService.findAllVisitor());
 
-		verify(visitorRepository).findAll(pageable);
+		verify(visitorRepository).findAllVisitor();
+	}
+
+	@Test
+	public void deleteNegativeNotSignedUp() {
+		String visitorEmail = "benike@gmail.com";
+
+		assertThatThrownBy(() -> visitorService.delete(visitorEmail)).isInstanceOf(AmusementParkException.class)
+				.hasMessage(VISITOR_NOT_SIGNED_UP);
+
+		verify(visitorRepository).findById(visitorEmail);
+	}
+
+	@Test
+	public void deleteNegativeCanNotDeleteAdmin() {
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").authority("ROLE_ADMIN").build();
+
+		when(visitorRepository.findById(visitor.getEmail())).thenReturn(Optional.of(visitor));
+
+		assertThatThrownBy(() -> visitorService.delete(visitor.getEmail())).isInstanceOf(AmusementParkException.class)
+				.hasMessage(CAN_NOT_DELETE_ADMIN);
+
+		verify(visitorRepository).findById(visitor.getEmail());
 	}
 
 	@Test
 	public void deletePositive() {
-		String visitorEmail = "benike@gmail.com";
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").authority("ROLE_VISITOR").build();
+		String visitorEmail = visitor.getEmail();
+
+		when(visitorRepository.findById(visitorEmail)).thenReturn(Optional.of(visitor));
 
 		visitorService.delete(visitorEmail);
 
+		verify(visitorRepository).findById(visitorEmail);
 		verify(visitorRepository).deleteById(visitorEmail);
 	}
 }

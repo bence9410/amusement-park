@@ -69,10 +69,8 @@ public class CapitalAndSpendingMoneySumValidator {
 		return sumAndTime.getTime();
 	}
 
-	public Long checkSpendingMoneySunGetTime(SumAndTime sumAndTime) {
-		NumberOfProperties numberOfProperties = properties.getNumberOf();
-		int numberOfVisitors = numberOfProperties.getVisitors();
-		long initial = 250 * (numberOfProperties.getAdmins() + numberOfVisitors);
+	public Long checkSpendingMoneySumGetTime(SumAndTime sumAndTime) {
+		long initial = 250 * properties.getNumberOf().getVisitors();
 		long sum = sumAndTime.getSum() - initial;
 		checkSum(sum, expectedSpendingMoneySum, "Problem with spending money sum!");
 		return sumAndTime.getTime();

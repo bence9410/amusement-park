@@ -3,11 +3,9 @@ package hu.beni.tester.resource;
 import org.springframework.hateoas.ResourceSupport;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Builder
 public class AmusementParkResource extends ResourceSupport {
 

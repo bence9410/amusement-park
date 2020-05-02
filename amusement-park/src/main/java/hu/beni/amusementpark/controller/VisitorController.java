@@ -8,9 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import hu.beni.amusementpark.constants.HATEOASLinkRelConstants;
 import hu.beni.amusementpark.dto.resource.VisitorResource;
 import hu.beni.amusementpark.entity.Visitor;
+import hu.beni.amusementpark.factory.LinkFactory;
 import hu.beni.amusementpark.mapper.VisitorMapper;
 import hu.beni.amusementpark.service.VisitorService;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +57,6 @@ public class VisitorController {
 
 	private Visitor signUpAsVisitor(VisitorResource visitorResource) {
 		Visitor visitor = visitorMapper.toEntity(visitorResource);
-		visitor.setAuthority("ROLE_VISITOR");
 		return visitorService.signUp(visitor);
 	}
 
@@ -91,12 +88,23 @@ public class VisitorController {
 	}
 
 	@GetMapping("/visitors")
-	public PagedResources<VisitorResource> findAllPaged(@PageableDefault Pageable pageable) {
-		return visitorMapper.toPagedResources(visitorService.findAll(pageable));
+	public List<VisitorResource> findAllVisitor() {
+		List<VisitorResource> resources = visitorMapper.toResources(visitorService.findAllVisitor());
+		resources.forEach(pr -> {
+			pr.removeLinks();
+			pr.add(LinkFactory.createVisitorLinkWithSelfRel(pr.getEmail()));
+		});
+		return resources;
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@DeleteMapping("/visitors/{visitorId}")
+	@GetMapping("/visitors/{visitorEmail}")
+	public VisitorResource findByEmail(@PathVariable String visitorEmail) {
+		return visitorMapper.toResource(visitorService.findByEmail(visitorEmail));
+	}
+
+	@PreAuthorize("hasRole('ADMIN')")
+	@DeleteMapping("/visitors/{visitorEmail}")
 	public void delete(@PathVariable String visitorEmail) {
 		visitorService.delete(visitorEmail);
 	}

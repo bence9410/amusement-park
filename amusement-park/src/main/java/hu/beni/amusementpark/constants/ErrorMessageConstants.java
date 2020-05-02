@@ -26,7 +26,7 @@ public class ErrorMessageConstants {
 	public static final String VISITOR_NOT_SIGNED_UP = "Visitor not signed up!";
 	public static final String VISITOR_IS_IN_A_PARK = "Visitor is in a park!";
 	public static final String VISITORS_IN_PARK = "Visitors in the park!";
-	public static final String NO_ARCHIVE_SEND_TYPE = "Could not send park to archive. No acrhive send type specified.";
+	public static final String CAN_NOT_DELETE_ADMIN = "Can not delete admin!";
 
 	public static String validationError(String field, String message) {
 		return String.format(VALIDATION_ERROR_FIELD_MESSAGE, field, message);

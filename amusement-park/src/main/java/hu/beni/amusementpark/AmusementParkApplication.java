@@ -15,6 +15,7 @@ import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.enums.MachineType;
+import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.service.GuestBookRegistryService;
 import hu.beni.amusementpark.service.MachineService;
@@ -30,7 +31,8 @@ public class AmusementParkApplication {
 	@Bean
 	@Profile("default")
 	public ApplicationRunner applicationRunner(AmusementParkService amusementParkService, MachineService machineService,
-			VisitorService visitorService, GuestBookRegistryService guestBookRegistryService) {
+			VisitorService visitorService, GuestBookRegistryService guestBookRegistryService,
+			VisitorRepository visitorRepository) {
 		PasswordEncoder encoder = new BCryptPasswordEncoder();
 		return args -> {
 
@@ -39,9 +41,10 @@ public class AmusementParkApplication {
 					.email("bence@gmail.com")
 					.password(encoder.encode("password"))
 					.authority("ROLE_ADMIN")
+					.spendingMoney(250)
 					.dateOfBirth(LocalDate.of(1995, 05, 10)).build(); // @formatter:on
 
-			visitorService.signUp(visitor);
+			visitorRepository.save(visitor);
 
 			AmusementPark amusementPark = AmusementPark
 					.builder() //@formatter:off
@@ -112,14 +115,13 @@ public class AmusementParkApplication {
 
 	@Bean
 	@Profile({ "oracleDB", "postgres" })
-	public ApplicationRunner applicationRunnerOracle(AmusementParkService amusementParkService,
-			MachineService machineService, VisitorService visitorService,
-			GuestBookRegistryService guestBookRegistryService) {
+	public ApplicationRunner applicationRunnerOracle(VisitorRepository visitorRepository) {
 		PasswordEncoder encoder = new BCryptPasswordEncoder(); // @formatter:off
-		return args -> IntStream.range(0, 5).forEach(i -> visitorService.signUp(Visitor.builder() 
+		return args -> IntStream.range(0, 5).forEach(i -> visitorRepository.save(Visitor.builder() 
 						.email("admin" + i + "@gmail.com")
 						.password(encoder.encode("password"))
 						.authority("ROLE_ADMIN")
+						.spendingMoney(5000)
 						.dateOfBirth(LocalDate.of(1994, 10, 22)).build())); // @formatter:on
 	}
 }

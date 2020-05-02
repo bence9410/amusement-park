@@ -13,7 +13,6 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -66,7 +65,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 
 		findOne();
 
-		findAll();
+		findAllVisitors();
 
 		enterPark();
 
@@ -102,8 +101,8 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 		assertStatements();
 	}
 
-	private void findAll() {
-		assertTrue(visitorService.findAll(Pageable.unpaged()).getContent().contains(visitor));
+	private void findAllVisitors() {
+		assertTrue(visitorService.findAllVisitor().contains(visitor));
 		select++;
 		assertStatements();
 	}

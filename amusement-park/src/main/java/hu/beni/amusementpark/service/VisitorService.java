@@ -1,7 +1,6 @@
 package hu.beni.amusementpark.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 
 import hu.beni.amusementpark.entity.Visitor;
 
@@ -23,7 +22,7 @@ public interface VisitorService {
 
 	Visitor getOffMachine(Long machineId, String visitorEmail);
 
-	Page<Visitor> findAll(Pageable pageable);
+	List<Visitor> findAllVisitor();
 
 	void delete(String visitorEmail);
 

@@ -1,5 +1,6 @@
 package hu.beni.amusementpark.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,5 +32,8 @@ public interface VisitorRepository extends JpaRepository<Visitor, String> {
 
 	@Query("Select v from Visitor v where v.amusementPark.id = :amusementParkId and v.email = :visitorEmail")
 	Optional<Visitor> findByAmusementParkIdAndVisitorEmail(Long amusementParkId, String visitorEmail);
+
+	@Query("Select v from Visitor v where v.authority = 'ROLE_VISITOR'")
+	List<Visitor> findAllVisitor();
 
 }

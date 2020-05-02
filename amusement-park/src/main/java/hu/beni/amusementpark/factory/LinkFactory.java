@@ -57,7 +57,11 @@ public class LinkFactory {
 	}
 
 	public static Link createVisitorLink() {
-		return linkTo(methodOn(visitorControllerClass).findAllPaged(null)).withRel(VISITOR);
+		return linkTo(methodOn(visitorControllerClass).findAllVisitor()).withRel(VISITOR);
+	}
+
+	public static Link createVisitorLinkWithSelfRel(String email) {
+		return linkTo(methodOn(visitorControllerClass).findByEmail(email)).withSelfRel();
 	}
 
 	public static Link createAmusementParkSelfLink(Long amusementParkId) {

@@ -56,7 +56,7 @@ public class Visitor implements Serializable {
 	private LocalDateTime dateOfSignUp;
 
 	@NotNull
-	@Range(min = 50, max = Integer.MAX_VALUE)
+	@Range(min = 0, max = Integer.MAX_VALUE)
 	private Integer spendingMoney;
 
 	@Lob

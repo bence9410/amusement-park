@@ -63,6 +63,8 @@ public class TesterApplicationTests {
 
 		IntStream.range(0, properties.getNumberOf().getRuns()).forEach(i -> performanceTest());
 
+		deleteVisitors();
+
 		logout();
 	}
 
@@ -136,7 +138,7 @@ public class TesterApplicationTests {
 	private void sumVisitorsSpendingMoney() {
 		log.info("sumVisitorsSpendingMoney");
 		timeTo.setFindAllVisitorsPaged(executeAdminsAsyncJoinAndMap(AsyncService::sumVisitorsSpendingMoney,
-				validator::checkSpendingMoneySunGetTime));
+				validator::checkSpendingMoneySumGetTime));
 	}
 
 	private void deleteParks() {
@@ -144,10 +146,14 @@ public class TesterApplicationTests {
 		timeTo.setDeleteParks(executeAdminAndJoin(AsyncService::deleteAllPark));
 	}
 
+	private void deleteVisitors() {
+		log.info("deleteVisitors");
+		executeAdminAndJoin(AsyncService::deleteAllVisitor);
+	}
+
 	private void logout() {
 		log.info("logout");
 		executeAdminsAsyncAndJoin(AsyncService::logout);
-		executeVisitorsAsyncAndJoin(AsyncService::logout);
 	}
 
 	private void log() {

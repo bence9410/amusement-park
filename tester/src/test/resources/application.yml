@@ -2,7 +2,7 @@ tester:
   number-of:
     runs: 10
     admins: 5
-    visitors: 50
+    visitors: 5
     amusement-parks-per-admin: 25
     machines-per-park: 10
   data:
@@ -12,5 +12,3 @@ tester:
     machine:
       price: 250
       ticket-price: 10
-    visitor:
-      spending-money: 18750

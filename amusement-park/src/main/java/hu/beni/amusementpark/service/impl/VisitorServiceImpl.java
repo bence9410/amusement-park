@@ -1,5 +1,6 @@
 package hu.beni.amusementpark.service.impl;
 
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.CAN_NOT_DELETE_ADMIN;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.EMAIL_ALREADY_TAKEN;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NOT_ENOUGH_MONEY;
@@ -20,17 +21,17 @@ import static hu.beni.amusementpark.exception.ExceptionUtil.ifPrimitivesEquals;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.AmusementParkKnowVisitor;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
+import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkKnowVisitorRepository;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
@@ -57,6 +58,7 @@ public class VisitorServiceImpl implements VisitorService {
 	public Visitor signUp(Visitor visitor) {
 		ifNotZero(visitorRepository.countByEmail(visitor.getEmail()),
 				String.format(EMAIL_ALREADY_TAKEN, visitor.getEmail()));
+		visitor.setAuthority("ROLE_VISITOR");
 		visitor.setSpendingMoney(250);
 		return visitorRepository.save(visitor);
 	}
@@ -143,12 +145,16 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public Page<Visitor> findAll(Pageable pageable) {
-		return visitorRepository.findAll(pageable);
+	public List<Visitor> findAllVisitor() {
+		return visitorRepository.findAllVisitor();
 	}
 
 	@Override
 	public void delete(String visitorEmail) {
+		Visitor visitor = ifNull(visitorRepository.findById(visitorEmail), VISITOR_NOT_SIGNED_UP);
+		if (visitor.getAuthority().equals("ROLE_ADMIN")) {
+			throw new AmusementParkException(CAN_NOT_DELETE_ADMIN);
+		}
 		visitorRepository.deleteById(visitorEmail);
 	}
 }

@@ -20,7 +20,12 @@ public class ApplicationProperties {
 
 	@PostConstruct
 	public void init() {
-		numberOf.setAmusementParks(numberOf.getAdmins() * numberOf.getAmusementParksPerAdmin());
+		int numberOfAmusementParks = numberOf.getAdmins() * numberOf.getAmusementParksPerAdmin();
+		numberOf.setAmusementParks(numberOfAmusementParks);
+		VisitorDataProperties visitorDataProperties = new VisitorDataProperties();
+		visitorDataProperties.setSpendingMoney(numberOfAmusementParks * data.getAmusementPark().getEntranceFee()
+				+ numberOfAmusementParks * numberOf.getMachinesPerPark() * data.getMachine().getTicketPrice());
+		data.setVisitor(visitorDataProperties);
 	}
 
 }
