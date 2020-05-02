@@ -130,14 +130,14 @@ public class AsyncService {
 	}
 
 	private void deleteAllOnUrl(String url, List<Long> tenTimes) {
-		boolean thereIsStillData;
-		do {
+		boolean thereIsStillData = true;
+		while (thereIsStillData) {
 			long tenStart = now();
 			thereIsStillData = getPageDeleteAllFalseIfNoMore(url);
 			if (thereIsStillData) {
 				tenTimes.add(millisFrom(tenStart));
 			}
-		} while (thereIsStillData);
+		}
 	}
 
 	private boolean getPageDeleteAllFalseIfNoMore(String url) {

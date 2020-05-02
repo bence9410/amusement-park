@@ -56,7 +56,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import hu.beni.amusementpark.AmusementParkApplication;
-import hu.beni.amusementpark.config.ClientConfig;
+import hu.beni.amusementpark.config.RestTemplateConfig;
 import hu.beni.amusementpark.dto.resource.AmusementParkResource;
 import hu.beni.amusementpark.dto.resource.GuestBookRegistryResource;
 import hu.beni.amusementpark.dto.resource.MachineResource;
@@ -68,7 +68,7 @@ import hu.beni.amusementpark.helper.ValidResourceFactory;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { AmusementParkApplication.class,
-		ClientConfig.class })
+		RestTemplateConfig.class })
 public class AmusementParkApplicationTests {
 
 	public static final PagedResourcesType<AmusementParkResource> PAGED_AMUSEMENT_PARK = new PagedResourcesType<AmusementParkResource>() {

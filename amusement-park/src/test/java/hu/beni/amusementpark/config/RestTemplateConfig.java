@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ClientConfig {
+public class RestTemplateConfig {
 
 	@Bean
 	public RestTemplate restTemplate() {
