@@ -32,6 +32,11 @@ public class AmusementParkServiceImpl implements AmusementParkService {
 	}
 
 	@Override
+	public AmusementParkPageResponseDto findDetailById(Long amusementParkId) {
+		return ifNull(amusementParkRepository.findDetailById(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
+	}
+
+	@Override
 	public AmusementPark findById(Long amusementParkId) {
 		return ifNull(amusementParkRepository.findById(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
 	}

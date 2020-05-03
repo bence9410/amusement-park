@@ -85,11 +85,13 @@ public class AmusementParkController {
 	}
 
 	@GetMapping("/{amusementParkId}")
-	public AmusementParkResource findOne(@PathVariable Long amusementParkId) {
-		AmusementParkResource amusementParkResource = amusementParkMapper
-				.toResource(amusementParkService.findById(amusementParkId));
-		amusementParkResource.add(LinkFactory.createAddGuestBookRegistryLink(amusementParkId));
-		return amusementParkResource;
+	public Resource<AmusementParkPageResponseDto> findOne(@PathVariable Long amusementParkId) {
+		AmusementParkPageResponseDto amusementParkPageResponseDto = amusementParkService
+				.findDetailById(amusementParkId);
+		return new Resource<>(amusementParkPageResponseDto, LinkFactory.createAmusementParkSelfLink(amusementParkId),
+				LinkFactory.createVisitorEnterParkLink(amusementParkId),
+				LinkFactory.createAddGuestBookRegistryLink(amusementParkId),
+				LinkFactory.createMachineLink(amusementParkId));
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")

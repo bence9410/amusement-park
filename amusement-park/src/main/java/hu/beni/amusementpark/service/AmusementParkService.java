@@ -13,6 +13,8 @@ public interface AmusementParkService {
 
 	AmusementPark findById(Long amusementParkId);
 
+	AmusementParkPageResponseDto findDetailById(Long amusementParkId);
+
 	void delete(Long amusementParkId);
 
 	Page<AmusementParkPageResponseDto> findAll(AmusementParkSearchRequestDto dto, Pageable pageable);
