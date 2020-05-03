@@ -56,35 +56,30 @@ function initHeader(data) {
 
 function uploadMoney() {
 	var money = $("#money").val()
-	if (isNaN(money)) {
-		var moneyUploadResult = $("#moneyUploadResult")
-		moneyUploadResult.removeClass()
-		moneyUploadResult.addClass("text-danger")
-		moneyUploadResult.html("Error: '"+ money  + "' is not a number.")
-	} else {
 		$.ajax({
 			url : links.uploadMoney,
 			method : "POST",
 			contentType : "application/json",
 			data : money,
 			success : function() {
-				var moneyUploadResult = $("#moneyUploadResult")
-				moneyUploadResult.removeClass()
-				moneyUploadResult.addClass("text-success")
-				moneyUploadResult.html("success")
+				var successId=(Math.random()+ "").replace("0.", "")
+				$("#moneyUploadResult").html("<div id='"+successId+"' class='alert alert-success' role='alert'>Success</div>")
+				setTimeout(function() {
+					$("#"+successId).remove()
+				}, 7000);
 	
 				var spendingMoney = $("#spendingMoney")
 				spendingMoney
 						.html(parseInt(spendingMoney.html()) + parseInt(money))
 			},
 			error : function(data) {		
-				var moneyUploadResult = $("#moneyUploadResult")
-				moneyUploadResult.removeClass()
-				moneyUploadResult.addClass("text-danger")
-				moneyUploadResult.html("Error: " + data.responseText)
+				var errorId=(Math.random()+ "").replace("0.", "")
+				$("#moneyUploadResult").html("<div id='"+errorId+"' class='alert alert-danger' role='alert'>Error: " + data.responseText+"</div>")
+				setTimeout(function() {
+					$("#"+errorId).remove()
+				}, 7000);
 			}
 		})
-	}
 }
 
 function clearUploadMoneyPopup() {

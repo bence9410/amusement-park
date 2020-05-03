@@ -9,7 +9,7 @@
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<div class="modal-body ">
-				<h6 id="machineCreateErrorMessage" class="text-danger"></h6>
+				<div id="machineCreateErrorMessage"></div>
 				<div class="col-md-8 offset-md-2 row">
 					<label for="machineCreateFantasyName">Fantasy name</label> <input
 						type="text" class="form-control" id="machineCreateFantasyName">
@@ -55,20 +55,20 @@
 	</div>
 </div>
 <div id="machineSearch" class="" style="display: none">
-	<div class="col-md-10 offset-md-1 row">
+	<div class="col-md-10 row mb-3 offset-md-1 pl-2 ">
 		<div class="col-md-3">
 			<label for="machineSearchFantasyName">Fantasy name</label> <input
 				type="text" class="form-control" id="machineSearchFantasyName">
 		</div>
-		<div class="col-md-2">
+		<div class="col-md-3">
 			<label for="machineSearchSizeMin">Size min:</label> <input
 				type="text" class="form-control" id="machineSearchSizeMin">
 		</div>
-		<div class="col-md-2">
+		<div class="col-md-3">
 			<label for="machineSearchSizeMax">Size max:</label> <input
 				type="text" class="form-control" id="machineSearchSizeMax">
 		</div>
-		<div class="col-md-2">
+		<div class="col-md-3">
 			<label for="machineSearchPriceMin">Price min:</label> <input
 				type="text" class="form-control" id="machineSearchPriceMin">
 		</div>
@@ -76,9 +76,7 @@
 			<label for="machineSearchPriceMax">Price max:</label> <input
 				type="text" class="form-control" id="machineSearchPriceMax">
 		</div>
-	</div>
-	<div class="col-md-10 offset-md-1 row">
-		<div class="col-md-2">
+		<div class="col-md-3">
 			<label for="machineSearchNumberOfSeatsMin">Number of seats
 				min:</label> <input type="text" class="form-control"
 				id="machineSearchNumberOfSeatsMin">
@@ -98,17 +96,15 @@
 				required age max:</label> <input type="text" class="form-control"
 				id="machineSearchMinimumRequiredAgeMax">
 		</div>
-	</div>
-	<div class="col-md-10 offset-md-1 row mb-1">
-		<div class="col-md-2">
+		<div class="col-md-3">
 			<label for="machineSearchTicketPriceMin">Ticket price min:</label> <input
 				type="text" class="form-control" id="machineSearchTicketPriceMin">
 		</div>
-		<div class="col-md-2">
+		<div class="col-md-3">
 			<label for="machineSearchTicketPriceMax">Ticket price max:</label> <input
 				type="text" class="form-control" id="machineSearchTicketPriceMax">
 		</div>
-		<div class="col-md-2">
+		<div class="col-md-3">
 			<label for="machineSearchType">Type:</label> 
 			<select id="machineSearchType" class="form-control">
 			<option value=""></option>
@@ -119,8 +115,10 @@
 						<option value="ROLLER_COASTER">Roller Coaster</option>					
 					</select> 
 		</div>
-		<input id="machineSearchButton" class="btn btn-secondary btn-xs mt-4 "
+		<div class="col-md-12 mt-2  text-center">
+		<input id="machineSearchButton" class="btn btn-secondary btn-xs mt-4 pl-4 pr-4 "
 			type="button" value="Search" >
+			</div>
 	</div>
 </div>
 <div class="row justify-content-center">
@@ -197,35 +195,42 @@
 				<h4 class="modal-title">Guest Book</h4>
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
-			<div class="modal-body">
-				<div class="form-group col-md-10 offset-md-1">
+			<div class="modal-body row">
+			<div id="guestBookModalMessages" class="col-md-10  offset-md-1"></div>
+				<div class="form-group col-md-8 offset-md-1">
 					<textarea class="form-control rounded-0" id="guestBookText"
 						rows="3"></textarea>
 				</div>
-				<div id="guestBookSearche" class="col-md-10 offset-md-1 row">
-					<div class="col-md-3">
+				<div class="col-md-2 ">
+				<input id="guestBookSave" class="btn btn-secondary btn-xs mt-5 pr-4 pl-4 "
+					type="button" value="Save" onclick="">
+				</div>
+				<div class="row">
+				<div id="guestBookSearche" class="col-md-8 offset-md-1 row">
+					<div class="col-md-6">
 						<label for="guestBookSearchTimestampMin">Timestamp min:</label> <input
 							type="text" class="form-control"
 							id="guestBookSearchTimestampMin">
 					</div>
-					<div class="col-md-3">
+					<div class="col-md-6">
 						<label for="guestBookSearchTimestampMax">Timestamp max:</label> <input
 							type="text" class="form-control"
 							id="guestBookSearchTimestampMax">
 					</div>
-					<div class="col-md-3">
+					<div class="col-md-6">
 						<label for="guestBookSearchVisitorEmail">Visitor</label> <input
 							type="text" class="form-control" id="guestBookSearchVisitorEmail">
 					</div>
-					<div class="col-md-3">
+					<div class="col-md-6">
 						<label for="guestBookSearchText">Text</label> <input type="text"
 							class="form-control" id="guestBookSearchText">
 					</div>
-					<div class="col-md-2 offset-md-10">
-						<input id="guestBookSearchButton"
-							class="btn btn-secondary mt-4" type="button" value="Search">
 					</div>
-				</div>
+					<div class="col-md-2 ">
+						<input id="guestBookSearchButton"
+							class="btn btn-secondary mt-5 ml-2 pl-3 pr-3" type="button" value="Search">
+					</div>
+					</div>
 				<div class="col-md-10 offset-md-1 mt-2">
 					<table class="table table-bordered text-center table-hover ">
 						<thead class="thead-light">
@@ -240,8 +245,7 @@
 							<tr>
 								<td colspan="10">
 									<div class="row ">
-										<div class="col-md-2"></div>
-										<div class="col-md-2">
+										<div class="col-md-2 offset-md-1">
 											<input id="guestBookFirst"
 												class="btn btn-secondary btn-xs" type="button" value="<<"
 												onclick="">
@@ -273,8 +277,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<input id="guestBookSave" class="btn btn-secondary btn-xs"
-					type="button" value="Save" onclick="">
+				
 			</div>
 		</div>
 	</div>

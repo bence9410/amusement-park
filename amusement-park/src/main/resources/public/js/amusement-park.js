@@ -37,8 +37,11 @@ function amusementParkCreate(url) {
 			getAmusementParks(url)
 		},
 		error : function(response) {
-			$("#createAmusementParkErrorMessage").html(
-					"error: " + response.responseText)
+			var errorId=(Math.random()+ "").replace("0.", "")
+			$("#createAmusementParkErrorMessage").html("<div id='"+errorId+"' class='alert alert-danger' role='alert'>"+"error: " +response.responseText+"</div>")
+			setTimeout(function() {
+				$("#"+errorId).remove()
+			}, 7000);
 		},
 		complete : function() {
 			$("#createAmusementParkButton").attr("disabled", false)
@@ -294,7 +297,11 @@ function enterPark(href, machineHref) {
 			$(".modal-backdrop").remove()
 		},
 		error : function(data) {
-			$("#detailsError").html(data.responseText)
+			var errorId=(Math.random()+ "").replace("0.", "")
+			$("#detailsError").html("<div id='"+errorId+"' class='alert alert-danger' role='alert'>"+data.responseText+"</div>")
+			setTimeout(function() {
+				$("#"+errorId).remove()
+			}, 7000);
 		}
 
 	})

@@ -20,7 +20,12 @@ function ajaxLogin() {
 			getAmusementParkPage()
 		},
 		error : function (data) {
-			$("#loginError").html(data.responseText)
+			var errorId=(Math.random()+ "").replace("0.", "")
+			$("#loginError").html("<div id='"+errorId+"' class='alert alert-danger' role='alert'>"+data.responseText+"</div>")
+			setTimeout(function() {
+				$("#"+errorId).remove()
+			}, 7000);
+			
 		}
 	})
 }
@@ -54,8 +59,11 @@ function signUp() {
 			getAmusementParkPage()
 		},
 		error : function (data) {	
-			$("#signUpError").html(data.responseText)
-			$("#signUpError").show()
+			var errorId=(Math.random()+ "").replace("0.", "")
+			$("#signUpError").html("<div id='"+errorId+"' class='alert alert-danger' role='alert'>"+data.responseText+"</div>")
+			setTimeout(function() {
+				$("#"+errorId).remove()
+			}, 7000);
 			$("#signUp").prop("disabled", false)
 		}
 	})

@@ -23,8 +23,11 @@ function machineCreate(url) {
 
 		},
 		error : function(response) {
-			$("#machineCreateErrorMessage").html(
-					"error: " + response.responseText)
+			var errorId=(Math.random()+ "").replace("0.", "")
+			$("#machineCreateErrorMessage").html("<div id='"+errorId+"' class='alert alert-danger' role='alert'>"+"error: " + response.responseText+"</div>")
+			setTimeout(function() {
+				$("#"+errorId).remove()
+			}, 7000);
 		},
 		complete : function() {
 			$("#machineCreateButton").attr("disabled", false)
@@ -280,6 +283,18 @@ function machineGuestBookWrite(url) {
 		data : text,
 		success : function() {
 			getGuestBooks(url)
-		}
+			var successId=(Math.random()+ "").replace("0.", "")
+			$("#guestBookModalMessages").html("<div id='"+successId+"' class='alert alert-success' role='alert'>Success</div>")
+			setTimeout(function() {
+				$("#"+successId).remove()
+			}, 7000);
+		},
+		error : function(response) {
+		var errorId=(Math.random()+ "").replace("0.", "")
+		$("#guestBookModalMessages").html("<div id='"+errorId+"' class='alert alert-danger' role='alert'>"+"error: " + response.responseText+"</div>")
+		setTimeout(function() {
+			$("#"+errorId).remove()
+		}, 7000);
+	}
 	})
 }
