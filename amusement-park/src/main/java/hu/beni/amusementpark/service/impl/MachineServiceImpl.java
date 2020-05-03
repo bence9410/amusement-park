@@ -4,12 +4,8 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_T
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_TOO_EXPENSIVE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_MACHINE_IN_PARK_WITH_ID;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITORS_ON_MACHINE;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifFirstLessThanSecond;
-import static hu.beni.amusementpark.exception.ExceptionUtil.ifNotZero;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifNull;
-
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +18,6 @@ import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
-import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.MachineService;
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +28,6 @@ public class MachineServiceImpl implements MachineService {
 
 	private final AmusementParkRepository amusementParkRepository;
 	private final MachineRepository machineRepository;
-	private final VisitorRepository visitorRepository;
 
 	@Override
 	public Machine addMachine(Long amusementParkId, Machine machine) {
@@ -61,20 +55,6 @@ public class MachineServiceImpl implements MachineService {
 	public Machine findOne(Long amusementParkId, Long machineId) {
 		return ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId),
 				NO_MACHINE_IN_PARK_WITH_ID);
-	}
-
-	@Override
-	public List<Machine> findAllByAmusementParkId(Long amusementParkId) {
-		return machineRepository.findAllByAmusementParkId(amusementParkId);
-	}
-
-	@Override
-	public void removeMachine(Long amusementParkId, Long machineId) {
-		Machine machine = ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId),
-				NO_MACHINE_IN_PARK_WITH_ID);
-		ifNotZero(visitorRepository.countByMachineId(machineId), VISITORS_ON_MACHINE);
-		amusementParkRepository.incrementCapitalById(machine.getPrice(), amusementParkId);
-		machineRepository.deleteById(machineId);
 	}
 
 	@Override

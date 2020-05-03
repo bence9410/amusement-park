@@ -96,9 +96,9 @@ public class VisitorValidationTests extends AbstractValidation<Visitor> {
 		validateAndAssertViolationsSizeIsOne(visitor);
 		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getSpendingMoney(), SPENDING_MONEY, NOT_NULL_MESSAGE);
 
-		visitor.setSpendingMoney(49);
+		visitor.setSpendingMoney(-1);
 		validateAndAssertViolationsSizeIsOne(visitor);
 		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getSpendingMoney(), SPENDING_MONEY,
-				rangeMessage(50, Integer.MAX_VALUE));
+				rangeMessage(0, Integer.MAX_VALUE));
 	}
 }

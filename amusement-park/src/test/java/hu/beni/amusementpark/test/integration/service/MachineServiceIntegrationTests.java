@@ -3,7 +3,6 @@ package hu.beni.amusementpark.test.integration.service;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementPark;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +46,6 @@ public class MachineServiceIntegrationTests extends AbstractStatementCounterTest
 		assertCapitalDecreased();
 
 		findOne();
-
-		findAllByAmusementParkId();
-
-		machineIds.forEach(this::removeMachine);
-
-		assertCapitalIncremented();
 	}
 
 	private void addMachine() {
@@ -74,27 +67,6 @@ public class MachineServiceIntegrationTests extends AbstractStatementCounterTest
 
 	private void findOne() {
 		assertEquals(machine, machineService.findOne(amusementParkId, machine.getId()));
-		select++;
-		assertStatements();
-	}
-
-	private void findAllByAmusementParkId() {
-		assertTrue(machineService.findAllByAmusementParkId(amusementParkId).contains(machine));
-		select++;
-		assertStatements();
-	}
-
-	private void removeMachine(Long machineId) {
-		machineService.removeMachine(amusementParkId, machineId);
-		select += 2;
-		update++;
-		delete++;
-		assertStatements();
-	}
-
-	private void assertCapitalIncremented() {
-		assertEquals(amusementPark.getCapital().longValue(),
-				amusementParkRepository.findById(amusementParkId).get().getCapital().longValue());
 		select++;
 		assertStatements();
 	}

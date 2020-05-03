@@ -4,7 +4,6 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_T
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_TOO_EXPENSIVE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_MACHINE_IN_PARK_WITH_ID;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITORS_ON_MACHINE;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -12,8 +11,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.After;
@@ -25,7 +22,6 @@ import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
-import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.MachineService;
 import hu.beni.amusementpark.service.impl.MachineServiceImpl;
 
@@ -33,7 +29,6 @@ public class MachineServiceUnitTests {
 
 	private AmusementParkRepository amusementParkRepository;
 	private MachineRepository machineRepository;
-	private VisitorRepository visitorRepository;
 
 	private MachineService machineService;
 
@@ -41,13 +36,13 @@ public class MachineServiceUnitTests {
 	public void setUp() {
 		amusementParkRepository = mock(AmusementParkRepository.class);
 		machineRepository = mock(MachineRepository.class);
-		visitorRepository = mock(VisitorRepository.class);
-		machineService = new MachineServiceImpl(amusementParkRepository, machineRepository, visitorRepository);
+
+		machineService = new MachineServiceImpl(amusementParkRepository, machineRepository);
 	}
 
 	@After
 	public void verifyNoMoreInteractionsOnMocks() {
-		verifyNoMoreInteractions(amusementParkRepository, machineRepository, visitorRepository);
+		verifyNoMoreInteractions(amusementParkRepository, machineRepository);
 	}
 
 	@Test
@@ -139,63 +134,4 @@ public class MachineServiceUnitTests {
 		verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
 	}
 
-	@Test
-	public void findAllByAmusementParkIdPositive() {
-		Long amusementParkId = 0L;
-		List<Machine> machines = Arrays.asList(Machine.builder().id(1L).build(), Machine.builder().id(2L).build());
-
-		when(machineRepository.findAllByAmusementParkId(amusementParkId)).thenReturn(machines);
-
-		assertEquals(machines, machineService.findAllByAmusementParkId(amusementParkId));
-
-		verify(machineRepository).findAllByAmusementParkId(amusementParkId);
-	}
-
-	@Test
-	public void removeMachineNegativeNoMachine() {
-		Long amusementParkId = 0L;
-		Long machineId = 1L;
-
-		assertThatThrownBy(() -> machineService.removeMachine(amusementParkId, machineId))
-				.isInstanceOf(AmusementParkException.class).hasMessage(NO_MACHINE_IN_PARK_WITH_ID);
-
-		verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-	}
-
-	@Test
-	public void removeMachineNegativeVisitorsOnMachine() {
-		Long amusementParkId = 0L;
-		Machine machine = Machine.builder().id(1L).price(150).build();
-		Long machineId = machine.getId();
-		Long numberOfVisitorsOnMachine = 10L;
-
-		when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
-				.thenReturn(Optional.of(machine));
-		when(visitorRepository.countByMachineId(machineId)).thenReturn(numberOfVisitorsOnMachine);
-
-		assertThatThrownBy(() -> machineService.removeMachine(amusementParkId, machineId))
-				.isInstanceOf(AmusementParkException.class).hasMessage(VISITORS_ON_MACHINE);
-
-		verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-		verify(visitorRepository).countByMachineId(machineId);
-	}
-
-	@Test
-	public void removeMachinePositive() {
-		Long amusementParkId = 0L;
-		Machine machine = Machine.builder().id(1L).price(150).build();
-		Long machineId = machine.getId();
-		Long numberOfVisitorsOnMachine = 0L;
-
-		when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
-				.thenReturn(Optional.of(machine));
-		when(visitorRepository.countByMachineId(machineId)).thenReturn(numberOfVisitorsOnMachine);
-
-		machineService.removeMachine(amusementParkId, machineId);
-
-		verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-		verify(visitorRepository).countByMachineId(machineId);
-		verify(amusementParkRepository).incrementCapitalById(machine.getPrice(), amusementParkId);
-		verify(machineRepository).deleteById(machineId);
-	}
 }

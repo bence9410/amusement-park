@@ -194,8 +194,6 @@ public class AmusementParkApplicationTests {
 
 		leavePark(visitorResource.getLink(VISITOR_LEAVE_PARK).getHref());
 
-		sellMachine(machineResource.getId().getHref());
-
 		deletePark(amusementParkResource.getId().getHref());
 	}
 
@@ -400,10 +398,6 @@ public class AmusementParkApplicationTests {
 
 	private void leavePark(String leaveParkUrl) {
 		restTemplate.put(leaveParkUrl, null);
-	}
-
-	private void sellMachine(String machineUrlWithId) {
-		restTemplate.delete(machineUrlWithId);
 	}
 
 	private void deletePark(String amusementParkUrlWithId) {
