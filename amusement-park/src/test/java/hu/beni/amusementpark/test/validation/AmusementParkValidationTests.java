@@ -10,9 +10,11 @@ import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementPar
 import org.junit.Before;
 import org.junit.Test;
 
+import hu.beni.amusementpark.dto.resource.AmusementParkResource;
 import hu.beni.amusementpark.entity.AmusementPark;
+import hu.beni.amusementpark.helper.ValidResourceFactory;
 
-public class AmusementParkValidationTests extends AbstractValidation<AmusementPark> {
+public class AmusementParkValidationTests extends AbstractValidation {
 
 	private static final String NAME = "name";
 	private static final String CAPITAL = "capital";
@@ -21,80 +23,151 @@ public class AmusementParkValidationTests extends AbstractValidation<AmusementPa
 
 	private AmusementPark amusementPark;
 
+	private AmusementParkResource amusementParkResource;
+
 	@Before
 	public void setUp() {
 		amusementPark = createAmusementPark();
+
+		amusementParkResource = ValidResourceFactory.createAmusementPark();
 	}
 
 	@Test
 	public void validAmusementPark() {
 		validateAndAssertNoViolations(amusementPark);
+
+		validateAndAssertNoViolations(amusementParkResource);
 	}
 
 	@Test
 	public void invalidName() {
-		amusementPark.setName(null);
-		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getName(), NAME, NOT_NULL_MESSAGE);
+		String name = null;
 
-		amusementPark.setName(STRING_WITH_4_LENGTH);
-		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getName(), NAME, sizeMessage(5, 20));
+		amusementPark.setName(name);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementPark, amusementPark.getName(), NAME,
+				NOT_NULL_MESSAGE);
 
-		amusementPark.setName(STRING_WITH_21_LENGTH);
-		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getName(), NAME, sizeMessage(5, 20));
+		amusementParkResource.setName(name);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementParkResource, amusementParkResource.getName(), NAME,
+				NOT_NULL_MESSAGE);
+
+		name = STRING_WITH_4_LENGTH;
+
+		amusementPark.setName(name);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementPark, amusementPark.getName(), NAME,
+				sizeMessage(5, 20));
+
+		amusementParkResource.setName(name);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementParkResource, amusementParkResource.getName(), NAME,
+				sizeMessage(5, 20));
+
+		name = STRING_WITH_21_LENGTH;
+
+		amusementPark.setName(name);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementPark, amusementPark.getName(), NAME,
+				sizeMessage(5, 20));
+
+		amusementParkResource.setName(name);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementParkResource, amusementParkResource.getName(), NAME,
+				sizeMessage(5, 20));
 	}
 
 	@Test
 	public void invalidCapital() {
-		amusementPark.setCapital(null);
-		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getCapital(), CAPITAL, NOT_NULL_MESSAGE);
+		Integer capital = null;
 
-		amusementPark.setCapital(99);
-		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getCapital(), CAPITAL,
+		amusementPark.setCapital(capital);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementPark, amusementPark.getCapital(), CAPITAL,
+				NOT_NULL_MESSAGE);
+
+		amusementParkResource.setCapital(capital);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementParkResource, amusementParkResource.getCapital(),
+				CAPITAL, NOT_NULL_MESSAGE);
+
+		capital = 99;
+
+		amusementPark.setCapital(capital);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementPark, amusementPark.getCapital(), CAPITAL,
 				rangeMessage(500, 50000));
 
-		amusementPark.setCapital(50001);
-		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getCapital(), CAPITAL,
+		amusementParkResource.setCapital(capital);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementParkResource, amusementParkResource.getCapital(),
+				CAPITAL, rangeMessage(500, 50000));
+
+		capital = 50001;
+
+		amusementPark.setCapital(capital);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementPark, amusementPark.getCapital(), CAPITAL,
 				rangeMessage(500, 50000));
+
+		amusementParkResource.setCapital(capital);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementParkResource, amusementParkResource.getCapital(),
+				CAPITAL, rangeMessage(500, 50000));
 	}
 
 	@Test
 	public void invalidTotalArea() {
-		amusementPark.setTotalArea(null);
-		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getTotalArea(), TOTAL_AREA, NOT_NULL_MESSAGE);
+		Integer totalArea = null;
 
-		amusementPark.setTotalArea(49);
-		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getTotalArea(), TOTAL_AREA,
+		amusementPark.setTotalArea(totalArea);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementPark, amusementPark.getTotalArea(), TOTAL_AREA,
+				NOT_NULL_MESSAGE);
+
+		amusementParkResource.setTotalArea(totalArea);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementParkResource, amusementParkResource.getTotalArea(),
+				TOTAL_AREA, NOT_NULL_MESSAGE);
+
+		totalArea = 49;
+
+		amusementPark.setTotalArea(totalArea);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementPark, amusementPark.getTotalArea(), TOTAL_AREA,
 				rangeMessage(50, 5000));
 
-		amusementPark.setTotalArea(5001);
-		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getTotalArea(), TOTAL_AREA,
+		amusementParkResource.setTotalArea(totalArea);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementParkResource, amusementParkResource.getTotalArea(),
+				TOTAL_AREA, rangeMessage(50, 5000));
+
+		totalArea = 5001;
+
+		amusementPark.setTotalArea(totalArea);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementPark, amusementPark.getTotalArea(), TOTAL_AREA,
 				rangeMessage(50, 5000));
+
+		amusementParkResource.setTotalArea(totalArea);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementParkResource, amusementParkResource.getTotalArea(),
+				TOTAL_AREA, rangeMessage(50, 5000));
 	}
 
 	@Test
 	public void invalidEntranceFee() {
-		amusementPark.setEntranceFee(null);
-		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getEntranceFee(), ENTRANCE_FEE,
+		Integer entranceFee = null;
+
+		amusementPark.setEntranceFee(entranceFee);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementPark, amusementPark.getEntranceFee(), ENTRANCE_FEE,
 				NOT_NULL_MESSAGE);
 
-		amusementPark.setEntranceFee(4);
-		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getEntranceFee(), ENTRANCE_FEE,
+		amusementParkResource.setEntranceFee(entranceFee);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementParkResource,
+				amusementParkResource.getEntranceFee(), ENTRANCE_FEE, NOT_NULL_MESSAGE);
+
+		entranceFee = 4;
+
+		amusementPark.setEntranceFee(entranceFee);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementPark, amusementPark.getEntranceFee(), ENTRANCE_FEE,
 				rangeMessage(5, 200));
 
-		amusementPark.setEntranceFee(201);
-		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getEntranceFee(), ENTRANCE_FEE,
+		amusementParkResource.setEntranceFee(entranceFee);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementParkResource,
+				amusementParkResource.getEntranceFee(), ENTRANCE_FEE, rangeMessage(5, 200));
+
+		entranceFee = 201;
+
+		amusementPark.setEntranceFee(entranceFee);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementPark, amusementPark.getEntranceFee(), ENTRANCE_FEE,
 				rangeMessage(5, 200));
+
+		amusementParkResource.setEntranceFee(entranceFee);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(amusementParkResource,
+				amusementParkResource.getEntranceFee(), ENTRANCE_FEE, rangeMessage(5, 200));
 	}
 }

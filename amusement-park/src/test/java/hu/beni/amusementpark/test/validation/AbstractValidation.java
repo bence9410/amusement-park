@@ -9,35 +9,40 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-public abstract class AbstractValidation<T> {
+public abstract class AbstractValidation {
 
 	private final Validator validator;
-	private Object invalidValue;
-	private String propertyName;
-	private String message;
 
 	protected AbstractValidation() {
 		validator = Validation.buildDefaultValidatorFactory().getValidator();
 	}
 
-	protected void validateAndAssertNoViolations(T t) {
-		assertTrue(validator.validate(t).isEmpty());
+	protected void validateAndAssertNoViolations(Object object) {
+		assertTrue(validator.validate(object).isEmpty());
 	}
 
-	protected void validateAndAssertViolationsSizeIsOne(T t) {
-		Set<ConstraintViolation<T>> violations = validator.validate(t);
-		assertTrue(violations.size() == 1);
-		ConstraintViolation<T> violation = violations.iterator().next();
-		invalidValue = violation.getInvalidValue();
-		message = violation.getMessage();
-		propertyName = violation.getPropertyPath().toString();
+	protected void validateAndAssertViolationsSizeIsOneAndViolationIs(Object object, Object invalidValue,
+			String propertyName, String message) {
+		Set<ConstraintViolation<Object>> violations = validator.validate(object);
+		assertEquals(violations.toString(), 1, violations.size());
+
+		ConstraintViolation<Object> violation = violations.iterator().next();
+		assertEquals(invalidValue, violation.getInvalidValue());
+		assertEquals(propertyName, violation.getPropertyPath().toString());
+		assertEquals(message, violation.getMessage());
 	}
 
-	protected void assertInvalidValueAndPropertyNameAndMessageEquals(Object invalidValue, String propertyName,
-			String message) {
-		assertEquals(invalidValue, this.invalidValue);
-		assertEquals(propertyName, this.propertyName);
-		assertEquals(message, this.message);
+	protected void validateAndAssertViolationsSizeIsTwoAndFieldViolationIs(Object object, Object invalidValue,
+			String propertyName, String message) {
+		Set<ConstraintViolation<Object>> violations = validator.validate(object);
+		assertEquals(violations.toString(), 2, violations.size());
+
+		ConstraintViolation<Object> violation = violations.stream()
+				.filter(v -> !v.getPropertyPath().toString().equals("")).findFirst().get();
+
+		assertEquals(invalidValue, violation.getInvalidValue());
+		assertEquals(propertyName, violation.getPropertyPath().toString());
+		assertEquals(message, violation.getMessage());
 	}
 
 }

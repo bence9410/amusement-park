@@ -6,6 +6,7 @@ public class ValidationMessageConstants {
 	private static final String RANGE_MESSAGE = "must be between %d and %d";
 	private static final String MUST_BE_ONE_OF = "must be one of %s";
 
+	public static final String NULL_MESSAGE = "must be null";
 	public static final String NOT_NULL_MESSAGE = "must not be null";
 	public static final String NOT_EMPTY_MESSAGE = "must not be empty";
 	public static final String PAST_MESSAGE = "must be a past date";

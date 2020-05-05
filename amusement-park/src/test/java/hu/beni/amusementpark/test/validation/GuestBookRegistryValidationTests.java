@@ -13,7 +13,7 @@ import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Visitor;
 
-public class GuestBookRegistryValidationTests extends AbstractValidation<GuestBookRegistry> {
+public class GuestBookRegistryValidationTests extends AbstractValidation {
 
 	private static final String TEXT_OF_REGISTRY = "textOfRegistry";
 	private static final String AMUSEMENT_PARK = "amusementPark";
@@ -36,33 +36,29 @@ public class GuestBookRegistryValidationTests extends AbstractValidation<GuestBo
 	@Test
 	public void invalidTextOfRegistry() {
 		guestBookRegistry.setTextOfRegistry(null);
-		validateAndAssertViolationsSizeIsOne(guestBookRegistry);
-		assertInvalidValueAndPropertyNameAndMessageEquals(guestBookRegistry.getTextOfRegistry(), TEXT_OF_REGISTRY,
-				NOT_NULL_MESSAGE);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(guestBookRegistry, guestBookRegistry.getTextOfRegistry(),
+				TEXT_OF_REGISTRY, NOT_NULL_MESSAGE);
 
 		guestBookRegistry.setTextOfRegistry(STRING_WITH_1_LENGTH);
-		validateAndAssertViolationsSizeIsOne(guestBookRegistry);
-		assertInvalidValueAndPropertyNameAndMessageEquals(guestBookRegistry.getTextOfRegistry(), TEXT_OF_REGISTRY,
-				sizeMessage(2, 100));
+		validateAndAssertViolationsSizeIsOneAndViolationIs(guestBookRegistry, guestBookRegistry.getTextOfRegistry(),
+				TEXT_OF_REGISTRY, sizeMessage(2, 100));
 
 		guestBookRegistry.setTextOfRegistry(STRING_WITH_101_LENGTH);
-		validateAndAssertViolationsSizeIsOne(guestBookRegistry);
-		assertInvalidValueAndPropertyNameAndMessageEquals(guestBookRegistry.getTextOfRegistry(), TEXT_OF_REGISTRY,
-				sizeMessage(2, 100));
+		validateAndAssertViolationsSizeIsOneAndViolationIs(guestBookRegistry, guestBookRegistry.getTextOfRegistry(),
+				TEXT_OF_REGISTRY, sizeMessage(2, 100));
 	}
 
 	@Test
 	public void nullAmusementPark() {
 		guestBookRegistry.setAmusementPark(null);
-		validateAndAssertViolationsSizeIsOne(guestBookRegistry);
-		assertInvalidValueAndPropertyNameAndMessageEquals(guestBookRegistry.getAmusementPark(), AMUSEMENT_PARK,
-				NOT_NULL_MESSAGE);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(guestBookRegistry, guestBookRegistry.getAmusementPark(),
+				AMUSEMENT_PARK, NOT_NULL_MESSAGE);
 	}
 
 	@Test
 	public void nullVisitor() {
 		guestBookRegistry.setVisitor(null);
-		validateAndAssertViolationsSizeIsOne(guestBookRegistry);
-		assertInvalidValueAndPropertyNameAndMessageEquals(guestBookRegistry.getVisitor(), VISITOR, NOT_NULL_MESSAGE);
+		validateAndAssertViolationsSizeIsOneAndViolationIs(guestBookRegistry, guestBookRegistry.getVisitor(), VISITOR,
+				NOT_NULL_MESSAGE);
 	}
 }

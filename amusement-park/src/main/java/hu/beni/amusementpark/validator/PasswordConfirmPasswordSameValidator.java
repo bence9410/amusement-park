@@ -9,9 +9,24 @@ import hu.beni.amusementpark.dto.resource.VisitorResource;
 public class PasswordConfirmPasswordSameValidator
 		implements ConstraintValidator<PasswordConfirmPasswordSameConstraint, VisitorResource> {
 
+	private String message;
+
+	@Override
+	public void initialize(PasswordConfirmPasswordSameConstraint constraint) {
+		message = constraint.message();
+	}
+
 	@Override
 	public boolean isValid(VisitorResource value, ConstraintValidatorContext context) {
-		return value.getPassword().equals(value.getConfirmPassword());
+		// context.disableDefaultConstraintViolation();
+		if (value.getPassword() == null || value.getConfirmPassword() == null) {
+			return true;
+		} else if (!value.getPassword().equals(value.getConfirmPassword())) {
+
+			// context.buildConstraintViolationWithTemplate(message).addPropertyNode("password").addConstraintViolation();
+			return false;
+		}
+		return true;
 	}
 
 }

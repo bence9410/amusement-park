@@ -1,13 +1,7 @@
 package hu.beni.amusementpark.mapper;
 
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.validationError;
 import static hu.beni.amusementpark.factory.LinkFactory.createGetOnMachineLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createMachineSelfLink;
-
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -18,7 +12,6 @@ import hu.beni.amusementpark.controller.MachineController;
 import hu.beni.amusementpark.dto.resource.MachineResource;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.enums.MachineType;
-import hu.beni.amusementpark.exception.AmusementParkException;
 
 @Component
 @ConditionalOnWebApplication
@@ -54,7 +47,7 @@ public class MachineMapper extends EntityMapper<Machine, MachineResource> {
 				.numberOfSeats(resource.getNumberOfSeats())
 				.minimumRequiredAge(resource.getMinimumRequiredAge())
 				.ticketPrice(resource.getTicketPrice())
-				.type(MachineType.valueOf(isValidMachineType(resource.getType()))).build(); //@formatter:on
+				.type(MachineType.valueOf(resource.getType())).build(); //@formatter:on
 	}
 
 	private Link[] createLinks(Machine machine) {
@@ -63,12 +56,5 @@ public class MachineMapper extends EntityMapper<Machine, MachineResource> {
 		return new Link[] { //@formatter:off
 				createMachineSelfLink(amusementParkId, machineId),
 				createGetOnMachineLink(amusementParkId, machineId) }; //@formatter:off
-	}
-	
-	private String isValidMachineType(String value) {
-		Set<String> machineTypes = Stream.of(MachineType.values()).map(MachineType::name)
-				.collect(Collectors.toSet());
-		return Optional.of(value).filter(machineTypes::contains).orElseThrow(() -> 
-			new AmusementParkException(validationError("type", String.format("must be one of %s", machineTypes.toString()))));		
 	}
 }

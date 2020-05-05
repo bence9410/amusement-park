@@ -25,16 +25,19 @@ public class GuestBookRegistryResource extends ResourceSupport implements Serial
 
 	private LocalDateTime dateOfRegistry;
 
-	private Long visitorId;
+	private Long amusementParkId;
+
+	private String visitorEmail;
 
 	@Builder
 	public GuestBookRegistryResource(Long identifier, String textOfRegistry, LocalDateTime dateOfRegistry,
-			Long visitorId, Link[] links) {
+			Long amusementParkId, String visitorEmail, Link[] links) {
 		super();
 		this.identifier = identifier;
 		this.textOfRegistry = textOfRegistry;
 		this.dateOfRegistry = dateOfRegistry;
-		this.visitorId = visitorId;
+		this.amusementParkId = amusementParkId;
+		this.visitorEmail = visitorEmail;
 		Optional.ofNullable(links).ifPresent(this::add);
 	}
 }

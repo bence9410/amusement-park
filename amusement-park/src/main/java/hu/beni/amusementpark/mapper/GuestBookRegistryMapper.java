@@ -27,6 +27,8 @@ public class GuestBookRegistryMapper extends EntityMapper<GuestBookRegistry, Gue
 				.identifier(entity.getId())
 				.textOfRegistry(entity.getTextOfRegistry())
 				.dateOfRegistry(entity.getDateOfRegistry())
+				.amusementParkId(entity.getAmusementPark().getId())
+				.visitorEmail(entity.getVisitor().getEmail())
 				.links(createLinks(entity)).build(); //@formatter:on
 	}
 

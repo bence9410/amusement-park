@@ -11,6 +11,8 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
+import hu.beni.amusementpark.constraint.EnumConstraint;
+import hu.beni.amusementpark.enums.MachineType;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -50,7 +52,7 @@ public class MachineResource extends ResourceSupport implements Serializable {
 	@Range(min = 5, max = 30)
 	private Integer ticketPrice;
 
-	@NotNull
+	@EnumConstraint(enumClazz = MachineType.class, message = "must be one of [CAROUSEL, ROLLER_COASTER, GOKART, DODGEM, SHIP]")
 	private String type;
 
 	@Builder
