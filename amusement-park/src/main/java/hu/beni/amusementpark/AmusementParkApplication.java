@@ -48,7 +48,7 @@ public class AmusementParkApplication {
 
 			AmusementPark amusementPark = AmusementPark
 					.builder() //@formatter:off
-                .name("Bence parkja")
+                .name("Bence's park")
                 .capital(30000)
                 .totalArea(2000)
                 .entranceFee(50)
@@ -57,13 +57,13 @@ public class AmusementParkApplication {
 			amusementParkService.save(amusementPark);
 
 			visitorService.enterPark(amusementPark.getId(), visitor.getEmail());
-			guestBookRegistryService.addRegistry(amusementPark.getId(), visitor.getEmail(), "Nagyon élveztem.");
-			guestBookRegistryService.addRegistry(amusementPark.getId(), visitor.getEmail(), "Jó volt.");
+			guestBookRegistryService.addRegistry(amusementPark.getId(), visitor.getEmail(), "I really enjoy it.");
+			guestBookRegistryService.addRegistry(amusementPark.getId(), visitor.getEmail(), "It was good.");
 			visitorService.leavePark(amusementPark.getId(), visitor.getEmail());
 
 			machineService.addMachine(amusementPark.getId(), Machine
 					.builder() //@formatter:off
-		            .fantasyName("Retro körhinta")
+		            .fantasyName("Retro carousel")
 		            .size(100)
 		            .price(250)
 		            .numberOfSeats(10)
@@ -73,7 +73,7 @@ public class AmusementParkApplication {
 
 			machineService.addMachine(amusementPark.getId(), Machine
 					.builder() //@formatter:off
-                .fantasyName("Mágikus dodgem")
+                .fantasyName("Magical dodgem")
                 .size(150)
                 .price(250)
                 .numberOfSeats(10)
@@ -83,7 +83,7 @@ public class AmusementParkApplication {
 
 			machineService.addMachine(amusementPark.getId(), Machine
 					.builder() //@formatter:off
-	                .fantasyName("Gokart")
+	                .fantasyName("Electronic gokart")
 	                .size(150)
 	                .price(250)
 	                .numberOfSeats(10)
@@ -103,7 +103,7 @@ public class AmusementParkApplication {
 
 			machineService.addMachine(amusementPark.getId(), Machine
 					.builder() //@formatter:off
-	                .fantasyName("Hullámvasút")
+	                .fantasyName("Super roller coaster")
 	                .size(150)
 	                .price(250)
 	                .numberOfSeats(10)

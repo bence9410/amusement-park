@@ -202,34 +202,68 @@ function getOnMachine(href, name, type) {
 				url : href,
 				method : "PUT",
 				success : function(data) {
-
+					var frameId = (Math.random() + "").replace("0.", "")
 					$("#machineModalTitle").html(name)
 					switch (type) {
 
 					case "CAROUSEL":
 						$("#machineModalBody")
-								.html(
-										"<iframe width=\"100%\" height=\"400\" src=\"https://www.youtube.com/embed/oNY_R3MmIbM?autoplay=1\"></iframe>")
+								.html("<iframe id='"
+										+ frameId
+										+ "' width=\"100%\" height=\"400\" src=\"https://www.youtube.com/embed/oNY_R3MmIbM?autoplay=1\"></iframe>")
+				setTimeout(function() {
+					if ($("#" + frameId).length > 0) {
+						getOffMachine(data._links.getOffMachine.href)
+					}
+				}, 319000);
 						break
 					case "GOKART":
 						$("#machineModalBody")
 								.html(
-										"<iframe width=\"100%\" height=\"400\" src=\"https://www.youtube.com/embed/Qa2kYagOCiw?autoplay=1\"></iframe>")
+										"<iframe id='"
+										+ frameId
+										+ "' width=\"100%\" height=\"400\" src=\"https://www.youtube.com/embed/Qa2kYagOCiw?autoplay=1\"></iframe>")
+				setTimeout(function() {
+					if ($("#" + frameId).length > 0) {
+						getOffMachine(data._links.getOffMachine.href)
+					}
+				}, 175000);
 						break
 					case "DODGEM":
 						$("#machineModalBody")
 								.html(
-										"<iframe width=\"100%\" height=\"400\" src=\"https://www.youtube.com/embed/FATfO8ScbCI?autoplay=1\"></iframe>")
+										"<iframe id='"
+										+ frameId
+										+ "' width=\"100%\" height=\"400\" src=\"https://www.youtube.com/embed/FATfO8ScbCI?autoplay=1\"></iframe>")
+				setTimeout(function() {
+					if ($("#" + frameId).length > 0) {
+						getOffMachine(data._links.getOffMachine.href)
+					}
+				}, 106000);
 						break
 					case "SHIP":
 						$("#machineModalBody")
 								.html(
-										"<iframe width=\"100%\" height=\"400\" src=\"https://www.youtube.com/embed/UYWkF0BATDc?autoplay=1\"></iframe>")
+										"<iframe id='"
+										+ frameId
+										+ "' width=\"100%\" height=\"400\" src=\"https://www.youtube.com/embed/UYWkF0BATDc?autoplay=1\"></iframe>")
+				setTimeout(function() {
+					if ($("#" + frameId).length > 0) {
+						getOffMachine(data._links.getOffMachine.href)
+					}
+				}, 219000);
 						break
 					case "ROLLER_COASTER":
 						$("#machineModalBody")
 								.html(
-										"<iframe width=\"100%\" height=\"400\" src=\"https://www.youtube.com/embed/s9njwl_VzZA?autoplay=1\"></iframe>")
+										"<iframe id='"
+										+ frameId
+										+ "' width=\"100%\" height=\"400\" src=\"https://www.youtube.com/embed/s9njwl_VzZA?autoplay=1\"></iframe>")
+				setTimeout(function() {
+					if ($("#" + frameId).length > 0) {
+						getOffMachine(data._links.getOffMachine.href)
+					}
+				}, 207000);
 						break
 
 					}
@@ -239,12 +273,22 @@ function getOnMachine(href, name, type) {
 							"onclick",
 							"getOffMachine('" + data._links.getOffMachine.href
 									+ "')")
-
+					$("#machineModal").on('hidden.bs.modal', function() {
+						getOffMachine(data._links.getOffMachine.href)
+					})
 					$("#machineModalGetOff").attr(
 							"onclick",
 							"getOffMachine('" + data._links.getOffMachine.href
 									+ "')")
+				},
+				error : function(response) {
+					var errorId=(Math.random()+ "").replace("0.", "")
+					$("#getOnMachineError").html("<div id='"+errorId+"' class='alert alert-danger text-center' role='alert'>"+ response.responseText+"</div>")
+					setTimeout(function() {
+						$("#"+errorId).remove()
+					}, 7000);
 				}
+			
 			})
 }
 

@@ -10,7 +10,7 @@ $(function() {
 							+ " value='Search' onclick='$(\"#amusementParkSearchDiv\").toggle()'>")
 	if (isAdmin) {
 		$("#headerButton").append(
-				"<input class='btn btn-secondary my-2 mr-1 ' type='button' value='Create'"
+				"<input id='amusementParkShowCreateButton' class='btn btn-secondary my-2 mr-1 ' type='button' value='Create'"
 						+ "onclick='clearAndShowAmusementParkCreateModal()'>")
 		$("#createAmusementParkButton").attr("onclick", "amusementParkCreate('"+links.amusementPark+"')")
 	}
@@ -38,7 +38,7 @@ function amusementParkCreate(url) {
 		},
 		error : function(response) {
 			var errorId=(Math.random()+ "").replace("0.", "")
-			$("#createAmusementParkErrorMessage").html("<div id='"+errorId+"' class='alert alert-danger' role='alert'>"+"error: " +response.responseText+"</div>")
+			$("#createAmusementParkErrorMessage").html("<div id='"+errorId+"' class='alert alert-danger' role='alert'>" +response.responseText+"</div>")
 			setTimeout(function() {
 				$("#"+errorId).remove()
 			}, 7000);
@@ -333,7 +333,7 @@ function getMachinePage(enterParkData) {
 					if (isAdmin) {
 						$("#headerButton")
 								.append(
-										"<input class='btn btn-secondary my-2 mr-1 ' type='button' value='Create'"
+										"<input id='machineShowCreateButton' class='btn btn-secondary my-2 mr-1 ' type='button' value='Create'"
 												+ "onclick='clearAndShowMachineCreateModal()'>")
 						$("#machineCreateButton").attr(
 								"onclick",

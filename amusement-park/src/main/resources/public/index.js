@@ -77,7 +77,7 @@ function uploadMoney(url) {
 			},
 			error : function(data) {		
 				var errorId=(Math.random()+ "").replace("0.", "")
-				$("#moneyUploadResult").html("<div id='"+errorId+"' class='alert alert-danger' role='alert'>Error: " + data.responseText+"</div>")
+				$("#moneyUploadResult").html("<div id='"+errorId+"' class='alert alert-danger' role='alert'>" + data.responseText+"</div>")
 				setTimeout(function() {
 					$("#"+errorId).remove()
 				}, 7000);

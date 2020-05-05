@@ -29,7 +29,8 @@ import hu.beni.amusementpark.helper.DriverFacade;
 public class SeleniumTests {
 
 	static {
-		System.setProperty("webdriver.gecko.driver", "/home/bence/Downloads/geckodriver");
+		//System.setProperty("webdriver.gecko.driver", "/home/bence/Downloads/geckodriver");
+		System.setProperty("webdriver.gecko.driver", "C:\\geckodriver\\geckodriver.exe");
 	}
 
 	@LocalServerPort
@@ -42,8 +43,10 @@ public class SeleniumTests {
 		@Override
 		protected void failed(Throwable e, Description description) {
 			try {
-				File f = new File("/home/bence/Documents/kepek/" + description.getMethodName()
-						+ LocalDateTime.now().toString().replace(':', '-') + ".png");
+				//File f = new File("/home/bence/Documents/kepek/" + description.getMethodName()
+					//	+ LocalDateTime.now().toString().replace(':', '-') + ".png");
+				File f = new File("C:\\kepek\\" + description.getMethodName()
+				+ LocalDateTime.now().toString().replace(':', '-') + ".jpg");
 				File a = driverFacade.takeScreenshot();
 
 				FileCopyUtils.copy(a, f);
@@ -64,7 +67,7 @@ public class SeleniumTests {
 	@Before
 	public void setUp() {
 		FirefoxBinary firefoxBinary = new FirefoxBinary();
-		firefoxBinary.addCommandLineOptions("--headless");
+		//firefoxBinary.addCommandLineOptions("--headless");
 		FirefoxOptions firefoxOptions = new FirefoxOptions();
 		firefoxOptions.setBinary(firefoxBinary);
 		driverFacade = new DriverFacade(new FirefoxDriver(firefoxOptions));
@@ -81,10 +84,31 @@ public class SeleniumTests {
 		driverFacade.setAttribute("img", "src", "data:image/jpeg;base64,kep");
 		driverFacade.click("#signUpButton");
 		driverFacade.text("#email", "jeni@gmail.com");
+		driverFacade.visible("#photo").getAttribute("src").equals("data:image/jpeg;base64,kep");
+		driverFacade.notPresent("#amusementParkShowCreateButton");
+		driverFacade.text("#spendingMoney", "250");
+		driverFacade.click("#uploadMoney");
+		driverFacade.write("#money", "2000");
+		driverFacade.click("#upload");
+		driverFacade.click("#closeUpload");
+		driverFacade.hidden(".modal-backdrop");
+		int actMoney =  2250;
+		driverFacade.text("#spendingMoney", Integer.toString(actMoney));
 		driverFacade.click("#amusementParkShowSearchButton");
-		searchAmusementPark("Bence parkja", 20000, 28800, 2000, 2000, 50, 50);
+		searchAmusementPark("Bence's park", 20000, 30000, 2000, 2000, 50, 50);
 		driverFacade.numberOfRowsInTable("#tableBody", 1);
-
+		driverFacade.click("#tableBody td");
+		driverFacade.click("#enterPark");
+		actMoney-=50;
+		driverFacade.text("#spendingMoney",Integer.toString(actMoney));
+		driverFacade.notPresent("#machineShowCreateButton");
+		driverFacade.numberOfRowsInTable("#tableBody", 5);
+		getOnMachine(1);
+		actMoney-=10;
+		driverFacade.text("#spendingMoney",Integer.toString(actMoney));
+		driverFacade.click("#leave");
+		driverFacade.click("#logout");
+		driverFacade.visible("#loginEmail");
 	}
 
 	@Test
@@ -101,35 +125,35 @@ public class SeleniumTests {
 		driverFacade.click("#closeUpload");
 		driverFacade.hidden(".modal-backdrop");
 		driverFacade.text("#spendingMoney", Integer.toString(actMoney));
-		createAmusementParks("Mária parkja", 500, 1000, 200);
-		createAmusementParks("Ferenc parkja", 600, 1000, 200);
-		createAmusementParks("Beni parkja", 1000, 150, 50);
-		createAmusementParks("Ilona parkja", 12000, 100, 150);
-		createAmusementParks("Anita parkja", 14000, 1200, 180);
-		createAmusementParks("János parkja", 1900, 2000, 150);
-		createAmusementParks("Anna parkja", 15000, 1100, 180);
-		createAmusementParks("Bálint parkja", 18000, 1200, 190);
-		createAmusementParks("Erzsébet parkja", 12000, 1300, 200);
-		createAmusementParks("Fanni parkja", 17000, 1100, 50);
-		createAmusementParks("Anita parkja", 16000, 1500, 90);
-		createAmusementParks("Viktor parkja", 14000, 1000, 80);
-		createAmusementParks("Elemér parkja", 13000, 1400, 70);
-		createAmusementParks("Csaba parkja", 12000, 1500, 120);
-		createAmusementParks("Misi parkja", 11000, 1300, 190);
-		createAmusementParks("Dominika parkja", 9000, 1200, 180);
-		createAmusementParks("Ráhel parkja", 8000, 1100, 170);
-		createAmusementParks("Dani parkja", 7000, 1250, 160);
-		createAmusementParks("Balázs parkja", 6000, 1150, 150);
-		createAmusementParks("Éva parkja", 1000, 150, 50);
-		createAmusementParks("Magdolna parkja", 12000, 100, 150);
-		createAmusementParks("Zsolt parkja", 11000, 1200, 180);
-		createAmusementParks("János parkja", 1900, 500, 150);
-		createAmusementParks("Anna parkja", 15000, 1100, 180);
-		createAmusementParks("Bálint parkja", 18000, 1200, 190);
-		createAmusementParks("Erzsébet parkja", 12000, 1300, 200);
-		createAmusementParks("Fanni parkja", 17000, 1100, 50);
-		createAmusementParks("Pétel parkja", 16000, 1500, 90);
-		createAmusementParks("Pál parkja", 14000, 1000, 80);
+		createAmusementParks("Mary's park", 500, 1000, 200);
+		createAmusementParks("Ferenc's park", 600, 1000, 200);
+		createAmusementParks("Beni's park", 1000, 150, 50);
+		createAmusementParks("Ilona's park", 12000, 100, 150);
+		createAmusementParks("Linda's park", 14000, 1200, 180);
+		createAmusementParks("John's park", 1900, 2000, 150);
+		createAmusementParks("Anna's park", 15000, 1100, 180);
+		createAmusementParks("Valentine's park", 18000, 1200, 190);
+		createAmusementParks("Elizabeth's park", 12000, 1300, 200);
+		createAmusementParks("Robert's park", 17000, 1100, 50);
+		createAmusementParks("Barbara's park", 16000, 1500, 90);
+		createAmusementParks("Victor's park", 14000, 1000, 80);
+		createAmusementParks("Jack's park", 13000, 1400, 70);
+		createAmusementParks("Nancy's park", 12000, 1500, 120);
+		createAmusementParks("Charlie's park", 11000, 1300, 190);
+		createAmusementParks("Dominika's park", 9000, 1200, 180);
+		createAmusementParks("Ráchel's park", 8000, 1100, 170);
+		createAmusementParks("Daniel' park", 7000, 1250, 160);
+		createAmusementParks("Thomas's park", 6000, 1150, 150);
+		createAmusementParks("Emma's park", 1000, 150, 50);
+		createAmusementParks("Sophia's park", 12000, 100, 150);
+		createAmusementParks("Alexander's park", 11000, 1200, 180);
+		createAmusementParks("Mason's park", 1900, 500, 150);
+		createAmusementParks("Mia's park", 15000, 1100, 180);
+		createAmusementParks("Jenifer's park", 18000, 1200, 190);
+		createAmusementParks("Jessica's park", 12000, 1300, 200);
+		createAmusementParks("Fanni's park", 17000, 1100, 50);
+		createAmusementParks("Peter's park", 16000, 1500, 90);
+		createAmusementParks("William's park", 14000, 1000, 80);
 		driverFacade.click("#last");
 		driverFacade.text("#numberOfPage", "3/3");
 		driverFacade.click("#first");
@@ -141,7 +165,7 @@ public class SeleniumTests {
 		driverFacade.click("#left");
 		driverFacade.text("#numberOfPage", "2/3");
 		driverFacade.click("#amusementParkShowSearchButton");
-		searchAmusementPark("Anita parkja", 1000, 20000, 150, 1500, 50, 200);
+		searchAmusementPark("Linda parkja", 1000, 20000, 150, 1500, 50, 200);
 		searchAmusementPark("park", 1000, 20000, 150, 1500, 50, 200);
 		driverFacade.text("#numberOfPage", "1/3");
 		searchAmusementPark("park", 1000, 10000, 150, 1500, 50, 100);
@@ -163,7 +187,7 @@ public class SeleniumTests {
 		searchAmusementPark("k", 10000, 20000, 1000, 2000, 100, 200);
 		driverFacade.text("#numberOfPage", "1/1");
 		searchAmusementPark("i", 10000, 20000, 1000, 2000, 100, 200);
-		driverFacade.numberOfRowsInTable("#tableBody", 4);
+		driverFacade.numberOfRowsInTable("#tableBody", 7);
 		searchAmusementPark("park", 2000, 10000, 1200, 2000, 150, 200);
 		driverFacade.numberOfRowsInTable("#tableBody", 2);
 		searchAmusementPark("park", 1000, 8000, 500, 2000, 100, 200);
@@ -174,8 +198,10 @@ public class SeleniumTests {
 		driverFacade.numberOfRowsInTable("#tableBody", 1);
 		searchAmusementPark("r", 1000, 20000, 10, 500, 150, 200);
 		driverFacade.numberOfRowsInTable("#tableBody", 3);
-		searchAmusementPark("á", 1400, 10000, 1400, 2000, 60, 150);
-		driverFacade.numberOfRowsInTable("#tableBody", 1);
+		searchAmusementPark("y", 1400, 10000, 1400, 2000, 60, 150);
+		driverFacade.numberOfRowsInTable("#tableBody", 0);
+		driverFacade.click("#logout");
+		driverFacade.visible("#loginEmail");
 	}
 
 	@Test
@@ -194,47 +220,47 @@ public class SeleniumTests {
 		driverFacade.text("#spendingMoney", Integer.toString(actMoney));
 		driverFacade.click("#tableBody td");
 		driverFacade.click("#enterPark");
-		guestBookWrite("Nagyon jó volt.");
-		guestBookWrite("Nagyon tetszett.");
-		guestBookWrite("Élveztem.");
-		guestBookWrite("Jó volt.");
+		guestBookWrite("It was very good.");
+		guestBookWrite("I really liked.");
+		guestBookWrite("I enjoyed it.");
+		guestBookWrite("It was good.");
 		LocalDateTime min = LocalDateTime.now();
-		guestBookWrite("Tetszett.");
-		guestBookWrite("Izgalmas volt.");
-		guestBookWrite("Tetszett, máskor is jövök.");
-		guestBookWrite("Fantasztikus volt.");
-		guestBookWrite("Érdekes volt.");
-		guestBookWrite("Szép volt.");
-		guestBookWrite("Elment.");
-		guestBookWrite("Tetszett.");
+		guestBookWrite("I liked it.");
+		guestBookWrite("It was exciting.");
+		guestBookWrite("I liked it, I'm going again.");
+		guestBookWrite("It was fantastic.");
+		guestBookWrite("It was interesting.");
+		guestBookWrite("It was nice.");
+		guestBookWrite("It was unbelievable.");
+		guestBookWrite("It was amazing.");
 		LocalDateTime cent = LocalDateTime.now();
-		guestBookWrite("Jó volt.");
-		guestBookWrite("Nem tetszett annyira.");
-		guestBookWrite("Élveztem.");
-		guestBookWrite("Izgalmas volt.");
+		guestBookWrite("It was great.");
+		guestBookWrite("It was super.");
+		guestBookWrite("It was cool.");
+		guestBookWrite("It was a peak.");
 		LocalDateTime max = LocalDateTime.now();
-		guestBookWrite("Nagyon jó volt.");
-		guestBookWrite("Nagyon tetszett.");
-		guestBookWrite("Jó");
+		guestBookWrite("I really enjoyed it, I will sit up again.");
+		guestBookWrite("It was amazing.");
+		guestBookWrite("Good");
 		guestBookWrite("Izgalmas volt.");
 		LocalDateTime max2 = LocalDateTime.now();
-		guestBookWrite("Tetszett, máskor is jövök.");
-		guestBookWrite("Fantasztikus volt.");
-		guestBookWrite("Érdekes volt.");
-		guestBookWrite("Szép volt.");
-		guestBookWrite("Elment.");
-		guestBookWrite("Tetszett.");
+		guestBookWrite("I liked it, I'll come another time.");
+		guestBookWrite("It was very good..");
+		guestBookWrite("It was good.");
+		guestBookWrite("It was interesting.");
+		guestBookWrite("Nice.");
+		guestBookWrite("Liked.");
 		driverFacade.click("#guestBookButton");
 		guestBookSearch(min.toString(), cent.toString(), "", "");
 		driverFacade.numberOfRowsInTable("#guestBookTable", 8);
 		driverFacade.text("#guestBookNumberOfPage", "1/1");
 		guestBookSearch(min.toString(), max.toString(), "", "");
 		driverFacade.numberOfRowsInTable("#guestBookTable", 10);
-		guestBookSearch(min.toString(), max.toString(), "jeni", "");
+		guestBookSearch(min.toString(), max.toString(), "Jenifer", "");
 		driverFacade.numberOfRowsInTable("#guestBookTable", 0);
 		driverFacade.text("#guestBookNumberOfPage", "0/0");
 		guestBookSearch(min.toString(), max.toString(), "", "o");
-		driverFacade.numberOfRowsInTable("#guestBookTable", 7);
+		driverFacade.numberOfRowsInTable("#guestBookTable", 2);
 		guestBookSearch(min.toString(), max2.toString(), "", "");
 		driverFacade.text("#guestBookNumberOfPage", "1/2");
 		driverFacade.click("#guestBookRight");
@@ -268,7 +294,7 @@ public class SeleniumTests {
 		driverFacade.numberOfRowsInTable("#guestBookTable", 0);
 		driverFacade.text("#guestBookNumberOfPage", "0/0");
 		guestBookSearch(min.toString(), max.toString(), "", "o");
-		driverFacade.numberOfRowsInTable("#guestBookTable", 7);
+		driverFacade.numberOfRowsInTable("#guestBookTable", 2);
 		guestBookSearch(min.toString(), max2.toString(), "", "");
 		driverFacade.click("#guestBookRight");
 		driverFacade.text("#guestBookNumberOfPage", "2/2");
@@ -279,6 +305,9 @@ public class SeleniumTests {
 		driverFacade.click("#guestBookFirst");
 		driverFacade.text("#guestBookNumberOfPage", "1/2");
 		driverFacade.click("#amusementParkDetails button");
+		driverFacade.hidden(".modal-backdrop");
+		driverFacade.click("#logout");
+		driverFacade.visible("#loginEmail");
 
 	}
 
@@ -297,7 +326,7 @@ public class SeleniumTests {
 		driverFacade.hidden(".modal-backdrop");
 		driverFacade.text("#spendingMoney", Integer.toString(actMoney));
 		driverFacade.click("#amusementParkShowSearchButton");
-		searchAmusementPark("Bence parkja", 20000, 28800, 2000, 2000, 50, 50);
+		searchAmusementPark("Bence's park", 20000, 30000, 2000, 2000, 50, 50);
 		driverFacade.numberOfRowsInTable("#tableBody", 1);
 		driverFacade.click("#tableBody td");
 		driverFacade.click("#enterPark");
@@ -307,6 +336,8 @@ public class SeleniumTests {
 		getOnMachine(4);
 		getOnMachine(5);
 		driverFacade.click("#headerButton input:nth-child(4)");
+		driverFacade.click("#logout");
+		driverFacade.visible("#loginEmail");
 	}
 
 	@Test
@@ -324,17 +355,17 @@ public class SeleniumTests {
 		driverFacade.click("#closeUpload");
 		driverFacade.hidden(".modal-backdrop");
 		driverFacade.text("#spendingMoney", Integer.toString(actMoney));
-		createAmusementParks("Jeni parkja", 49000, 5000, 100);
+		createAmusementParks("Jenifer's park", 49000, 5000, 100);
 		driverFacade.click("#amusementParkShowSearchButton");
-		searchAmusementPark("Jeni parkja", 40000, 50000, 4000, 5000, 100, 100);
+		searchAmusementPark("Jenifer's park", 40000, 50000, 4000, 5000, 100, 100);
 		driverFacade.numberOfRowsInTable("#tableBody", 1);
 		driverFacade.click("#tableBody td");
 		driverFacade.click("#enterPark");
-		createMachine("Retro körhinta", 100, 250, 10, 12, 10, MachineType.CAROUSEL);
-		createMachine("Mágikus dodgem", 150, 250, 10, 12, 10, MachineType.DODGEM);
-		createMachine("Gokart", 150, 250, 10, 12, 10, MachineType.GOKART);
+		createMachine("Retro carousel", 100, 250, 10, 12, 10, MachineType.CAROUSEL);
+		createMachine("Magic dodgem", 150, 250, 10, 12, 10, MachineType.DODGEM);
+		createMachine("Electronic gokart", 150, 250, 10, 12, 10, MachineType.GOKART);
 		createMachine("Titanic", 150, 250, 10, 12, 10, MachineType.SHIP);
-		createMachine("Hullámvasút", 150, 250, 10, 12, 10, MachineType.ROLLER_COASTER);
+		createMachine("Super roller coaster", 150, 250, 10, 12, 10, MachineType.ROLLER_COASTER);
 		createMachine("Dodgem", 120, 1500, 25, 10, 10, MachineType.DODGEM);
 		createMachine("Magic ship", 100, 1100, 20, 16, 14, MachineType.SHIP);
 		createMachine("Liluom", 90, 1200, 20, 15, 15, MachineType.CAROUSEL);
@@ -406,6 +437,8 @@ public class SeleniumTests {
 		driverFacade.click("#first");
 		driverFacade.text("#numberOfPage", "1/3");
 		driverFacade.click("#headerButton input:nth-child(4)");
+		driverFacade.click("#logout");
+		driverFacade.visible("#loginEmail");
 
 	}
 
@@ -422,6 +455,7 @@ public class SeleniumTests {
 		driverFacade.click("#guestBookSave");
 		driverFacade.click("#guestBookModal button");
 		driverFacade.hidden(".modal-backdrop");
+
 	}
 
 	private void guestBookSearch(String timestampMin, String timestampMax, String visitor, String text) {
