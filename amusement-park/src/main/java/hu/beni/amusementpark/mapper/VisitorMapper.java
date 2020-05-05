@@ -6,7 +6,6 @@ import static hu.beni.amusementpark.factory.LinkFactory.createGetOffMachineLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createGetOnMachineLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createMachineLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createMeLinkWithSelfRel;
-import static hu.beni.amusementpark.factory.LinkFactory.createVisitorEnterParkLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createVisitorLeavePark;
 
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ import hu.beni.amusementpark.dto.resource.VisitorResource;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
+import hu.beni.amusementpark.factory.LinkFactory;
 
 @Component
 @ConditionalOnWebApplication
@@ -61,9 +61,9 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 	private Link[] createLinks(Visitor visitor) {
 		List<Link> links = new ArrayList<>();
 		links.add(createMeLinkWithSelfRel());
+		links.add(LinkFactory.createUploadMoneyLink());
 		AmusementPark amusementPark = visitor.getAmusementPark();
 		if (amusementPark == null) {
-			links.add(createVisitorEnterParkLink(null));
 			links.add(createAmusementParkLink());
 		} else {
 			Long amusementParkId = amusementPark.getId();

@@ -51,13 +51,16 @@ function initHeader(data) {
 	isAdmin = data.authority === "ROLE_ADMIN"
 
 	$("#spendingMoney").html(data.spendingMoney)
+	
+	$("#upload").attr("onclick", "uploadMoney('"+data._links.uploadMoney.href+"')")
+	
 	$("#header").show()
 }
 
-function uploadMoney() {
+function uploadMoney(url) {
 	var money = $("#money").val()
 		$.ajax({
-			url : links.uploadMoney,
+			url : url,
 			method : "POST",
 			contentType : "application/json",
 			data : money,

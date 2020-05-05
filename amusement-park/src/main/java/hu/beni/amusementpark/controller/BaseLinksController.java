@@ -4,7 +4,6 @@ import static hu.beni.amusementpark.factory.LinkFactory.createAmusementParkLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createLoginLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createLogoutLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createMeLink;
-import static hu.beni.amusementpark.factory.LinkFactory.createUploadMoneyLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createVisitorLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createVisitorSignUpLink;
 
@@ -18,7 +17,7 @@ public class BaseLinksController {
 	@GetMapping("/links")
 	public Link[] getBaseLinks() {
 		return new Link[] { createAmusementParkLink(), createVisitorSignUpLink(), createLoginLink(), createLogoutLink(),
-				createMeLink(), createUploadMoneyLink(), createVisitorLink() };
+				createMeLink(), createVisitorLink() };
 	}
 
 }

@@ -28,7 +28,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -93,62 +92,93 @@ public class AmusementParkApplicationTests {
 	}
 
 	@Test
-	public void signUpAndUploadMoneyTest() {
+	public void signUpAndUploadMoneyAndVisitorCanNotCreateParkTest() {
+		VisitorResource inputVisitorResource = ValidResourceFactory.createVisitor();
+
+		VisitorResource responseVisitorResource = signUp(inputVisitorResource);
+
+		assertSignedUpVisitor(inputVisitorResource, responseVisitorResource, 250);
+
+		uploadMoney500(responseVisitorResource.getLink(UPLOAD_MONEY).getHref());
+
+		assertSignedUpVisitor(inputVisitorResource,
+				restTemplate.getForObject(responseVisitorResource.getId().getHref(), VisitorResource.class), 750);
+
+		getAmusementParksWorks();
+
+		postAmusementParksAccessIsDenied();
+
 		logout();
-
-		VisitorResource inputVisitorResource = VisitorResource
-				.builder() //@formatter:off
-				.email("benike@gmail.com")
-				.password("password")
-				.confirmPassword("password")
-				.dateOfBirth(LocalDate.of(1994, 10, 22)).build(); //@formatter:on
-
-		VisitorResource responseVisitorResource = restTemplate.postForObject(links.get(SIGN_UP), inputVisitorResource,
-				VisitorResource.class);
-
-		assertVisitorResource(inputVisitorResource.getEmail(), inputVisitorResource.getDateOfBirth(), 250,
-				responseVisitorResource);
-
-		restTemplate.postForObject(links.get(UPLOAD_MONEY), 500, Void.class);
-
-		assertVisitorResource(inputVisitorResource.getEmail(), inputVisitorResource.getDateOfBirth(), 750,
-				restTemplate.getForObject(links.get(ME), VisitorResource.class));
 	}
 
-	private void assertVisitorResource(String email, LocalDate dateOfBirth, Integer spendingMoney,
-			VisitorResource actualVisitorResource) {
-		assertEquals(email, actualVisitorResource.getEmail());
-		assertEquals(dateOfBirth, actualVisitorResource.getDateOfBirth());
+	private VisitorResource signUp(VisitorResource visitorResource) {
+		return restTemplate.postForObject(links.get(SIGN_UP), visitorResource, VisitorResource.class);
+	}
+
+	private void assertSignedUpVisitor(VisitorResource inputVisitorResource, VisitorResource actualVisitorResource,
+			Integer spendingMoney) {
+		assertEquals(inputVisitorResource.getEmail(), actualVisitorResource.getEmail());
+		assertEquals(inputVisitorResource.getDateOfBirth(), actualVisitorResource.getDateOfBirth());
 		assertEquals(spendingMoney.intValue(), actualVisitorResource.getSpendingMoney().intValue());
 		assertEquals("ROLE_VISITOR", actualVisitorResource.getAuthority());
 		assertNull(actualVisitorResource.getPassword());
 		assertNull(actualVisitorResource.getConfirmPassword());
 		assertEquals(3, actualVisitorResource.getLinks().size());
-		assertNotNull(actualVisitorResource.getId().getHref());
-		assertNotNull(actualVisitorResource.getLink(VISITOR_ENTER_PARK).getHref());
+		assertTrue(actualVisitorResource.getId().getHref().endsWith("/me"));
+		assertNotNull(actualVisitorResource.getLink(UPLOAD_MONEY).getHref());
 		assertNotNull(actualVisitorResource.getLink(AMUSEMENT_PARK).getHref());
+	}
+
+	private void uploadMoney500(String uploadMoneyHref) {
+		restTemplate.postForObject(uploadMoneyHref, 500, Void.class);
+	}
+
+	private void getAmusementParksWorks() {
+		ResponseEntity<PagedResources<AmusementParkResource>> response = getAmusementParks();
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(1, response.getBody().getContent().size());
+	}
+
+	private ResponseEntity<PagedResources<AmusementParkResource>> getAmusementParks() {
+		return restTemplate.exchange(links.get(AMUSEMENT_PARK), HttpMethod.GET, HttpEntity.EMPTY, PAGED_AMUSEMENT_PARK);
+	}
+
+	private void postAmusementParksAccessIsDenied() {
+		assertThrows(() -> restTemplate.postForEntity(links.get(AMUSEMENT_PARK),
+				ValidResourceFactory.createAmusementPark(), Void.class), HttpClientErrorException.class, exception -> {
+					assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
+					assertEquals("Access is denied", exception.getResponseBodyAsString());
+				});
+	}
+
+	private void logout() {
+		ResponseEntity<Void> response = restTemplate.postForEntity(links.get(LOGOUT), null, Void.class);
+
+		assertEquals(HttpStatus.FOUND, response.getStatusCode());
+		assertTrue(response.getHeaders().getLocation().toString().endsWith(Integer.toString(port) + "/"));
 	}
 
 	@Test
 	public void pageTest() {
-		loginAsAdmin("bence@gmail.com", "password");
+		loginAsAdmin();
 
-		ResponseEntity<PagedResources<AmusementParkResource>> response = restTemplate
-				.exchange(links.get(AMUSEMENT_PARK), HttpMethod.GET, HttpEntity.EMPTY, PAGED_AMUSEMENT_PARK);
+		ResponseEntity<PagedResources<AmusementParkResource>> response = getAmusementParks();
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-
 		PagedResources<AmusementParkResource> page = response.getBody();
 		assertEquals(1, page.getLinks().size());
 		assertNotNull(page.getId());
 
 		IntStream.range(0, 11).forEach(i -> postAmusementPark());
 
-		response = restTemplate.exchange(links.get(AMUSEMENT_PARK), HttpMethod.GET, HttpEntity.EMPTY,
-				PAGED_AMUSEMENT_PARK);
+		response = getAmusementParks();
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
 		page = response.getBody();
 		assertEquals(4, page.getLinks().size());
+		assertNotNull(page.getLink("first"));
+		assertNotNull(page.getLink("prev"));
+		assertNotNull(page.getLink("next"));
 		assertNotNull(page.getLink("last"));
 
 		response = restTemplate.exchange(page.getLink("last").getHref(), HttpMethod.GET, HttpEntity.EMPTY,
@@ -172,34 +202,72 @@ public class AmusementParkApplicationTests {
 
 		page = response.getBody();
 		assertEquals(1, page.getLinks().size());
-
 	}
 
-	@Test
-	public void positiveTest() {
-		VisitorResource visitorResource = loginAsAdmin("bence@gmail.com", "password");
+	private VisitorResource loginAsAdmin() {
+		ResponseEntity<VisitorResource> response = restTemplate.postForEntity(links.get(LOGIN),
+				createMap("bence@gmail.com", "password"), VisitorResource.class);
 
-		AmusementParkResource amusementParkResource = postAmusementPark();
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertTrue(response.getHeaders().getFirst("Set-Cookie").contains("JSESSIONID="));
 
-		MachineResource machineResource = addMachine(amusementParkResource.getLink(MACHINE).getHref());
+		VisitorResource visitorResource = response.getBody();
 
-		visitorResource = enterPark(visitorResource.getLink(VISITOR_ENTER_PARK).getHref(),
-				amusementParkResource.getIdentifier());
+		assertNotNull(visitorResource);
+		assertEquals(3, visitorResource.getLinks().size());
+		assertNotNull(visitorResource.getId().getHref());
+		assertNotNull(visitorResource.getLink(VISITOR_ENTER_PARK));
+		assertNotNull(visitorResource.getLink(UPLOAD_MONEY));
 
-		visitorResource = getOnMachine(machineResource.getLink(GET_ON_MACHINE).getHref());
+		assertEquals("bence@gmail.com", visitorResource.getEmail());
+		assertEquals("ROLE_ADMIN", visitorResource.getAuthority());
 
-		visitorResource = getOffMachine(visitorResource.getLink(GET_OFF_MACHINE).getHref());
+		return visitorResource;
+	}
 
-		addRegistry(visitorResource.getLink(ADD_REGISTRY).getHref());
+	private MultiValueMap<String, String> createMap(String username, String password) {
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+		map.add("email", username);
+		map.add("password", password);
+		return map;
+	}
 
-		leavePark(visitorResource.getLink(VISITOR_LEAVE_PARK).getHref());
+	private AmusementParkResource postAmusementPark() {
+		AmusementParkResource amusementParkResource = ValidResourceFactory.createAmusementPark();
 
-		deletePark(amusementParkResource.getId().getHref());
+		ResponseEntity<AmusementParkResource> response = restTemplate.postForEntity(links.get(AMUSEMENT_PARK),
+				amusementParkResource, AmusementParkResource.class);
+
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+
+		AmusementParkResource responseAmusementParkResource = response.getBody();
+
+		assertNotNull(responseAmusementParkResource);
+		assertEquals(4, responseAmusementParkResource.getLinks().size());
+		assertTrue(responseAmusementParkResource.getId().getHref()
+				.endsWith(responseAmusementParkResource.getIdentifier().toString()));
+		assertNotNull(responseAmusementParkResource.getLink(MACHINE));
+		assertNotNull(responseAmusementParkResource.getLink(SIGN_UP));
+		assertNotNull(responseAmusementParkResource.getLink(VISITOR_ENTER_PARK));
+
+		amusementParkResource.setIdentifier(responseAmusementParkResource.getIdentifier());
+		amusementParkResource.add(responseAmusementParkResource.getLinks());
+		assertEquals(amusementParkResource, responseAmusementParkResource);
+
+		return responseAmusementParkResource;
+	}
+
+	private String encode(String input) {
+		try {
+			return URLEncoder.encode(input, StandardCharsets.UTF_8.toString());
+		} catch (UnsupportedEncodingException e) {
+			throw new AmusementParkException("Wrong input!", e);
+		}
 	}
 
 	@Test
 	public void negativeTest() {
-		loginAsAdmin("bence@gmail.com", "password");
+		loginAsAdmin();
 
 		AmusementParkResource invalidAmusementParkResource = ValidResourceFactory.createAmusementPark();
 		invalidAmusementParkResource.setEntranceFee(0);
@@ -231,83 +299,26 @@ public class AmusementParkApplicationTests {
 				HttpClientErrorException.class, teaPotStatusAndMachineTooExpensiveMessage());
 	}
 
-	private VisitorResource loginAsAdmin(String email, String password) {
-		logout();
-		ResponseEntity<VisitorResource> response = restTemplate.postForEntity(links.get(LOGIN),
-				createMap(email, password), VisitorResource.class);
+	@Test
+	public void positiveTest() {
+		VisitorResource visitorResource = loginAsAdmin();
 
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertTrue(response.getHeaders().getFirst("Set-Cookie").contains("JSESSIONID="));
+		AmusementParkResource amusementParkResource = postAmusementPark();
 
-		VisitorResource visitorResource = response.getBody();
+		MachineResource machineResource = addMachine(amusementParkResource.getLink(MACHINE).getHref());
 
-		assertNotNull(visitorResource);
-		assertEquals(3, visitorResource.getLinks().size());
-		assertNotNull(visitorResource.getId().getHref());
-		assertNotNull(visitorResource.getLink(VISITOR_ENTER_PARK));
-		assertNotNull(visitorResource.getLink(AMUSEMENT_PARK));
+		visitorResource = enterPark(visitorResource.getLink(VISITOR_ENTER_PARK).getHref(),
+				amusementParkResource.getIdentifier());
 
-		assertEquals(email, visitorResource.getEmail());
-		assertEquals("ROLE_ADMIN", visitorResource.getAuthority());
+		visitorResource = getOnMachine(machineResource.getLink(GET_ON_MACHINE).getHref());
 
-		return visitorResource;
-	}
+		visitorResource = getOffMachine(visitorResource.getLink(GET_OFF_MACHINE).getHref());
 
-	private MultiValueMap<String, String> createMap(String username, String password) {
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-		map.add("email", username);
-		map.add("password", password);
-		return map;
-	}
+		addRegistry(visitorResource.getLink(ADD_REGISTRY).getHref());
 
-	private void logout() {
-		ResponseEntity<Void> response = restTemplate.postForEntity(links.get(LOGOUT), null, Void.class);
+		leavePark(visitorResource.getLink(VISITOR_LEAVE_PARK).getHref());
 
-		assertEquals(HttpStatus.FOUND, response.getStatusCode());
-		assertTrue(response.getHeaders().getLocation().toString().endsWith(Integer.toString(port) + "/"));
-
-		testRedirectToLoginPage();
-
-		restTemplateFollowsRedirectOnGet();
-	}
-
-	private void testRedirectToLoginPage() {
-		ResponseEntity<Void> response = restTemplate.postForEntity(links.get(AMUSEMENT_PARK), null, Void.class);
-
-		assertEquals(HttpStatus.FOUND, response.getStatusCode());
-		assertTrue(response.getHeaders().getLocation().toString().endsWith(Integer.toString(port) + "/"));
-	}
-
-	private void restTemplateFollowsRedirectOnGet() {
-		ResponseEntity<String> loginPageResponse = restTemplate.getForEntity(links.get(AMUSEMENT_PARK), String.class);
-
-		assertEquals(HttpStatus.OK, loginPageResponse.getStatusCode());
-		assertTrue(loginPageResponse.getBody().length() > 450);
-	}
-
-	private AmusementParkResource postAmusementPark() {
-		AmusementParkResource amusementParkResource = ValidResourceFactory.createAmusementPark();
-
-		ResponseEntity<AmusementParkResource> response = restTemplate.postForEntity(links.get(AMUSEMENT_PARK),
-				amusementParkResource, AmusementParkResource.class);
-
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-
-		AmusementParkResource responseAmusementParkResource = response.getBody();
-
-		assertNotNull(responseAmusementParkResource);
-		assertEquals(4, responseAmusementParkResource.getLinks().size());
-		assertTrue(responseAmusementParkResource.getId().getHref()
-				.endsWith(responseAmusementParkResource.getIdentifier().toString()));
-		assertNotNull(responseAmusementParkResource.getLink(MACHINE));
-		assertNotNull(responseAmusementParkResource.getLink(SIGN_UP));
-		assertNotNull(responseAmusementParkResource.getLink(VISITOR_ENTER_PARK));
-
-		amusementParkResource.setIdentifier(responseAmusementParkResource.getIdentifier());
-		amusementParkResource.add(responseAmusementParkResource.getLinks());
-		assertEquals(amusementParkResource, responseAmusementParkResource);
-
-		return responseAmusementParkResource;
+		deletePark(amusementParkResource.getId().getHref());
 	}
 
 	private MachineResource addMachine(String url) {
@@ -426,13 +437,5 @@ public class AmusementParkApplicationTests {
 			assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
 			assertEquals(MACHINE_IS_TOO_EXPENSIVE, exception.getResponseBodyAsString());
 		};
-	}
-
-	private String encode(String input) {
-		try {
-			return URLEncoder.encode(input, StandardCharsets.UTF_8.toString());
-		} catch (UnsupportedEncodingException e) {
-			throw new AmusementParkException("Wrong input!", e);
-		}
 	}
 }

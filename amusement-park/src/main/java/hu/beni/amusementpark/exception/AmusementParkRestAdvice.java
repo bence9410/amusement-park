@@ -8,6 +8,7 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.validationEr
 import java.util.stream.Stream;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -52,5 +53,11 @@ public class AmusementParkRestAdvice {
 
 	private String convertToMessage(ObjectError objectError) {
 		return validationError(objectError.getDefaultMessage());
+	}
+
+	@ExceptionHandler(AccessDeniedException.class)
+	public String handleAccessDeniedException(AccessDeniedException accessDeniedException) {
+		log.error(ERROR, accessDeniedException);
+		return accessDeniedException.getMessage();
 	}
 }
