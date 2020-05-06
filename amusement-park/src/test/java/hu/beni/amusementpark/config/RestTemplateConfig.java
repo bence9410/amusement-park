@@ -1,6 +1,9 @@
 package hu.beni.amusementpark.config;
 
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
+
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -16,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RestTemplateConfig {
 
 	@Bean
+	@Scope(SCOPE_PROTOTYPE)
 	public RestTemplate restTemplate() {
 		RestTemplate restTemplate = new RestTemplate(
 				new BufferingClientHttpRequestFactory(new HttpComponentsClientHttpRequestFactory()));
