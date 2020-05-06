@@ -66,14 +66,12 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 		assertNotNull(amusementParkId);
 		assertEquals(amusementParkBeforeSave, amusementPark);
 		insert++;
-		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
 	}
 
 	private void saveAll() {
 		amusementParkRepository.saveAll(Arrays.asList(createAmusementPark(), createAmusementPark()));
 		insert += 2;
-		incrementSelectIfOracleDBProfileActive(2);
 		assertStatements();
 	}
 

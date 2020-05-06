@@ -42,7 +42,6 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
 		assertNotNull(amusementParkId);
 		assertEquals(amusementParkBeforeSave, amusementPark);
 		insert++;
-		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
 	}
 

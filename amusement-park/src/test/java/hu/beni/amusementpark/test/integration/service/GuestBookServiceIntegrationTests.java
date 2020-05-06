@@ -53,7 +53,6 @@ public class GuestBookServiceIntegrationTests extends AbstractStatementCounterTe
 				OPINION_ON_THE_PARK);
 		select += 2;
 		insert++;
-		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
 	}
 

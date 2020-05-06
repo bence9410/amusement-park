@@ -69,12 +69,12 @@ public class GuestBookRegistryRepositoryTests extends AbstractStatementCounterTe
 		assertTrue(guestBookRegistry.getDateOfRegistry().isBefore(LocalDateTime.now()));
 		select++;
 		insert++;
-		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
 	}
 
 	private GuestBookRegistry createGuestBookRegistrySetAmusementParkAndVisitor() {
-		return GuestBookRegistry.builder() //@formatter:off
+		return GuestBookRegistry
+				.builder() //@formatter:off
 				.textOfRegistry(OPINION_ON_THE_PARK)
 				.amusementPark(amusementPark)
 				.visitor(visitor).build(); //@formatter:on
@@ -85,7 +85,6 @@ public class GuestBookRegistryRepositoryTests extends AbstractStatementCounterTe
 				createGuestBookRegistrySetAmusementParkAndVisitor()));
 		select++;
 		insert += 2;
-		incrementSelectIfOracleDBProfileActive(2);
 		assertStatements();
 	}
 

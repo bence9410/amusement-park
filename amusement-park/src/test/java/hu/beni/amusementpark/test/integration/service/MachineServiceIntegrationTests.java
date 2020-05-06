@@ -54,7 +54,6 @@ public class MachineServiceIntegrationTests extends AbstractStatementCounterTest
 		select += 2;
 		update++;
 		insert++;
-		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
 	}
 

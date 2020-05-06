@@ -64,7 +64,6 @@ public class MachineRepositoryTests extends AbstractStatementCounterTests {
 		assertNotNull(machine.getId());
 		assertEquals(machineBeforeSave, machine);
 		insert++;
-		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
 	}
 
@@ -77,7 +76,6 @@ public class MachineRepositoryTests extends AbstractStatementCounterTests {
 	private void saveAll() {
 		machineRepository.saveAll(Arrays.asList(createMachineSetAmusementPark(), createMachineSetAmusementPark()));
 		insert += 2;
-		incrementSelectIfOracleDBProfileActive(2);
 		assertStatements();
 	}
 
