@@ -11,7 +11,6 @@ import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -20,7 +19,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -44,11 +42,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -96,33 +89,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return authenticationProvider;
 	}
 
-	@Bean
-	public PersistentTokenRepository persistentTokenRepository(DataSource dataSource) {
-		JdbcTokenRepositoryImpl jdbcTokenRepositoryImpl = new JdbcTokenRepositoryImpl() {
-			protected void initDao() {
-				try {
-					getJdbcTemplate().execute(CREATE_TABLE_SQL);
-				} catch (BadSqlGrammarException e) {
-				}
-			}
-		};
-		jdbcTokenRepositoryImpl.setDataSource(dataSource);
-		return jdbcTokenRepositoryImpl;
-	}
-
-	@Bean
-	public AbstractRememberMeServices rememberMeServices() {
-		AbstractRememberMeServices rememberMeServices = new PersistentTokenBasedRememberMeServices("beni",
-				userDetailsService(null), persistentTokenRepository(null));
-		return rememberMeServices;
-	}
-
 	public UsernamePasswordAuthenticationFilter authenticationFilter() throws Exception {
 		ValidateingUsernamePasswordAuthenticationFilter authenticationFilter = new ValidateingUsernamePasswordAuthenticationFilter();
 		authenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler(null, null));
 		authenticationFilter.setAuthenticationFailureHandler(new BeniAuthenticationFailureHandler());
 		authenticationFilter.setAuthenticationManager(authenticationManagerBean());
-		authenticationFilter.setRememberMeServices(rememberMeServices());
 		return authenticationFilter;
 	}
 
@@ -143,10 +114,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and()
             .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(new RememberMeAuthenticationFilter(
-    				authenticationManagerBean(), rememberMeServices()), UsernamePasswordAuthenticationFilter.class)
             .logout()
-            	.addLogoutHandler(rememberMeServices())
             	.logoutSuccessUrl("/")
                 .and()
             .csrf()
