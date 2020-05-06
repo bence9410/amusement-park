@@ -1,5 +1,7 @@
 package hu.beni.amusementpark.test.ui;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -23,6 +25,9 @@ import org.springframework.util.FileCopyUtils;
 
 import hu.beni.amusementpark.enums.MachineType;
 import hu.beni.amusementpark.helper.DriverFacade;
+import hu.beni.amusementpark.helper.po.AmusementParkPageObject;
+import hu.beni.amusementpark.helper.po.LoginAndSignUpPageObject;
+import hu.beni.amusementpark.helper.po.MachinePageObject;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -76,39 +81,26 @@ public class SeleniumTests {
 	@Test
 	public void signUp() {
 		driverFacade.get("http://localhost:" + port);
-		driverFacade.click("#showSignUpButton");
-		driverFacade.write("#signUpLoginEmail", "jeni@gmail.com");
-		driverFacade.write("#signUpPassword", "password");
-		driverFacade.write("#signUpConfirmPassword", "password");
-		driverFacade.write("#dateOfBirth", "1995-03-01");
-		driverFacade.setAttribute("img", "src", "data:image/jpeg;base64,kep");
-		driverFacade.click("#signUpButton");
-		driverFacade.text("#email", "jeni@gmail.com");
-		driverFacade.visible("#photo").getAttribute("src").equals("data:image/jpeg;base64,kep");
-		driverFacade.notPresent("#amusementParkShowCreateButton");
-		driverFacade.text("#spendingMoney", "250");
-		driverFacade.click("#uploadMoney");
-		driverFacade.write("#money", "2000");
-		driverFacade.click("#upload");
-		driverFacade.click("#closeUpload");
-		driverFacade.hidden(".modal-backdrop");
+		LoginAndSignUpPageObject loginAndSignUpPageObject= new LoginAndSignUpPageObject(driverFacade);
+		AmusementParkPageObject amusementParkPageObject= loginAndSignUpPageObject.signUp("jeni@gmail.com", "password", "1995-03-01", "data:image/jpeg;base64,kep");
+		amusementParkPageObject.amusementParkCreateButtonHidden();
+		amusementParkPageObject.spendingMoneyTest(250);
+		amusementParkPageObject.uploadMoney(2000);
 		int actMoney =  2250;
-		driverFacade.text("#spendingMoney", Integer.toString(actMoney));
-		driverFacade.click("#amusementParkShowSearchButton");
-		searchAmusementPark("Bence's park", 20000, 30000, 2000, 2000, 50, 50);
-		driverFacade.numberOfRowsInTable("#tableBody", 1);
-		driverFacade.click("#tableBody td");
-		driverFacade.click("#enterPark");
+		amusementParkPageObject.spendingMoneyTest(actMoney);
+		amusementParkPageObject.amusementParkSearchButtonClick();
+		amusementParkPageObject.amusementParkSearch("Bence's park", 20000, 30000, 2000, 2000, 50, 50,1);
+		amusementParkPageObject.amusementParkTableBodyFirstClick();
+		MachinePageObject machinePageObject= amusementParkPageObject.enterPark();
+		machinePageObject.machineCreateButtonHidden();
 		actMoney-=50;
-		driverFacade.text("#spendingMoney",Integer.toString(actMoney));
-		driverFacade.notPresent("#machineShowCreateButton");
-		driverFacade.numberOfRowsInTable("#tableBody", 5);
-		getOnMachine(1);
+		amusementParkPageObject.spendingMoneyTest(actMoney); 
+		machinePageObject.machineTableNumberOfRows(5);
+		machinePageObject.getOnAndOffMachine(1);
 		actMoney-=10;
-		driverFacade.text("#spendingMoney",Integer.toString(actMoney));
-		driverFacade.click("#leave");
-		driverFacade.click("#logout");
-		driverFacade.visible("#loginEmail");
+		amusementParkPageObject.spendingMoneyTest(actMoney);
+		machinePageObject.machineLeave();
+		amusementParkPageObject.amusementParkLogout();
 	}
 
 	@Test
