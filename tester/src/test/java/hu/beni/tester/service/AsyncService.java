@@ -70,6 +70,7 @@ public class AsyncService {
 	private final ResourceFactory resourceFactory;
 	private final ApplicationProperties properties;
 	private final Map<String, String> links;
+	private String uploadMoneyUrl;
 
 	public AsyncService(RestTemplate restTemplate, String email, ResourceFactory resourceFactory,
 			ApplicationProperties properties) {
@@ -98,13 +99,14 @@ public class AsyncService {
 	}
 
 	public CompletableFuture<Void> signUp() {
-		restTemplate.postForEntity(links.get(SIGN_UP), resourceFactory.createVisitor(email), Void.class);
+		uploadMoneyUrl = restTemplate
+				.postForObject(links.get(SIGN_UP), resourceFactory.createVisitor(email), VisitorResource.class)
+				.getLink(UPLOAD_MONEY).getHref();
 		return CompletableFuture.completedFuture(null);
 	}
 
 	public CompletableFuture<Void> uploadMoney() {
-		restTemplate.postForEntity(links.get(UPLOAD_MONEY), properties.getData().getVisitor().getSpendingMoney(),
-				Void.class);
+		restTemplate.postForEntity(uploadMoneyUrl, properties.getData().getVisitor().getSpendingMoney(), Void.class);
 		return CompletableFuture.completedFuture(null);
 	}
 
