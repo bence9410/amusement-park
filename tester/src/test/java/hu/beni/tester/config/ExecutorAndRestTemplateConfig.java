@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import hu.beni.tester.properties.ApplicationProperties;
 import lombok.RequiredArgsConstructor;
 
 @EnableAsync
@@ -28,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class ExecutorAndRestTemplateConfig {
 
 	private final ObjectMapper objectMapper;
+	private final ApplicationProperties applicationProperties;
 
 	@PostConstruct
 	public void init() {
@@ -37,8 +39,7 @@ public class ExecutorAndRestTemplateConfig {
 	@Bean
 	public Executor asyncExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(10);
-		executor.setMaxPoolSize(100);
+		executor.setCorePoolSize(applicationProperties.getNumberOf().getVisitors());
 		executor.initialize();
 		return executor;
 	}
