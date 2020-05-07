@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
-import hu.beni.amusementpark.dto.response.AmusementParkPageResponseDto;
+import hu.beni.amusementpark.dto.response.AmusementParkDetailResponseDto;
 import hu.beni.amusementpark.entity.AmusementPark;
 
 public interface AmusementParkService {
@@ -13,10 +13,10 @@ public interface AmusementParkService {
 
 	AmusementPark findById(Long amusementParkId);
 
-	AmusementParkPageResponseDto findDetailById(Long amusementParkId);
+	AmusementParkDetailResponseDto findDetailById(Long amusementParkId);
 
 	void delete(Long amusementParkId);
 
-	Page<AmusementParkPageResponseDto> findAll(AmusementParkSearchRequestDto dto, Pageable pageable);
+	Page<AmusementParkDetailResponseDto> findAll(AmusementParkSearchRequestDto dto, Pageable pageable);
 
 }

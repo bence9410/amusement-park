@@ -23,9 +23,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.AmusementParkKnowVisitor;
@@ -40,8 +39,8 @@ import hu.beni.amusementpark.service.VisitorService;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class VisitorServiceImpl implements VisitorService {
 
 	private final AmusementParkRepository amusementParkRepository;
@@ -65,11 +64,6 @@ public class VisitorServiceImpl implements VisitorService {
 
 	public void uploadMoney(Integer ammount, String visitorEmail) {
 		visitorRepository.incrementSpendingMoneyByEmail(ammount, visitorEmail);
-	}
-
-	@Override
-	public Visitor findOne(String visitorEmail) {
-		return ifNull(visitorRepository.findById(visitorEmail), VISITOR_NOT_SIGNED_UP);
 	}
 
 	@Override

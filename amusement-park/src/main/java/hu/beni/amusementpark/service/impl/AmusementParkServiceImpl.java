@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
-import hu.beni.amusementpark.dto.response.AmusementParkPageResponseDto;
+import hu.beni.amusementpark.dto.response.AmusementParkDetailResponseDto;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
@@ -19,8 +19,8 @@ import hu.beni.amusementpark.service.AmusementParkService;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class AmusementParkServiceImpl implements AmusementParkService {
 
 	private final AmusementParkRepository amusementParkRepository;
@@ -32,7 +32,7 @@ public class AmusementParkServiceImpl implements AmusementParkService {
 	}
 
 	@Override
-	public AmusementParkPageResponseDto findDetailById(Long amusementParkId) {
+	public AmusementParkDetailResponseDto findDetailById(Long amusementParkId) {
 		return ifNull(amusementParkRepository.findDetailById(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
 	}
 
@@ -49,7 +49,7 @@ public class AmusementParkServiceImpl implements AmusementParkService {
 	}
 
 	@Override
-	public Page<AmusementParkPageResponseDto> findAll(AmusementParkSearchRequestDto dto, Pageable pageable) {
+	public Page<AmusementParkDetailResponseDto> findAll(AmusementParkSearchRequestDto dto, Pageable pageable) {
 		return amusementParkRepository.findAll(dto, pageable);
 	}
 }

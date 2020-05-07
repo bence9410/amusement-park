@@ -1,10 +1,12 @@
 package hu.beni.amusementpark.entity;
 
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -29,7 +31,7 @@ public class GuestBookRegistry implements Serializable {
 	private static final long serialVersionUID = 2987327348565883455L;
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
 	@NotNull
@@ -40,11 +42,11 @@ public class GuestBookRegistry implements Serializable {
 	private LocalDateTime dateOfRegistry;
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = LAZY)
 	private Visitor visitor;
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = LAZY)
 	private AmusementPark amusementPark;
 
 	@Tolerate

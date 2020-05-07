@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
 import hu.beni.amusementpark.dto.resource.AmusementParkResource;
-import hu.beni.amusementpark.dto.response.AmusementParkPageResponseDto;
+import hu.beni.amusementpark.dto.response.AmusementParkDetailResponseDto;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.factory.LinkFactory;
 import hu.beni.amusementpark.mapper.AmusementParkMapper;
@@ -46,7 +46,7 @@ public class AmusementParkController {
 	private final ObjectMapper objectMapper;
 	private final AmusementParkService amusementParkService;
 	private final AmusementParkMapper amusementParkMapper;
-	private final PagedResourcesAssembler<AmusementParkPageResponseDto> pagedResourcesAssembler;
+	private final PagedResourcesAssembler<AmusementParkDetailResponseDto> pagedResourcesAssembler;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -71,9 +71,9 @@ public class AmusementParkController {
 	}
 
 	@GetMapping
-	public PagedResources<Resource<AmusementParkPageResponseDto>> findAllPaged(
+	public PagedResources<Resource<AmusementParkDetailResponseDto>> findAllPaged(
 			@RequestParam(required = false) AmusementParkSearchRequestDto input, @PageableDefault Pageable pageable) {
-		PagedResources<Resource<AmusementParkPageResponseDto>> result = pagedResourcesAssembler
+		PagedResources<Resource<AmusementParkDetailResponseDto>> result = pagedResourcesAssembler
 				.toResource(amusementParkService.findAll(input, pageable));
 
 		result.getContent()
@@ -85,8 +85,8 @@ public class AmusementParkController {
 	}
 
 	@GetMapping("/{amusementParkId}")
-	public Resource<AmusementParkPageResponseDto> findOne(@PathVariable Long amusementParkId) {
-		AmusementParkPageResponseDto amusementParkPageResponseDto = amusementParkService
+	public Resource<AmusementParkDetailResponseDto> findOne(@PathVariable Long amusementParkId) {
+		AmusementParkDetailResponseDto amusementParkPageResponseDto = amusementParkService
 				.findDetailById(amusementParkId);
 		return new Resource<>(amusementParkPageResponseDto, LinkFactory.createAmusementParkSelfLink(amusementParkId),
 				LinkFactory.createVisitorEnterParkLink(amusementParkId),

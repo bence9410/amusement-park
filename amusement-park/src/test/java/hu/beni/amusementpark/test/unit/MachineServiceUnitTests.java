@@ -11,12 +11,19 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import hu.beni.amusementpark.dto.request.MachineSearchRequestDto;
+import hu.beni.amusementpark.dto.response.MachineSearchResponseDto;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.exception.AmusementParkException;
@@ -110,18 +117,18 @@ public class MachineServiceUnitTests {
 	}
 
 	@Test
-	public void findOneNegativeNoMachine() {
+	public void findByIdNegativeNoMachine() {
 		Long amusementParkId = 0L;
 		Long machineId = 1L;
 
-		assertThatThrownBy(() -> machineService.findOne(amusementParkId, machineId))
+		assertThatThrownBy(() -> machineService.findById(amusementParkId, machineId))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_MACHINE_IN_PARK_WITH_ID);
 
 		verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
 	}
 
 	@Test
-	public void findOnePositive() {
+	public void findByIdPositive() {
 		Long amusementParkId = 0L;
 		Machine machine = Machine.builder().id(1L).build();
 		Long machineId = machine.getId();
@@ -129,9 +136,24 @@ public class MachineServiceUnitTests {
 		when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
 				.thenReturn(Optional.of(machine));
 
-		assertEquals(machine, machineService.findOne(amusementParkId, machineId));
+		assertEquals(machine, machineService.findById(amusementParkId, machineId));
 
 		verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
+	}
+
+	@Test
+	public void findAllPositive() {
+		Page<MachineSearchResponseDto> page = new PageImpl<>(
+				Arrays.asList(MachineSearchResponseDto.builder().fantasyName("Titanic").build(),
+						MachineSearchResponseDto.builder().fantasyName("Super roller coaster").build()));
+		Pageable pageable = PageRequest.of(0, 10);
+		MachineSearchRequestDto dto = new MachineSearchRequestDto();
+
+		when(machineRepository.findAll(dto, pageable)).thenReturn(page);
+
+		assertEquals(page, machineService.findAll(dto, pageable));
+
+		verify(machineRepository).findAll(dto, pageable);
 	}
 
 }

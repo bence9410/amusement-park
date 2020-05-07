@@ -115,28 +115,6 @@ public class VisitorServiceUnitTests {
 	}
 
 	@Test
-	public void findOneNegativeNotSignedUp() {
-		String visitorEmail = "benike@gmail.com";
-
-		assertThatThrownBy(() -> visitorService.findOne(visitorEmail)).isInstanceOf(AmusementParkException.class)
-				.hasMessage(VISITOR_NOT_SIGNED_UP);
-
-		verify(visitorRepository).findById(visitorEmail);
-	}
-
-	@Test
-	public void findOnePositive() {
-		Visitor visitor = Visitor.builder().email("benike@gmail.com").build();
-		String visitorEmail = visitor.getEmail();
-
-		when(visitorRepository.findById(visitorEmail)).thenReturn(Optional.of(visitor));
-
-		assertEquals(visitor, visitorService.findOne(visitorEmail));
-
-		verify(visitorRepository).findById(visitorEmail);
-	}
-
-	@Test
 	public void enterParkNegativeNoPark() {
 		Long amusementParkId = 0L;
 		String visitorEmail = "benike@gmail.com";

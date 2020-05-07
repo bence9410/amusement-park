@@ -73,7 +73,7 @@ public class LinkFactory {
 	}
 
 	public static Link createMachineSelfLink(Long amusementParkId, Long machineId) {
-		return linkTo(methodOn(machineControllerClass).findOne(amusementParkId, machineId)).withSelfRel();
+		return linkTo(methodOn(machineControllerClass).findById(amusementParkId, machineId)).withSelfRel();
 	}
 
 	public static Link createVisitorSignUpLink() {
@@ -99,7 +99,7 @@ public class LinkFactory {
 	}
 
 	public static Link createGuestBookRegistrySelfLink(Long guestBookRegistryId) {
-		return linkTo(methodOn(guestBookRegistryControllerClass).findOne(guestBookRegistryId)).withSelfRel();
+		return linkTo(methodOn(guestBookRegistryControllerClass).findById(guestBookRegistryId)).withSelfRel();
 	}
 
 	public static Link createAddGuestBookRegistryLink(Long amusementParkId) {

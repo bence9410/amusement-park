@@ -64,8 +64,8 @@ public class GuestBookRegistryController {
 	}
 
 	@GetMapping("guest-book-registries/{guestBookRegistryId}")
-	public GuestBookRegistryResource findOne(@PathVariable Long guestBookRegistryId) {
-		return guestBookRegistryMapper.toResource(guestBookRegistryService.findOne(guestBookRegistryId));
+	public GuestBookRegistryResource findById(@PathVariable Long guestBookRegistryId) {
+		return guestBookRegistryMapper.toResource(guestBookRegistryService.findById(guestBookRegistryId));
 	}
 
 	@GetMapping("/amusement-parks/{amusementParkId}/visitors/guest-book-registries")

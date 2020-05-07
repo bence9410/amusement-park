@@ -1,11 +1,12 @@
 package hu.beni.amusementpark.entity;
 
+import static javax.persistence.FetchType.LAZY;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 
@@ -28,11 +29,11 @@ public class AmusementParkKnowVisitor implements Serializable {
 	private LocalDateTime dateOfFirstEnter;
 
 	@MapsId("amusementParkId")
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = LAZY)
 	private AmusementPark amusementPark;
 
 	@MapsId("visitorEmail")
-	@ManyToOne
+	@ManyToOne(fetch = LAZY)
 	private Visitor visitor;
 
 	public AmusementParkKnowVisitor(AmusementPark amusementPark, Visitor visitor) {

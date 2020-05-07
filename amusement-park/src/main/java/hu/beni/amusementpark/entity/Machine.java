@@ -1,13 +1,15 @@
 package hu.beni.amusementpark.entity;
 
+import static javax.persistence.EnumType.STRING;
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -35,7 +37,7 @@ public class Machine implements Serializable {
 	private static final long serialVersionUID = 7217409529703853878L;
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
 	@NotNull
@@ -64,10 +66,10 @@ public class Machine implements Serializable {
 	private Integer ticketPrice;
 
 	@NotNull
-	@Enumerated(EnumType.STRING)
+	@Enumerated(STRING)
 	private MachineType type;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = LAZY, optional = false)
 	private AmusementPark amusementPark;
 
 	@OneToMany(mappedBy = "machine")

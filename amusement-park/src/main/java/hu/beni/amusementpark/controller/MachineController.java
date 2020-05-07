@@ -70,8 +70,8 @@ public class MachineController {
 	}
 
 	@GetMapping("/{machineId}")
-	public MachineResource findOne(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
-		return machineMapper.toResource(machineService.findOne(amusementParkId, machineId));
+	public MachineResource findById(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
+		return machineMapper.toResource(machineService.findById(amusementParkId, machineId));
 	}
 
 	@GetMapping
@@ -82,7 +82,7 @@ public class MachineController {
 		}
 		input.setAmusementParkId(amusementParkId);
 		PagedResources<Resource<MachineSearchResponseDto>> result = pagedResourceAssembler
-				.toResource(machineService.findAllPaged(input, pageable));
+				.toResource(machineService.findAll(input, pageable));
 		result.getContent()
 				.forEach(r -> r.add(LinkFactory.createGetOnMachineLink(amusementParkId, r.getContent().getId())));
 		return result;

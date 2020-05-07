@@ -136,7 +136,7 @@ public class AmusementParkApplicationTests {
 		ResponseEntity<PagedResources<AmusementParkResource>> response = getAmusementParks();
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertEquals(1, response.getBody().getContent().size());
+		assertEquals(3, response.getBody().getContent().size());
 	}
 
 	private ResponseEntity<PagedResources<AmusementParkResource>> getAmusementParks() {

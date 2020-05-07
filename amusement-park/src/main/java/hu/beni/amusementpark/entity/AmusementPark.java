@@ -1,10 +1,12 @@
 package hu.beni.amusementpark.entity;
 
+import static javax.persistence.CascadeType.REMOVE;
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -30,7 +32,7 @@ public class AmusementPark implements Serializable {
 	private static final long serialVersionUID = -2064262013451563720L;
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
 	@NotNull
@@ -49,16 +51,16 @@ public class AmusementPark implements Serializable {
 	@Range(min = 5, max = 200)
 	private Integer entranceFee;
 
-	@OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "amusementPark", cascade = REMOVE)
 	private List<GuestBookRegistry> guestBookRegistries;
 
-	@OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "amusementPark", cascade = REMOVE)
 	private List<Machine> machines;
 
 	@OneToMany(mappedBy = "amusementPark")
 	private List<Visitor> activeVisitors;
 
-	@OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "amusementPark", cascade = REMOVE)
 	private Set<AmusementParkKnowVisitor> knownVisitors;
 
 	@Tolerate

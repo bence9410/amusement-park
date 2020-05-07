@@ -1,5 +1,8 @@
 package hu.beni.amusementpark.entity;
 
+import static java.lang.Integer.MAX_VALUE;
+import static javax.persistence.FetchType.LAZY;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,7 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -56,16 +58,16 @@ public class Visitor implements Serializable {
 	private LocalDateTime dateOfSignUp;
 
 	@NotNull
-	@Range(min = 0, max = Integer.MAX_VALUE)
+	@Range(min = 0, max = MAX_VALUE)
 	private Integer spendingMoney;
 
 	@Lob
 	private String photo;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = LAZY)
 	private AmusementPark amusementPark;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = LAZY)
 	private Machine machine;
 
 	@OneToMany(mappedBy = "visitor")
