@@ -142,7 +142,7 @@ public class AsyncService {
 
 	public CompletableFuture<Long> createAmusementParksWithMachines() {
 		long start = now();
-		createAmusementParks().map(this::mapToMachineLinkHref).forEach(this::createMachines);
+		createAmusementParks().map(a -> a.getLink(MACHINE).getHref()).forEach(this::createMachines);
 		return CompletableFuture.completedFuture(millisFrom(start));
 	}
 
@@ -150,10 +150,6 @@ public class AsyncService {
 		return IntStream.range(0, properties.getNumberOf().getAmusementParksPerAdmin())
 				.mapToObj(i -> restTemplate.postForObject(links.get(AMUSEMENT_PARK),
 						resourceFactory.createAmusementPark(), AmusementParkResource.class));
-	}
-
-	private String mapToMachineLinkHref(AmusementParkResource amusementParkResource) {
-		return amusementParkResource.getLink(MACHINE).getHref();
 	}
 
 	private void createMachines(String machineUrl) {
