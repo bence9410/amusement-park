@@ -50,7 +50,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 
 	@Test
 	public void leaveParkTest() {
-		assertNull(visitorService.leavePark(10L, inParkVisitorEmail).getAmusementPark());
+		assertNull(visitorService.leavePark(amusementParkId, inParkVisitorEmail).getAmusementPark());
 		select++;
 		update++;
 		assertStatements();

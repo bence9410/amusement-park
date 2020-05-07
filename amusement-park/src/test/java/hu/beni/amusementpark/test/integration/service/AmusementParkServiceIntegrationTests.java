@@ -28,7 +28,7 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
 
 	@Test
 	public void findByIdTest() {
-		assertEquals("test park 10", amusementParkService.findById(amusementParkId).getName());
+		assertEquals("test park 100", amusementParkService.findById(amusementParkId).getName());
 		select++;
 		assertStatements();
 	}
@@ -38,7 +38,7 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
 		AmusementParkDetailResponseDto amusementParkDetailResponseDto = amusementParkService
 				.findDetailById(amusementParkId);
 
-		assertEquals("test park 10", amusementParkDetailResponseDto.getName());
+		assertEquals("test park 100", amusementParkDetailResponseDto.getName());
 		assertEquals(1, amusementParkDetailResponseDto.getNumberOfMachines().intValue());
 		assertEquals(2, amusementParkDetailResponseDto.getNumberOfGuestBookRegistries().intValue());
 		assertEquals(2, amusementParkDetailResponseDto.getNumberOfActiveVisitors().intValue());
@@ -47,9 +47,9 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
 		select++;
 		assertStatements();
 
-		amusementParkDetailResponseDto = amusementParkService.findDetailById(11L);
+		amusementParkDetailResponseDto = amusementParkService.findDetailById(101L);
 
-		assertEquals("test park 11", amusementParkDetailResponseDto.getName());
+		assertEquals("test park 101", amusementParkDetailResponseDto.getName());
 		assertEquals(0, amusementParkDetailResponseDto.getNumberOfMachines().intValue());
 		assertEquals(0, amusementParkDetailResponseDto.getNumberOfGuestBookRegistries().intValue());
 		assertEquals(0, amusementParkDetailResponseDto.getNumberOfActiveVisitors().intValue());
@@ -61,7 +61,7 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
 
 	@Test
 	public void deleteTest() {
-		amusementParkService.delete(11L);
+		amusementParkService.delete(101L);
 		select += 5;
 		delete++;
 		assertStatements();

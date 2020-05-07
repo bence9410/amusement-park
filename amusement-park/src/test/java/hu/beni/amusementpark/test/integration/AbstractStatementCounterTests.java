@@ -28,7 +28,7 @@ public abstract class AbstractStatementCounterTests {
 	@Autowired
 	protected AmusementParkRepository amusementParkRepository;
 
-	protected final Long amusementParkId = 10L;
+	protected final Long amusementParkId = 100L;
 	protected final int amusementParkCapital = 5000;
 	protected final int amusementParkEntranceFee = 200;
 

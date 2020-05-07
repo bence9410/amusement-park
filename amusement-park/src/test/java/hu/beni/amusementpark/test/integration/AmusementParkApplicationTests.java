@@ -210,7 +210,7 @@ public class AmusementParkApplicationTests {
 				createMap("bence@gmail.com", "password"), VisitorResource.class);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertTrue(response.getHeaders().getFirst("Set-Cookie").contains("JSESSIONID="));
+		assertTrue(response.getHeaders().getFirst("Set-Cookie").contains("SESSION="));
 
 		VisitorResource visitorResource = response.getBody();
 
