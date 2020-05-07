@@ -75,7 +75,7 @@ public class VisitorServiceUnitTests {
 		assertThatThrownBy(() -> visitorService.findByEmail(email)).isInstanceOf(AmusementParkException.class)
 				.hasMessage(String.format(COULD_NOT_FIND_USER, email));
 
-		verify(visitorRepository).findByEmail(email);
+		verify(visitorRepository).findById(email);
 	}
 
 	@Test
@@ -83,11 +83,11 @@ public class VisitorServiceUnitTests {
 		Visitor visitor = Visitor.builder().email("nembence1994@gmail.com").build();
 		String email = visitor.getEmail();
 
-		when(visitorRepository.findByEmail(email)).thenReturn(Optional.of(visitor));
+		when(visitorRepository.findById(email)).thenReturn(Optional.of(visitor));
 
 		assertEquals(visitor, visitorService.findByEmail(email));
 
-		verify(visitorRepository).findByEmail(email);
+		verify(visitorRepository).findById(email);
 	}
 
 	@Test

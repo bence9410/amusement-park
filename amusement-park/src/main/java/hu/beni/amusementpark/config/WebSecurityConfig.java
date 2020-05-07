@@ -163,7 +163,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		@Override
 		public UserDetails loadUserByUsername(String email) {
-			Visitor visitor = visitorRepository.findByEmail(email)
+			Visitor visitor = visitorRepository.findById(email)
 					.orElseThrow(() -> new UsernameNotFoundException(String.format(COULD_NOT_FIND_USER, email)));
 			return new User(email, visitor.getPassword(),
 					Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority())));

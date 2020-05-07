@@ -50,7 +50,7 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Override
 	public Visitor findByEmail(String visitorEmail) {
-		return ifNull(visitorRepository.findByEmail(visitorEmail), String.format(COULD_NOT_FIND_USER, visitorEmail));
+		return ifNull(visitorRepository.findById(visitorEmail), String.format(COULD_NOT_FIND_USER, visitorEmail));
 	}
 
 	@Override
