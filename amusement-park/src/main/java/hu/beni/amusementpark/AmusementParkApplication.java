@@ -29,7 +29,7 @@ public class AmusementParkApplication {
 	}
 
 	@Bean
-	@Profile("!performanceTest")
+	@Profile({ "default", "postgres" })
 	public ApplicationRunner applicationRunner(AmusementParkService amusementParkService, MachineService machineService,
 			VisitorService visitorService, GuestBookRegistryService guestBookRegistryService,
 			VisitorRepository visitorRepository) {
