@@ -40,7 +40,7 @@ public class ResourceFactory {
 				.fantasyName("Nagy hajó")
 				.size(100)
 				.price(machine.getPrice())
-				.numberOfSeats(30)
+				.numberOfSeats(50)
 				.minimumRequiredAge(18)
 				.ticketPrice(machine.getTicketPrice())
 				.type("CAROUSEL").build(); //@formatter:on
