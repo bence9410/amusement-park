@@ -35,7 +35,7 @@ public class TransactionLoggerConfig {
 	}
 
 	@Bean
-	@Profile("!performanceTest")
+	@Profile({ "default", "postgres" })
 	public DefaultPointcutAdvisor transactionLoggerAdvisor() {
 		return new DefaultPointcutAdvisor(createPointcut(), createMethodInterceptor());
 	}

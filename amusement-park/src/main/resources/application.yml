@@ -69,4 +69,4 @@ spring:
     properties.hibernate.jdbc.lob.non_contextual_creation: true
   session:
     store-type: jdbc
-logging.level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder: false
