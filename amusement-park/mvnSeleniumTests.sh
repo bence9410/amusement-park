@@ -1,1 +1,1 @@
-mvn failsafe:integration-test
+mvn clean package -DskipTests; mvn failsafe:integration-test

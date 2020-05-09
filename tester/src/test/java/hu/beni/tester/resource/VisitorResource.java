@@ -2,14 +2,14 @@ package hu.beni.tester.resource;
 
 import java.time.LocalDate;
 
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class VisitorResource extends ResourceSupport {
+public class VisitorResource extends RepresentationModel<VisitorResource> {
 
 	private String email;
 

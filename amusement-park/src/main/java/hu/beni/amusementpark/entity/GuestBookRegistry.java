@@ -3,7 +3,6 @@ package hu.beni.amusementpark.entity;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
@@ -26,9 +25,7 @@ import lombok.experimental.Tolerate;
 @Setter
 @Builder
 @EqualsAndHashCode(of = { "id", "textOfRegistry", "dateOfRegistry" })
-public class GuestBookRegistry implements Serializable {
-
-	private static final long serialVersionUID = 2987327348565883455L;
+public class GuestBookRegistry {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)

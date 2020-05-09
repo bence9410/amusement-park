@@ -3,7 +3,6 @@ package hu.beni.amusementpark.entity;
 import static java.lang.Integer.MAX_VALUE;
 import static javax.persistence.FetchType.LAZY;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,9 +32,7 @@ import lombok.experimental.Tolerate;
 @Setter
 @Builder
 @EqualsAndHashCode(of = "email")
-public class Visitor implements Serializable {
-
-	private static final long serialVersionUID = -2955989272392888202L;
+public class Visitor {
 
 	@Id
 	@NotNull

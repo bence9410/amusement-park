@@ -3,7 +3,6 @@ package hu.beni.amusementpark.entity;
 import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -27,9 +26,7 @@ import lombok.experimental.Tolerate;
 @Setter
 @Builder
 @EqualsAndHashCode(of = { "id", "name", "capital", "totalArea", "entranceFee" })
-public class AmusementPark implements Serializable {
-
-	private static final long serialVersionUID = -2064262013451563720L;
+public class AmusementPark {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)

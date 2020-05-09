@@ -1,13 +1,13 @@
 package hu.beni.tester.resource;
 
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class AmusementParkResource extends ResourceSupport {
+public class AmusementParkResource extends RepresentationModel<AmusementParkResource> {
 
 	private Long identifier;
 

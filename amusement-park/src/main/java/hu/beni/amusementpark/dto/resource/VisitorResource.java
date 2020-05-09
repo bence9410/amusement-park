@@ -1,6 +1,5 @@
 package hu.beni.amusementpark.dto.resource;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -11,7 +10,7 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 import hu.beni.amusementpark.constraint.PasswordConfirmPasswordSameConstraint;
 import lombok.Builder;
@@ -23,9 +22,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 @PasswordConfirmPasswordSameConstraint
-public class VisitorResource extends ResourceSupport implements Serializable {
-
-	private static final long serialVersionUID = -426306691990271010L;
+public class VisitorResource extends RepresentationModel<VisitorResource> {
 
 	@NotNull
 	@Email(regexp = "^(.+)@(.+)$")
@@ -50,6 +47,10 @@ public class VisitorResource extends ResourceSupport implements Serializable {
 	private Integer spendingMoney;
 
 	private String photo;
+
+	public VisitorResource() {
+		super();
+	}
 
 	@Builder
 	public VisitorResource(String email, String password, String confirmPassword, String authority,

@@ -21,7 +21,7 @@ public class GuestBookRegistryMapper extends EntityMapper<GuestBookRegistry, Gue
 	}
 
 	@Override
-	public GuestBookRegistryResource toResource(GuestBookRegistry entity) {
+	public GuestBookRegistryResource toModel(GuestBookRegistry entity) {
 		return GuestBookRegistryResource
 				.builder() //@formatter:off
 				.identifier(entity.getId())

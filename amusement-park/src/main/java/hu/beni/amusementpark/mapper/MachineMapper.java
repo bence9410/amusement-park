@@ -22,7 +22,7 @@ public class MachineMapper extends EntityMapper<Machine, MachineResource> {
 	}
 
 	@Override
-	public MachineResource toResource(Machine entity) {
+	public MachineResource toModel(Machine entity) {
 		return MachineResource
 				.builder() //@formatter:off
 				.identifier(entity.getId())

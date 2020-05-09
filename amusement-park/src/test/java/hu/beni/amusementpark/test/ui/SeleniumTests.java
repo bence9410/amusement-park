@@ -25,12 +25,13 @@ import hu.beni.amusementpark.enums.MachineType;
 import hu.beni.amusementpark.helper.DriverFacade;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = "spring.datasource.initialization-mode=NEVER")
 public class SeleniumTests {
 
 	static {
-		//System.setProperty("webdriver.gecko.driver", "/home/bence/Downloads/geckodriver");
-		System.setProperty("webdriver.gecko.driver", "C:\\geckodriver\\geckodriver.exe");
+		System.setProperty("webdriver.gecko.driver", "/home/bence/Downloads/geckodriver");
+		// System.setProperty("webdriver.gecko.driver",
+		// "C:\\geckodriver\\geckodriver.exe");
 	}
 
 	@LocalServerPort
@@ -43,10 +44,10 @@ public class SeleniumTests {
 		@Override
 		protected void failed(Throwable e, Description description) {
 			try {
-				//File f = new File("/home/bence/Documents/kepek/" + description.getMethodName()
-					//	+ LocalDateTime.now().toString().replace(':', '-') + ".png");
-				File f = new File("C:\\kepek\\" + description.getMethodName()
-				+ LocalDateTime.now().toString().replace(':', '-') + ".jpg");
+				File f = new File("/home/bence/Documents/kepek/" + description.getMethodName()
+						+ LocalDateTime.now().toString().replace(':', '-') + ".png");
+				// File f = new File("C:\\kepek\\" + description.getMethodName()
+				// + LocalDateTime.now().toString().replace(':', '-') + ".jpg");
 				File a = driverFacade.takeScreenshot();
 
 				FileCopyUtils.copy(a, f);
@@ -67,7 +68,7 @@ public class SeleniumTests {
 	@Before
 	public void setUp() {
 		FirefoxBinary firefoxBinary = new FirefoxBinary();
-		//firefoxBinary.addCommandLineOptions("--headless");
+		// firefoxBinary.addCommandLineOptions("--headless");
 		FirefoxOptions firefoxOptions = new FirefoxOptions();
 		firefoxOptions.setBinary(firefoxBinary);
 		driverFacade = new DriverFacade(new FirefoxDriver(firefoxOptions));
@@ -92,20 +93,20 @@ public class SeleniumTests {
 		driverFacade.click("#upload");
 		driverFacade.click("#closeUpload");
 		driverFacade.hidden(".modal-backdrop");
-		int actMoney =  2250;
+		int actMoney = 2250;
 		driverFacade.text("#spendingMoney", Integer.toString(actMoney));
 		driverFacade.click("#amusementParkShowSearchButton");
 		searchAmusementPark("Bence's park", 20000, 30000, 2000, 2000, 50, 50);
 		driverFacade.numberOfRowsInTable("#tableBody", 1);
 		driverFacade.click("#tableBody td");
 		driverFacade.click("#enterPark");
-		actMoney-=50;
-		driverFacade.text("#spendingMoney",Integer.toString(actMoney));
+		actMoney -= 50;
+		driverFacade.text("#spendingMoney", Integer.toString(actMoney));
 		driverFacade.notPresent("#machineShowCreateButton");
 		driverFacade.numberOfRowsInTable("#tableBody", 5);
 		getOnMachine(1);
-		actMoney-=10;
-		driverFacade.text("#spendingMoney",Integer.toString(actMoney));
+		actMoney -= 10;
+		driverFacade.text("#spendingMoney", Integer.toString(actMoney));
 		driverFacade.click("#leave");
 		driverFacade.click("#logout");
 		driverFacade.visible("#loginEmail");

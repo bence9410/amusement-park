@@ -11,8 +11,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -66,23 +66,23 @@ public class MachineController {
 	public MachineResource addMachine(@PathVariable Long amusementParkId,
 			@Valid @RequestBody MachineResource machineResource) {
 		return machineMapper
-				.toResource(machineService.addMachine(amusementParkId, machineMapper.toEntity(machineResource)));
+				.toModel(machineService.addMachine(amusementParkId, machineMapper.toEntity(machineResource)));
 	}
 
 	@GetMapping("/{machineId}")
 	public MachineResource findById(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
-		return machineMapper.toResource(machineService.findById(amusementParkId, machineId));
+		return machineMapper.toModel(machineService.findById(amusementParkId, machineId));
 	}
 
 	@GetMapping
-	public PagedResources<Resource<MachineSearchResponseDto>> findAllPaged(@PathVariable Long amusementParkId,
+	public PagedModel<EntityModel<MachineSearchResponseDto>> findAllPaged(@PathVariable Long amusementParkId,
 			@RequestParam(required = false) MachineSearchRequestDto input, @PageableDefault Pageable pageable) {
 		if (input == null) {
 			input = new MachineSearchRequestDto();
 		}
 		input.setAmusementParkId(amusementParkId);
-		PagedResources<Resource<MachineSearchResponseDto>> result = pagedResourceAssembler
-				.toResource(machineService.findAll(input, pageable));
+		PagedModel<EntityModel<MachineSearchResponseDto>> result = pagedResourceAssembler
+				.toModel(machineService.findAll(input, pageable));
 		result.getContent()
 				.forEach(r -> r.add(LinkFactory.createGetOnMachineLink(amusementParkId, r.getContent().getId())));
 		return result;

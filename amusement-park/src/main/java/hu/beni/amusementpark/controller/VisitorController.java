@@ -1,12 +1,12 @@
 package hu.beni.amusementpark.controller;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,14 +37,14 @@ public class VisitorController {
 	@GetMapping("/me")
 	public ResponseEntity<VisitorResource> me(Principal principal) {
 		return Optional.ofNullable(principal).map(Principal::getName).map(visitorService::findByEmail)
-				.map(visitorMapper::toResource).map(ResponseEntity::ok)
+				.map(visitorMapper::toModel).map(ResponseEntity::ok)
 				.orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
 	}
 
 	@PostMapping("/signUp")
 	public VisitorResource signUp(@Valid @RequestBody VisitorResource visitorResource) {
 		VisitorResource responseVisitorResource = visitorMapper
-				.toResource(visitorService.signUp(visitorMapper.toEntity(visitorResource)));
+				.toModel(visitorService.signUp(visitorMapper.toEntity(visitorResource)));
 		SecurityContextHolder.getContext().setAuthentication(
 				new UsernamePasswordAuthenticationToken(visitorResource.getEmail(), visitorResource.getPassword()));
 		return responseVisitorResource;
@@ -57,8 +57,8 @@ public class VisitorController {
 	}
 
 	@GetMapping("/visitors")
-	public List<VisitorResource> findAllVisitor() {
-		List<VisitorResource> resources = visitorMapper.toResources(visitorService.findAllVisitor());
+	public CollectionModel<VisitorResource> findAllVisitor() {
+		CollectionModel<VisitorResource> resources = visitorMapper.toCollectionModel(visitorService.findAllVisitor());
 		resources.forEach(pr -> {
 			pr.removeLinks();
 			pr.add(LinkFactory.createVisitorLinkWithSelfRel(pr.getEmail()));
@@ -69,7 +69,7 @@ public class VisitorController {
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/visitors/{visitorEmail}")
 	public VisitorResource findByEmail(@PathVariable String visitorEmail) {
-		return visitorMapper.toResource(visitorService.findByEmail(visitorEmail));
+		return visitorMapper.toModel(visitorService.findByEmail(visitorEmail));
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
@@ -80,23 +80,23 @@ public class VisitorController {
 
 	@PutMapping("amusement-parks/{amusementParkId}/visitors/enter-park")
 	public VisitorResource enterPark(@PathVariable Long amusementParkId, Principal principal) {
-		return visitorMapper.toResource(visitorService.enterPark(amusementParkId, principal.getName()));
+		return visitorMapper.toModel(visitorService.enterPark(amusementParkId, principal.getName()));
 	}
 
 	@PutMapping("amusement-parks/{amusementParkId}/visitors/leave-park")
 	public VisitorResource leavePark(@PathVariable Long amusementParkId, Principal principal) {
-		return visitorMapper.toResource(visitorService.leavePark(amusementParkId, principal.getName()));
+		return visitorMapper.toModel(visitorService.leavePark(amusementParkId, principal.getName()));
 	}
 
 	@PutMapping("amusement-parks/{amusementParkId}/machines/{machineId}/visitors/get-on-machine")
 	public VisitorResource getOnMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
 			Principal principal) {
-		return visitorMapper.toResource(visitorService.getOnMachine(amusementParkId, machineId, principal.getName()));
+		return visitorMapper.toModel(visitorService.getOnMachine(amusementParkId, machineId, principal.getName()));
 	}
 
 	@PutMapping("amusement-parks/{amusementParkId}/machines/{machineId}/visitors/get-off-machine")
 	public VisitorResource getOffMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
 			Principal principal) {
-		return visitorMapper.toResource(visitorService.getOffMachine(machineId, principal.getName()));
+		return visitorMapper.toModel(visitorService.getOffMachine(machineId, principal.getName()));
 	}
 }

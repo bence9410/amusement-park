@@ -12,11 +12,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
+import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -42,7 +42,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hu.beni.amusementpark.entity.Visitor;
@@ -53,16 +52,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@RequiredArgsConstructor
 @ConditionalOnWebApplication
+@EnableHypermediaSupport(type = HypermediaType.HAL)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final ObjectMapper objectMapper;
-
-	public WebSecurityConfig(@Qualifier("_halObjectMapper") ObjectMapper objectMapper) {
-		objectMapper.setSerializationInclusion(Include.NON_NULL);
-		this.objectMapper = objectMapper;
-	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -131,9 +127,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		@Override
 		public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws IOException, ServletException {
-			response.setHeader(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE);
-			response.getWriter().println(objectMapper.writeValueAsString(
-					visitorMapper.toResource(visitorService.findByEmail(authentication.getName()))));
+			response.setHeader(HttpHeaders.CONTENT_TYPE, "application/hal+json");
+			response.getWriter().println(objectMapper
+					.writeValueAsString(visitorMapper.toModel(visitorService.findByEmail(authentication.getName())))
+					.replace("links\":[", "_links\":").replace("\"rel\":\"self\",", "\"self\":{")
+					.replace("{\"rel\":\"uploadMoney\",", "\"uploadMoney\":{")
+					.replace("{\"rel\":\"amusementPark\",", "\"amusementPark\":{").replace(']', '}'));
 		}
 
 	}

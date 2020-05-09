@@ -1,6 +1,5 @@
 package hu.beni.amusementpark.dto.resource;
 
-import java.io.Serializable;
 import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
@@ -9,7 +8,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Range;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 import hu.beni.amusementpark.constraint.EnumConstraint;
 import hu.beni.amusementpark.enums.MachineType;
@@ -21,9 +20,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class MachineResource extends ResourceSupport implements Serializable {
-
-	private static final long serialVersionUID = 1009869702988779913L;
+public class MachineResource extends RepresentationModel<MachineResource> {
 
 	@Null
 	private Long identifier;

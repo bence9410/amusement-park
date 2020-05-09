@@ -36,7 +36,7 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 	}
 
 	@Override
-	public VisitorResource toResource(Visitor entity) {
+	public VisitorResource toModel(Visitor entity) {
 		return VisitorResource
 				.builder() //@formatter:off
 				.email(entity.getEmail())

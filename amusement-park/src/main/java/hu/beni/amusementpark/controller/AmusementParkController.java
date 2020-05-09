@@ -12,8 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -67,14 +67,14 @@ public class AmusementParkController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public AmusementParkResource save(@Valid @RequestBody AmusementParkResource amusementParkResource) {
 		return amusementParkMapper
-				.toResource(amusementParkService.save(amusementParkMapper.toEntity(amusementParkResource)));
+				.toModel(amusementParkService.save(amusementParkMapper.toEntity(amusementParkResource)));
 	}
 
 	@GetMapping
-	public PagedResources<Resource<AmusementParkDetailResponseDto>> findAllPaged(
+	public PagedModel<EntityModel<AmusementParkDetailResponseDto>> findAllPaged(
 			@RequestParam(required = false) AmusementParkSearchRequestDto input, @PageableDefault Pageable pageable) {
-		PagedResources<Resource<AmusementParkDetailResponseDto>> result = pagedResourcesAssembler
-				.toResource(amusementParkService.findAll(input, pageable));
+		PagedModel<EntityModel<AmusementParkDetailResponseDto>> result = pagedResourcesAssembler
+				.toModel(amusementParkService.findAll(input, pageable));
 
 		result.getContent()
 				.forEach(r -> r.add(new Link[] { LinkFactory.createAmusementParkSelfLink(r.getContent().getId()),
@@ -85,10 +85,10 @@ public class AmusementParkController {
 	}
 
 	@GetMapping("/{amusementParkId}")
-	public Resource<AmusementParkDetailResponseDto> findOne(@PathVariable Long amusementParkId) {
+	public EntityModel<AmusementParkDetailResponseDto> findOne(@PathVariable Long amusementParkId) {
 		AmusementParkDetailResponseDto amusementParkPageResponseDto = amusementParkService
 				.findDetailById(amusementParkId);
-		return new Resource<>(amusementParkPageResponseDto, LinkFactory.createAmusementParkSelfLink(amusementParkId),
+		return new EntityModel<>(amusementParkPageResponseDto, LinkFactory.createAmusementParkSelfLink(amusementParkId),
 				LinkFactory.createVisitorEnterParkLink(amusementParkId),
 				LinkFactory.createAddGuestBookRegistryLink(amusementParkId),
 				LinkFactory.createMachineLink(amusementParkId));

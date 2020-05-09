@@ -1,6 +1,5 @@
 package hu.beni.amusementpark.dto.resource;
 
-import java.io.Serializable;
 import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
@@ -9,7 +8,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Range;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 import lombok.Builder;
 import lombok.Data;
@@ -19,9 +18,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class AmusementParkResource extends ResourceSupport implements Serializable {
-
-	private static final long serialVersionUID = -7411398427560874485L;
+public class AmusementParkResource extends RepresentationModel<AmusementParkResource> {
 
 	@Null
 	private Long identifier;

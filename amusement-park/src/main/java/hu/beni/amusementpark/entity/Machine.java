@@ -4,7 +4,6 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -32,9 +31,7 @@ import lombok.experimental.Tolerate;
 @Builder
 @EqualsAndHashCode(of = { "id", "fantasyName", "size", "price", "numberOfSeats", "minimumRequiredAge", "ticketPrice",
 		"type" })
-public class Machine implements Serializable {
-
-	private static final long serialVersionUID = 7217409529703853878L;
+public class Machine {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
