@@ -151,4 +151,12 @@ public class VisitorServiceImpl implements VisitorService {
 		}
 		visitorRepository.deleteById(visitorEmail);
 	}
+
+	@Override
+	public Visitor getOffMachineAndLeavePark(String visitorEmail) {
+		Visitor visitor = visitorRepository.findById(visitorEmail).get();
+		visitor.setMachine(null);
+		visitor.setAmusementPark(null);
+		return visitor;
+	}
 }

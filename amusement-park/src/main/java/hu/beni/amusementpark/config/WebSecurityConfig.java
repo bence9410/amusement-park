@@ -128,6 +128,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws IOException, ServletException {
 			response.setHeader(HttpHeaders.CONTENT_TYPE, "application/hal+json");
+			visitorService.getOffMachineAndLeavePark(authentication.getName());
 			response.getWriter().println(objectMapper
 					.writeValueAsString(visitorMapper.toModel(visitorService.findByEmail(authentication.getName())))
 					.replace("links\":[", "_links\":").replace("\"rel\":\"self\",", "\"self\":{")

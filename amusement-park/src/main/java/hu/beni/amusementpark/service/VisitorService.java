@@ -24,4 +24,6 @@ public interface VisitorService {
 
 	void delete(String visitorEmail);
 
+	Visitor getOffMachineAndLeavePark(String visitorEmail);
+
 }

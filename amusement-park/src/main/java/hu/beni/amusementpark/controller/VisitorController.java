@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import hu.beni.amusementpark.dto.resource.VisitorResource;
+import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.factory.LinkFactory;
 import hu.beni.amusementpark.mapper.VisitorMapper;
 import hu.beni.amusementpark.service.VisitorService;
@@ -36,8 +37,10 @@ public class VisitorController {
 
 	@GetMapping("/me")
 	public ResponseEntity<VisitorResource> me(Principal principal) {
-		return Optional.ofNullable(principal).map(Principal::getName).map(visitorService::findByEmail)
-				.map(visitorMapper::toModel).map(ResponseEntity::ok)
+		Optional<Visitor> visitor = Optional.ofNullable(principal).map(Principal::getName)
+				.map(visitorService::findByEmail);
+		visitor.ifPresent(v -> visitorService.getOffMachineAndLeavePark(v.getEmail()));
+		return visitor.map(visitorMapper::toModel).map(ResponseEntity::ok)
 				.orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
 	}
 
