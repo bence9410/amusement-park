@@ -470,4 +470,19 @@ public class VisitorServiceUnitTests {
 		verify(visitorRepository).findById(visitorEmail);
 		verify(visitorRepository).deleteById(visitorEmail);
 	}
+
+	@Test
+	public void getOffMachineAndLeaveParkPositive() {
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").amusementPark(AmusementPark.builder().build())
+				.machine(Machine.builder().build()).build();
+		String visitorEmail = visitor.getEmail();
+
+		when(visitorRepository.findById(visitorEmail)).thenReturn(Optional.of(visitor));
+
+		visitorService.getOffMachineAndLeavePark(visitorEmail);
+		assertNull(visitor.getAmusementPark());
+		assertNull(visitor.getMachine());
+
+		verify(visitorRepository).findById(visitorEmail);
+	}
 }
