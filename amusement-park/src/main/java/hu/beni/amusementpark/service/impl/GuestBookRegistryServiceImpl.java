@@ -31,7 +31,7 @@ public class GuestBookRegistryServiceImpl implements GuestBookRegistryService {
 	private final GuestBookRegistryRepository guestBookRegistryRepository;
 
 	@Override
-	public GuestBookRegistry findOne(Long guestBookRegistryId) {
+	public GuestBookRegistry findById(Long guestBookRegistryId) {
 		return ifNull(guestBookRegistryRepository.findById(guestBookRegistryId), NO_GUEST_BOOK_REGISTRY_WITH_ID);
 	}
 

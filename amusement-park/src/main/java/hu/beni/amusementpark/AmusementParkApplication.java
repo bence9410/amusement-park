@@ -29,12 +29,16 @@ public class AmusementParkApplication {
 	}
 
 	@Bean
-	@Profile("default")
+	@Profile({ "default", "postgres" })
 	public ApplicationRunner applicationRunner(AmusementParkService amusementParkService, MachineService machineService,
 			VisitorService visitorService, GuestBookRegistryService guestBookRegistryService,
 			VisitorRepository visitorRepository) {
 		PasswordEncoder encoder = new BCryptPasswordEncoder();
 		return args -> {
+
+			if (visitorRepository.existsById("bence@gmail.com")) {
+				return;
+			}
 
 			Visitor visitor = Visitor
 					.builder() // @formatter:off
@@ -115,7 +119,7 @@ public class AmusementParkApplication {
 	}
 
 	@Bean
-	@Profile({ "oracleDB", "postgres" })
+	@Profile("performanceTest")
 	public ApplicationRunner applicationRunnerOracle(VisitorRepository visitorRepository) {
 		PasswordEncoder encoder = new BCryptPasswordEncoder(); // @formatter:off
 		return args -> IntStream.range(0, 5).forEach(i -> visitorRepository.save(Visitor.builder() 

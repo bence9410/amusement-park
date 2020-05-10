@@ -11,6 +11,7 @@ import static hu.beni.tester.constants.HATEOASLinkRelConstants.GET_ON_MACHINE;
 import static hu.beni.tester.constants.HATEOASLinkRelConstants.LOGIN;
 import static hu.beni.tester.constants.HATEOASLinkRelConstants.LOGOUT;
 import static hu.beni.tester.constants.HATEOASLinkRelConstants.MACHINE;
+import static hu.beni.tester.constants.HATEOASLinkRelConstants.SELF;
 import static hu.beni.tester.constants.HATEOASLinkRelConstants.SIGN_UP;
 import static hu.beni.tester.constants.HATEOASLinkRelConstants.UPLOAD_MONEY;
 import static hu.beni.tester.constants.HATEOASLinkRelConstants.VISITOR;
@@ -29,11 +30,10 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Scope;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.hateoas.ResourceSupport;
-import org.springframework.hateoas.mvc.TypeReferences.PagedResourcesType;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.core.TypeReferences.CollectionModelType;
+import org.springframework.hateoas.server.core.TypeReferences.PagedModelType;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.Async;
@@ -56,13 +56,13 @@ import hu.beni.tester.resource.VisitorResource;
 @Scope(SCOPE_PROTOTYPE)
 public class AsyncService {
 
-	public static final PagedResourcesType<AmusementParkResource> PAGED_ADMUSEMENT_PARK = new PagedResourcesType<AmusementParkResource>() {
+	public static final PagedModelType<AmusementParkResource> PAGED_ADMUSEMENT_PARK = new PagedModelType<AmusementParkResource>() {
 	};
 
-	public static final PagedResourcesType<MachineResource> PAGED_MACHINE = new PagedResourcesType<MachineResource>() {
+	public static final PagedModelType<MachineResource> PAGED_MACHINE = new PagedModelType<MachineResource>() {
 	};
 
-	public static final ParameterizedTypeReference<List<VisitorResource>> LIST_VISITOR = new ParameterizedTypeReference<List<VisitorResource>>() {
+	public static final CollectionModelType<VisitorResource> LIST_VISITOR = new CollectionModelType<VisitorResource>() {
 	};
 
 	private final RestTemplate restTemplate;
@@ -70,6 +70,7 @@ public class AsyncService {
 	private final ResourceFactory resourceFactory;
 	private final ApplicationProperties properties;
 	private final Map<String, String> links;
+	private String uploadMoneyUrl;
 
 	public AsyncService(RestTemplate restTemplate, String email, ResourceFactory resourceFactory,
 			ApplicationProperties properties) {
@@ -82,7 +83,7 @@ public class AsyncService {
 
 	private Map<String, String> getBaseLinks() {
 		return Stream.of(restTemplate.getForObject(LINKS_URL, Link[].class))
-				.collect(toMap(Link::getRel, Link::getHref));
+				.collect(toMap(link -> link.getRel().value(), Link::getHref));
 	}
 
 	public CompletableFuture<Void> login() {
@@ -98,13 +99,14 @@ public class AsyncService {
 	}
 
 	public CompletableFuture<Void> signUp() {
-		restTemplate.postForEntity(links.get(SIGN_UP), resourceFactory.createVisitor(email), Void.class);
+		uploadMoneyUrl = restTemplate
+				.postForObject(links.get(SIGN_UP), resourceFactory.createVisitor(email), VisitorResource.class)
+				.getLink(UPLOAD_MONEY).get().getHref();
 		return CompletableFuture.completedFuture(null);
 	}
 
 	public CompletableFuture<Void> uploadMoney() {
-		restTemplate.postForEntity(links.get(UPLOAD_MONEY), properties.getData().getVisitor().getSpendingMoney(),
-				Void.class);
+		restTemplate.postForEntity(uploadMoneyUrl, properties.getData().getVisitor().getSpendingMoney(), Void.class);
 		return CompletableFuture.completedFuture(null);
 	}
 
@@ -134,13 +136,13 @@ public class AsyncService {
 	private boolean getPageDeleteAllFalseIfNoMore(String url) {
 		Collection<AmusementParkResource> data = restTemplate
 				.exchange(url, HttpMethod.GET, HttpEntity.EMPTY, PAGED_ADMUSEMENT_PARK).getBody().getContent();
-		data.stream().map(ResourceSupport::getId).map(Link::getHref).forEach(restTemplate::delete);
+		data.stream().map(apr -> apr.getLink(SELF).get().getHref()).forEach(restTemplate::delete);
 		return !data.isEmpty();
 	}
 
 	public CompletableFuture<Long> createAmusementParksWithMachines() {
 		long start = now();
-		createAmusementParks().map(this::mapToMachineLinkHref).forEach(this::createMachines);
+		createAmusementParks().map(a -> a.getLink(MACHINE).get().getHref()).forEach(this::createMachines);
 		return CompletableFuture.completedFuture(millisFrom(start));
 	}
 
@@ -148,10 +150,6 @@ public class AsyncService {
 		return IntStream.range(0, properties.getNumberOf().getAmusementParksPerAdmin())
 				.mapToObj(i -> restTemplate.postForObject(links.get(AMUSEMENT_PARK),
 						resourceFactory.createAmusementPark(), AmusementParkResource.class));
-	}
-
-	private String mapToMachineLinkHref(AmusementParkResource amusementParkResource) {
-		return amusementParkResource.getLink(MACHINE).getHref();
 	}
 
 	private void createMachines(String machineUrl) {
@@ -169,9 +167,9 @@ public class AsyncService {
 		Optional<String> nextPageUrl = Optional.of(url);
 		long sum = 0;
 		while (nextPageUrl.isPresent()) {
-			PagedResources<AmusementParkResource> page = restTemplate
+			PagedModel<AmusementParkResource> page = restTemplate
 					.exchange(nextPageUrl.get(), HttpMethod.GET, HttpEntity.EMPTY, PAGED_ADMUSEMENT_PARK).getBody();
-			nextPageUrl = Optional.ofNullable(page.getNextLink()).map(Link::getHref);
+			nextPageUrl = page.getNextLink().map(Link::getHref);
 			sum += page.getContent().stream().mapToInt(AmusementParkResource::getCapital).sum();
 		}
 		return sum;
@@ -189,9 +187,9 @@ public class AsyncService {
 		Optional<String> nextPageUrl = Optional.of(links.get(AMUSEMENT_PARK));
 		while (nextPageUrl.isPresent()) {
 			long tenParkStart = now();
-			PagedResources<AmusementParkResource> page = restTemplate
+			PagedModel<AmusementParkResource> page = restTemplate
 					.exchange(nextPageUrl.get(), HttpMethod.GET, HttpEntity.EMPTY, PAGED_ADMUSEMENT_PARK).getBody();
-			nextPageUrl = Optional.ofNullable(page.getNextLink()).map(Link::getHref);
+			nextPageUrl = page.getNextLink().map(Link::getHref);
 			visitEverythingInParks(page.getContent(), oneParkTimes);
 			tenParkTimes.add(millisFrom(tenParkStart));
 		}
@@ -199,7 +197,7 @@ public class AsyncService {
 
 	private void visitEverythingInParks(Collection<AmusementParkResource> amusementParkResources,
 			List<Long> oneParkTimes) {
-		amusementParkResources.stream().map(apr -> apr.getLink(VISITOR_ENTER_PARK).getHref())
+		amusementParkResources.stream().map(apr -> apr.getLink(VISITOR_ENTER_PARK).get().getHref())
 				.forEach(enterParkUrl -> visitEverythingInAPark(enterParkUrl, oneParkTimes));
 	}
 
@@ -207,39 +205,39 @@ public class AsyncService {
 		long startPark = now();
 		VisitorResource visitorResource = restTemplate
 				.exchange(enterParkUrl, HttpMethod.PUT, HttpEntity.EMPTY, VisitorResource.class).getBody();
-		getMachinesAndGetOnAndOff(visitorResource.getLink(MACHINE).getHref());
+		getMachinesAndGetOnAndOff(visitorResource.getLink(MACHINE).get().getHref());
 		addRegistryAndLeave(visitorResource);
 		oneParkTimes.add(millisFrom(startPark));
 	}
 
 	private void getMachinesAndGetOnAndOff(String machinesUrl) {
 		restTemplate.exchange(machinesUrl, HttpMethod.GET, HttpEntity.EMPTY, PAGED_MACHINE).getBody().getContent()
-				.stream()
-				.forEach(machineResource -> getOnAndOffMachine(machineResource.getLink(GET_ON_MACHINE).getHref()));
+				.stream().forEach(
+						machineResource -> getOnAndOffMachine(machineResource.getLink(GET_ON_MACHINE).get().getHref()));
 	}
 
 	private void getOnAndOffMachine(String getOnMachineUrl) {
 		VisitorResource onMachineVisitor = restTemplate
 				.exchange(getOnMachineUrl, HttpMethod.PUT, HttpEntity.EMPTY, VisitorResource.class).getBody();
-		restTemplate.put(onMachineVisitor.getLink(GET_OFF_MACHINE).getHref(), HttpEntity.EMPTY);
+		restTemplate.put(onMachineVisitor.getLink(GET_OFF_MACHINE).get().getHref(), HttpEntity.EMPTY);
 	}
 
 	private void addRegistryAndLeave(VisitorResource visitorResource) {
-		restTemplate.postForEntity(visitorResource.getLink(ADD_REGISTRY).getHref(), GUEST_BOOK_REGISTRY_TEXT,
+		restTemplate.postForEntity(visitorResource.getLink(ADD_REGISTRY).get().getHref(), GUEST_BOOK_REGISTRY_TEXT,
 				Void.class);
-		restTemplate.put(visitorResource.getLink(VISITOR_LEAVE_PARK).getHref(), HttpEntity.EMPTY);
+		restTemplate.put(visitorResource.getLink(VISITOR_LEAVE_PARK).get().getHref(), HttpEntity.EMPTY);
 	}
 
 	public CompletableFuture<SumAndTime> sumVisitorsSpendingMoney() {
 		long start = now();
 		long sum = restTemplate.exchange(links.get(VISITOR), HttpMethod.GET, HttpEntity.EMPTY, LIST_VISITOR).getBody()
-				.stream().mapToInt(VisitorResource::getSpendingMoney).sum();
+				.getContent().stream().mapToInt(VisitorResource::getSpendingMoney).sum();
 		return CompletableFuture.completedFuture(new SumAndTime(sum, millisFrom(start)));
 	}
 
 	public CompletableFuture<Void> deleteAllVisitor() {
-		restTemplate.exchange(links.get(VISITOR), HttpMethod.GET, HttpEntity.EMPTY, LIST_VISITOR).getBody().stream()
-				.map(ResourceSupport::getId).map(Link::getHref).forEach(restTemplate::delete);
+		restTemplate.exchange(links.get(VISITOR), HttpMethod.GET, HttpEntity.EMPTY, LIST_VISITOR).getBody().getContent()
+				.stream().map(v -> v.getLink(SELF).get().getHref()).forEach(restTemplate::delete);
 		return CompletableFuture.completedFuture(null);
 	}
 

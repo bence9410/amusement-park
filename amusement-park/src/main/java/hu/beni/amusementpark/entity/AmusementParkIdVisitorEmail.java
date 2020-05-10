@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class AmusementParkIdVisitorEmail implements Serializable {
 
-	private static final long serialVersionUID = 8789414110410471281L;
+	private static final long serialVersionUID = 1L;
 
 	private Long amusementParkId;
 

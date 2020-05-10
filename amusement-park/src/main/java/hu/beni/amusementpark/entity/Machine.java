@@ -1,13 +1,14 @@
 package hu.beni.amusementpark.entity;
 
-import java.io.Serializable;
+import static javax.persistence.EnumType.STRING;
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -30,12 +31,10 @@ import lombok.experimental.Tolerate;
 @Builder
 @EqualsAndHashCode(of = { "id", "fantasyName", "size", "price", "numberOfSeats", "minimumRequiredAge", "ticketPrice",
 		"type" })
-public class Machine implements Serializable {
-
-	private static final long serialVersionUID = 7217409529703853878L;
+public class Machine {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
 	@NotNull
@@ -52,7 +51,7 @@ public class Machine implements Serializable {
 	private Integer price;
 
 	@NotNull
-	@Range(min = 5, max = 30)
+	@Range(min = 5, max = 50)
 	private Integer numberOfSeats;
 
 	@NotNull
@@ -64,10 +63,10 @@ public class Machine implements Serializable {
 	private Integer ticketPrice;
 
 	@NotNull
-	@Enumerated(EnumType.STRING)
+	@Enumerated(STRING)
 	private MachineType type;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = LAZY, optional = false)
 	private AmusementPark amusementPark;
 
 	@OneToMany(mappedBy = "machine")

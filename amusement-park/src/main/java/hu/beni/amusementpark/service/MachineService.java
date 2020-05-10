@@ -11,8 +11,8 @@ public interface MachineService {
 
 	Machine addMachine(Long amusementParkId, Machine machine);
 
-	Machine findOne(Long amusementParkId, Long machineId);
+	Machine findById(Long amusementParkId, Long machineId);
 
-	Page<MachineSearchResponseDto> findAllPaged(MachineSearchRequestDto dto, Pageable pageable);
+	Page<MachineSearchResponseDto> findAll(MachineSearchRequestDto dto, Pageable pageable);
 
 }

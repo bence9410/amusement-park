@@ -75,7 +75,7 @@ public class VisitorServiceUnitTests {
 		assertThatThrownBy(() -> visitorService.findByEmail(email)).isInstanceOf(AmusementParkException.class)
 				.hasMessage(String.format(COULD_NOT_FIND_USER, email));
 
-		verify(visitorRepository).findByEmail(email);
+		verify(visitorRepository).findById(email);
 	}
 
 	@Test
@@ -83,11 +83,11 @@ public class VisitorServiceUnitTests {
 		Visitor visitor = Visitor.builder().email("nembence1994@gmail.com").build();
 		String email = visitor.getEmail();
 
-		when(visitorRepository.findByEmail(email)).thenReturn(Optional.of(visitor));
+		when(visitorRepository.findById(email)).thenReturn(Optional.of(visitor));
 
 		assertEquals(visitor, visitorService.findByEmail(email));
 
-		verify(visitorRepository).findByEmail(email);
+		verify(visitorRepository).findById(email);
 	}
 
 	@Test
@@ -112,28 +112,6 @@ public class VisitorServiceUnitTests {
 
 		verify(visitorRepository).countByEmail(visitor.getEmail());
 		verify(visitorRepository).save(visitor);
-	}
-
-	@Test
-	public void findOneNegativeNotSignedUp() {
-		String visitorEmail = "benike@gmail.com";
-
-		assertThatThrownBy(() -> visitorService.findOne(visitorEmail)).isInstanceOf(AmusementParkException.class)
-				.hasMessage(VISITOR_NOT_SIGNED_UP);
-
-		verify(visitorRepository).findById(visitorEmail);
-	}
-
-	@Test
-	public void findOnePositive() {
-		Visitor visitor = Visitor.builder().email("benike@gmail.com").build();
-		String visitorEmail = visitor.getEmail();
-
-		when(visitorRepository.findById(visitorEmail)).thenReturn(Optional.of(visitor));
-
-		assertEquals(visitor, visitorService.findOne(visitorEmail));
-
-		verify(visitorRepository).findById(visitorEmail);
 	}
 
 	@Test
@@ -491,5 +469,20 @@ public class VisitorServiceUnitTests {
 
 		verify(visitorRepository).findById(visitorEmail);
 		verify(visitorRepository).deleteById(visitorEmail);
+	}
+
+	@Test
+	public void getOffMachineAndLeaveParkPositive() {
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").amusementPark(AmusementPark.builder().build())
+				.machine(Machine.builder().build()).build();
+		String visitorEmail = visitor.getEmail();
+
+		when(visitorRepository.findById(visitorEmail)).thenReturn(Optional.of(visitor));
+
+		visitorService.getOffMachineAndLeavePark(visitorEmail);
+		assertNull(visitor.getAmusementPark());
+		assertNull(visitor.getMachine());
+
+		verify(visitorRepository).findById(visitorEmail);
 	}
 }

@@ -23,7 +23,7 @@ public class AmusementParkMapper extends EntityMapper<AmusementPark, AmusementPa
 	}
 
 	@Override
-	public AmusementParkResource toResource(AmusementPark entity) {
+	public AmusementParkResource toModel(AmusementPark entity) {
 		return AmusementParkResource
 				.builder() //@formatter:off
 				.identifier(entity.getId())

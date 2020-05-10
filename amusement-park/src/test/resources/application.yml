@@ -1,0 +1,32 @@
+spring:
+  jmx.enabled: false
+  datasource.platform: h2
+  jpa:
+    open-in-view: false
+    show-sql: true
+    properties.hibernate.format_sql: true
+  session.store-type: jdbc
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  
+---
+
+spring:
+  profiles: postgres
+  jmx.enabled: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/amusement_park
+    username: postgres
+    password: admin
+    platform: postgresql
+    initialization-mode: ALWAYS
+  jpa:
+    open-in-view: false
+    show-sql: true
+    properties.hibernate.format_sql: true
+    hibernate.ddl-auto: create
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties.hibernate.jdbc.lob.non_contextual_creation: true
+  session:
+    store-type: jdbc
+    jdbc.initialize-schema: ALWAYS
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE

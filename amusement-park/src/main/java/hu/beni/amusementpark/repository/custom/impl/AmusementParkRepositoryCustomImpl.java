@@ -17,7 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
-import hu.beni.amusementpark.dto.response.AmusementParkPageResponseDto;
+import hu.beni.amusementpark.dto.response.AmusementParkDetailResponseDto;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.AmusementParkKnowVisitor;
 import hu.beni.amusementpark.entity.AmusementParkKnowVisitor_;
@@ -37,13 +37,13 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
 	private final EntityManager entityManager;
 
 	@Override
-	public Page<AmusementParkPageResponseDto> findAll(AmusementParkSearchRequestDto dto, Pageable pageable) {
+	public Page<AmusementParkDetailResponseDto> findAll(AmusementParkSearchRequestDto dto, Pageable pageable) {
 
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
 		Long count = executeCountQuery(cb, dto);
 
-		List<AmusementParkPageResponseDto> result = executeSearchQuery(cb, dto, pageable);
+		List<AmusementParkDetailResponseDto> result = executeSearchQuery(cb, dto, pageable);
 
 		return new PageImpl<>(result, pageable, count);
 	}
@@ -86,9 +86,9 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
 				.getSingleResult();
 	}
 
-	private List<AmusementParkPageResponseDto> executeSearchQuery(CriteriaBuilder cb, AmusementParkSearchRequestDto dto,
+	private List<AmusementParkDetailResponseDto> executeSearchQuery(CriteriaBuilder cb, AmusementParkSearchRequestDto dto,
 			Pageable pageable) {
-		CriteriaQuery<AmusementParkPageResponseDto> cq = cb.createQuery(AmusementParkPageResponseDto.class);
+		CriteriaQuery<AmusementParkDetailResponseDto> cq = cb.createQuery(AmusementParkDetailResponseDto.class);
 		Root<AmusementPark> root = cq.from(AmusementPark.class);
 
 		Subquery<Long> countMachines = cq.subquery(Long.class);

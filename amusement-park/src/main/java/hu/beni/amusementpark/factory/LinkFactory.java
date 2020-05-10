@@ -13,8 +13,8 @@ import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.UPLOAD_MON
 import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.VISITOR;
 import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
 import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import org.springframework.hateoas.Link;
 
@@ -73,7 +73,7 @@ public class LinkFactory {
 	}
 
 	public static Link createMachineSelfLink(Long amusementParkId, Long machineId) {
-		return linkTo(methodOn(machineControllerClass).findOne(amusementParkId, machineId)).withSelfRel();
+		return linkTo(methodOn(machineControllerClass).findById(amusementParkId, machineId)).withSelfRel();
 	}
 
 	public static Link createVisitorSignUpLink() {
@@ -99,7 +99,7 @@ public class LinkFactory {
 	}
 
 	public static Link createGuestBookRegistrySelfLink(Long guestBookRegistryId) {
-		return linkTo(methodOn(guestBookRegistryControllerClass).findOne(guestBookRegistryId)).withSelfRel();
+		return linkTo(methodOn(guestBookRegistryControllerClass).findById(guestBookRegistryId)).withSelfRel();
 	}
 
 	public static Link createAddGuestBookRegistryLink(Long amusementParkId) {

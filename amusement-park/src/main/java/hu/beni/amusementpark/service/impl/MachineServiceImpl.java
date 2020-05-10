@@ -22,8 +22,8 @@ import hu.beni.amusementpark.service.MachineService;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class MachineServiceImpl implements MachineService {
 
 	private final AmusementParkRepository amusementParkRepository;
@@ -52,13 +52,13 @@ public class MachineServiceImpl implements MachineService {
 	}
 
 	@Override
-	public Machine findOne(Long amusementParkId, Long machineId) {
+	public Machine findById(Long amusementParkId, Long machineId) {
 		return ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId),
 				NO_MACHINE_IN_PARK_WITH_ID);
 	}
 
 	@Override
-	public Page<MachineSearchResponseDto> findAllPaged(MachineSearchRequestDto dto, Pageable pageable) {
+	public Page<MachineSearchResponseDto> findAll(MachineSearchRequestDto dto, Pageable pageable) {
 		return machineRepository.findAll(dto, pageable);
 	}
 

@@ -11,20 +11,17 @@ import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
+import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.RememberMeAuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -44,14 +41,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
-import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hu.beni.amusementpark.entity.Visitor;
@@ -62,21 +52,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@RequiredArgsConstructor
 @ConditionalOnWebApplication
+@EnableHypermediaSupport(type = HypermediaType.HAL)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final ObjectMapper objectMapper;
-
-	public WebSecurityConfig(@Qualifier("_halObjectMapper") ObjectMapper objectMapper) {
-		objectMapper.setSerializationInclusion(Include.NON_NULL);
-		this.objectMapper = objectMapper;
-	}
-
-	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -102,40 +84,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return authenticationProvider;
 	}
 
-	@Bean
-	public PersistentTokenRepository persistentTokenRepository(DataSource dataSource) {
-		JdbcTokenRepositoryImpl jdbcTokenRepositoryImpl = new JdbcTokenRepositoryImpl() {
-			protected void initDao() {
-				try {
-					getJdbcTemplate().execute(CREATE_TABLE_SQL);
-				} catch (BadSqlGrammarException e) {
-				}
-			}
-		};
-		jdbcTokenRepositoryImpl.setDataSource(dataSource);
-		return jdbcTokenRepositoryImpl;
-	}
-
-	@Bean
-	public AbstractRememberMeServices rememberMeServices() {
-		AbstractRememberMeServices rememberMeServices = new PersistentTokenBasedRememberMeServices("beni",
-				userDetailsService(null), persistentTokenRepository(null));
-		return rememberMeServices;
-	}
-
 	public UsernamePasswordAuthenticationFilter authenticationFilter() throws Exception {
 		ValidateingUsernamePasswordAuthenticationFilter authenticationFilter = new ValidateingUsernamePasswordAuthenticationFilter();
 		authenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler(null, null));
 		authenticationFilter.setAuthenticationFailureHandler(new BeniAuthenticationFailureHandler());
 		authenticationFilter.setAuthenticationManager(authenticationManagerBean());
-		authenticationFilter.setRememberMeServices(rememberMeServices());
 		return authenticationFilter;
 	}
 
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(authenticationProvider())
-				.authenticationProvider(new RememberMeAuthenticationProvider("beni"));
+		auth.authenticationProvider(authenticationProvider());
 	}
 
 	@Override
@@ -149,10 +108,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and()
             .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(new RememberMeAuthenticationFilter(
-    				authenticationManagerBean(), rememberMeServices()), UsernamePasswordAuthenticationFilter.class)
             .logout()
-            	.addLogoutHandler(rememberMeServices())
             	.logoutSuccessUrl("/")
                 .and()
             .csrf()
@@ -171,9 +127,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		@Override
 		public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws IOException, ServletException {
-			response.setHeader(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE);
-			response.getWriter().println(objectMapper.writeValueAsString(
-					visitorMapper.toResource(visitorService.findByEmail(authentication.getName()))));
+			response.setHeader(HttpHeaders.CONTENT_TYPE, "application/hal+json");
+			visitorService.getOffMachineAndLeavePark(authentication.getName());
+			response.getWriter().println(objectMapper
+					.writeValueAsString(visitorMapper.toModel(visitorService.findByEmail(authentication.getName())))
+					.replace("links\":[", "_links\":").replace("\"rel\":\"self\",", "\"self\":{")
+					.replace("{\"rel\":\"uploadMoney\",", "\"uploadMoney\":{")
+					.replace("{\"rel\":\"amusementPark\",", "\"amusementPark\":{").replace(']', '}'));
 		}
 
 	}
@@ -203,7 +163,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		@Override
 		public UserDetails loadUserByUsername(String email) {
-			Visitor visitor = visitorRepository.findByEmail(email)
+			Visitor visitor = visitorRepository.findById(email)
 					.orElseThrow(() -> new UsernameNotFoundException(String.format(COULD_NOT_FIND_USER, email)));
 			return new User(email, visitor.getPassword(),
 					Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority())));

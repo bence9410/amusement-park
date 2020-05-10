@@ -1,7 +1,5 @@
 package hu.beni.amusementpark.config;
 
-import static hu.beni.amusementpark.constants.SpringProfileConstants.DEFAULT;
-
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,7 +35,7 @@ public class TransactionLoggerConfig {
 	}
 
 	@Bean
-	@Profile(DEFAULT)
+	@Profile({ "default", "postgres" })
 	public DefaultPointcutAdvisor transactionLoggerAdvisor() {
 		return new DefaultPointcutAdvisor(createPointcut(), createMethodInterceptor());
 	}

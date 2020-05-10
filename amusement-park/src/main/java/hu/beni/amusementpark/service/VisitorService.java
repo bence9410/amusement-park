@@ -12,8 +12,6 @@ public interface VisitorService {
 
 	void uploadMoney(Integer ammount, String visitorEmail);
 
-	Visitor findOne(String visitorEmail);
-
 	Visitor leavePark(Long amusementParkId, String visitorEmail);
 
 	Visitor enterPark(Long amusementParkId, String visitorEmail);
@@ -25,5 +23,7 @@ public interface VisitorService {
 	List<Visitor> findAllVisitor();
 
 	void delete(String visitorEmail);
+
+	Visitor getOffMachineAndLeavePark(String visitorEmail);
 
 }

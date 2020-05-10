@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class AmusementParkPageResponseDto {
+public class AmusementParkDetailResponseDto {
 
 	private Long id;
 

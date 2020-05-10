@@ -4,6 +4,7 @@ public class HATEOASLinkRelConstants {
 
 	public static final String LOGIN = "login";
 	public static final String LOGOUT = "logout";
+	public static final String SELF = "self";
 	public static final String ME = "me";
 	public static final String UPLOAD_MONEY = "uploadMoney";
 	public static final String SIGN_UP = "signUp";

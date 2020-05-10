@@ -10,8 +10,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -60,22 +60,22 @@ public class GuestBookRegistryController {
 	public GuestBookRegistryResource addRegistry(@PathVariable Long amusementParkId, @RequestBody String textOfRegistry,
 			Principal principal) {
 		return guestBookRegistryMapper
-				.toResource(guestBookRegistryService.addRegistry(amusementParkId, principal.getName(), textOfRegistry));
+				.toModel(guestBookRegistryService.addRegistry(amusementParkId, principal.getName(), textOfRegistry));
 	}
 
 	@GetMapping("guest-book-registries/{guestBookRegistryId}")
-	public GuestBookRegistryResource findOne(@PathVariable Long guestBookRegistryId) {
-		return guestBookRegistryMapper.toResource(guestBookRegistryService.findOne(guestBookRegistryId));
+	public GuestBookRegistryResource findById(@PathVariable Long guestBookRegistryId) {
+		return guestBookRegistryMapper.toModel(guestBookRegistryService.findById(guestBookRegistryId));
 	}
 
 	@GetMapping("/amusement-parks/{amusementParkId}/visitors/guest-book-registries")
-	public PagedResources<Resource<GuestBookRegistrySearchResponseDto>> findAllPaged(@PathVariable Long amusementParkId,
+	public PagedModel<EntityModel<GuestBookRegistrySearchResponseDto>> findAllPaged(@PathVariable Long amusementParkId,
 			@RequestParam(required = false) GuestBookRegistrySearchRequestDto input,
 			@PageableDefault Pageable pageable) {
 		if (input == null) {
 			input = new GuestBookRegistrySearchRequestDto();
 		}
 		input.setAmusementParkId(amusementParkId);
-		return pagedResourceAssembler.toResource(guestBookRegistryService.findAll(input, pageable));
+		return pagedResourceAssembler.toModel(guestBookRegistryService.findAll(input, pageable));
 	}
 }

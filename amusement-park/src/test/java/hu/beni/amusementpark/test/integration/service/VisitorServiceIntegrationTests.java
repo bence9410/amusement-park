@@ -1,28 +1,17 @@
 package hu.beni.amusementpark.test.integration.service;
 
-import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementPark;
-import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
-import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 
-import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
-import hu.beni.amusementpark.repository.AmusementParkRepository;
-import hu.beni.amusementpark.repository.MachineRepository;
+import hu.beni.amusementpark.helper.ValidEntityFactory;
 import hu.beni.amusementpark.service.VisitorService;
 import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
 
@@ -31,135 +20,89 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 	@Autowired
 	private VisitorService visitorService;
 
-	@Autowired
-	private AmusementParkRepository amusementParkRepository;
-
-	@Autowired
-	private MachineRepository machineRepository;
-
-	private AmusementPark amusementPark;
-	private Long amusementParkId;
-
-	private Machine machine;
-	private Long machineId;
-
-	private Visitor visitor;
-	private String visitorEmail;
-
-	@Before
-	public void setUp() {
-		amusementPark = amusementParkRepository.save(createAmusementPark());
-		amusementParkId = amusementPark.getId();
-		machine = createMachine();
-		machine.setAmusementPark(amusementPark);
-		machine = machineRepository.save(machine);
-		machineId = machine.getId();
-		reset();
+	@Test
+	public void findByEmailTest() {
+		assertEquals(testVisitorEmail, visitorService.findByEmail(testVisitorEmail).getEmail());
+		select++;
+		assertStatements();
 	}
 
 	@Test
-	public void test() {
-		signUp();
-
-		findByEmail();
-
-		findOne();
-
-		findAllVisitors();
-
-		enterPark();
-
-		getOnMachine();
-
-		getOffMachine();
-
-		leavePark();
-
-		assertSpendingMoneyChangedCorrectly();
-	}
-
-	private void signUp() {
-		Visitor visitorBeforeSignUp = createVisitor();
-		visitor = visitorService.signUp(visitorBeforeSignUp);
-		visitorEmail = visitor.getEmail();
-		assertEquals(visitorBeforeSignUp, visitor);
-		assertTrue(visitor.getDateOfSignUp().isBefore(LocalDateTime.now()));
-		insert++;
+	public void signUpTest() {
+		Visitor visitor = visitorService.signUp(ValidEntityFactory.createVisitor());
+		assertEquals("ROLE_VISITOR", visitor.getAuthority());
+		assertEquals(250, visitor.getSpendingMoney().intValue());
 		select += 2;
-		assertStatements();
-	}
-
-	private void findByEmail() {
-		assertEquals(visitor.getSpendingMoney(), visitorService.findByEmail(visitor.getEmail()).getSpendingMoney());
-		select++;
-		assertStatements();
-	}
-
-	private void findOne() {
-		assertEquals(visitor, visitorService.findOne(visitorEmail));
-		select++;
-		assertStatements();
-	}
-
-	private void findAllVisitors() {
-		assertTrue(visitorService.findAllVisitor().contains(visitor));
-		select++;
-		assertStatements();
-	}
-
-	private void enterPark() {
-		Visitor inParkVisitor = visitorService.enterPark(amusementParkId, visitorEmail);
-		assertEquals(visitor.getSpendingMoney() - amusementPark.getEntranceFee(),
-				inParkVisitor.getSpendingMoney().longValue());
-		assertEquals(amusementParkId, inParkVisitor.getAmusementPark().getId());
-		select += 4;
-		update += 2;
 		insert++;
 		assertStatements();
-		assertEquals(amusementPark.getCapital() + amusementPark.getEntranceFee(),
-				amusementParkRepository.findById(amusementParkId).get().getCapital().longValue());
+	}
+
+	@Test
+	public void uploadMoneyTest() {
+		visitorService.uploadMoney(500, testVisitorEmail);
+		update++;
+		assertStatements();
+
+		assertEquals(1500, visitorService.findByEmail(testVisitorEmail).getSpendingMoney().intValue());
 		select++;
 		assertStatements();
 	}
 
-	private void getOnMachine() {
-		SecurityContextHolder.getContext().setAuthentication(
-				new UsernamePasswordAuthenticationToken(new User(visitor.getEmail(), visitor.getPassword(),
-						Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority()))), null));
-		Visitor onMachineVisitor = visitorService.getOnMachine(amusementParkId, machineId, visitorEmail);
-		assertEquals(visitor.getSpendingMoney() - amusementPark.getEntranceFee() - machine.getTicketPrice(),
-				onMachineVisitor.getSpendingMoney().longValue());
-		assertEquals(machineId, onMachineVisitor.getMachine().getId());
+	@Test
+	public void leaveParkTest() {
+		assertNull(visitorService.leavePark(amusementParkId, inParkVisitorEmail).getAmusementPark());
+		select++;
+		update++;
+		assertStatements();
+	}
+
+	@Test
+	public void enterParkTest() {
+		assertNotNull(visitorService.enterPark(amusementParkId, testVisitorEmail).getAmusementPark());
+		select += 4;
+		insert++;
+		update += 2;
+		assertStatements();
+
+		assertEquals(5000 + 200, amusementParkRepository.findById(amusementParkId).get().getCapital().intValue());
+		assertEquals(1000 - 200, visitorService.findByEmail(testVisitorEmail).getSpendingMoney().intValue());
+	}
+
+	@Test
+	public void getOnMachineTest() {
+		assertNotNull(visitorService.getOnMachine(amusementParkId, machineId, inParkVisitorEmail));
 		select += 3;
 		update += 2;
 		assertStatements();
-		assertEquals(amusementPark.getCapital() + amusementPark.getEntranceFee() + machine.getTicketPrice(),
-				amusementParkRepository.findById(amusementParkId).get().getCapital().longValue());
-		select++;
-		assertStatements();
+
+		assertEquals(amusementParkCapital + machineTicketPrice,
+				amusementParkRepository.findById(amusementParkId).get().getCapital().intValue());
+		assertEquals(visitorSpendingMoney - machineTicketPrice,
+				visitorService.findByEmail(inParkVisitorEmail).getSpendingMoney().intValue());
 	}
 
-	private void getOffMachine() {
-		Visitor offMachineVisitor = visitorService.getOffMachine(machineId, visitorEmail);
-		assertNull(offMachineVisitor.getMachine());
-		select++;
-		update++;
-		assertStatements();
-	}
-
-	private void leavePark() {
-		Visitor leftParkVisitor = visitorService.leavePark(amusementParkId, visitorEmail);
-		assertNull(leftParkVisitor.getAmusementPark());
+	@Test
+	public void getOffMachine() {
+		assertNull(visitorService.getOffMachine(machineId, "onMachine@gmail.com").getMachine());
 		select++;
 		update++;
 		assertStatements();
 	}
 
-	private void assertSpendingMoneyChangedCorrectly() {
-		assertEquals(visitor.getSpendingMoney() - amusementPark.getEntranceFee() - machine.getTicketPrice(),
-				visitorService.findOne(visitorEmail).getSpendingMoney().longValue());
+	@Test
+	public void findAllVisitorTest() {
+		List<Visitor> visitors = visitorService.findAllVisitor();
+		assertEquals(3, visitors.size());
+		assertFalse(visitors.stream().anyMatch(v -> v.getAuthority().equals("ROLE_ADMIN")));
 		select++;
 		assertStatements();
 	}
 
+	@Test
+	public void deleteTest() {
+		visitorService.delete(testVisitorEmail);
+		select++;
+		delete++;
+		assertStatements();
+	}
 }

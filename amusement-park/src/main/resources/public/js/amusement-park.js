@@ -72,7 +72,7 @@ function getAmusementParks(url) {
 function amusementParkFillTable(data) {
 	if (data._embedded !== undefined) {
 		var tableBody = []
-		var array = data._embedded.amusementParkPageResponseDtoList
+		var array = data._embedded.amusementParkDetailResponseDtoList
 		for (var i = 0; i < array.length; i++) {
 			var amusementPark = array[i]
 			var tr = []

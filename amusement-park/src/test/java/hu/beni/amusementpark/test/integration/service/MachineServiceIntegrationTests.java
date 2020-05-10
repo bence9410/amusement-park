@@ -1,19 +1,17 @@
 package hu.beni.amusementpark.test.integration.service;
 
-import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementPark;
-import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
-import hu.beni.amusementpark.entity.AmusementPark;
+import hu.beni.amusementpark.dto.request.MachineSearchRequestDto;
+import hu.beni.amusementpark.dto.response.MachineSearchResponseDto;
 import hu.beni.amusementpark.entity.Machine;
-import hu.beni.amusementpark.repository.AmusementParkRepository;
+import hu.beni.amusementpark.helper.ValidEntityFactory;
 import hu.beni.amusementpark.service.MachineService;
 import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
 
@@ -22,52 +20,38 @@ public class MachineServiceIntegrationTests extends AbstractStatementCounterTest
 	@Autowired
 	private MachineService machineService;
 
-	@Autowired
-	private AmusementParkRepository amusementParkRepository;
-
-	private AmusementPark amusementPark;
-	private Long amusementParkId;
-
-	private Machine machine;
-	private List<Long> machineIds = new ArrayList<>();
-
-	@Before
-	public void setUp() {
-		amusementPark = amusementParkRepository.save(createAmusementPark());
-		amusementParkId = amusementPark.getId();
-		reset();
-	}
-
 	@Test
-	public void test() {
-		addMachine();
-		addMachine();
-
-		assertCapitalDecreased();
-
-		findOne();
-	}
-
-	private void addMachine() {
-		machine = machineService.addMachine(amusementParkId, createMachine());
-		machineIds.add(machine.getId());
+	public void addMachineTest() {
+		Machine machine = machineService.addMachine(amusementParkId, ValidEntityFactory.createMachine());
+		assertNotNull(machine.getId());
+		assertNotNull(machine.getAmusementPark());
+		assertEquals(amusementParkId.longValue(), machine.getAmusementPark().getId().longValue());
 		select += 2;
 		update++;
 		insert++;
-		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
+
+		assertEquals(amusementParkCapital - machine.getPrice(),
+				amusementParkRepository.findById(amusementParkId).get().getCapital().intValue());
 	}
 
-	private void assertCapitalDecreased() {
-		assertEquals(amusementPark.getCapital() - machine.getPrice() * 2,
-				amusementParkRepository.findById(amusementParkId).get().getCapital().longValue());
+	@Test
+	public void findByIdTest() {
+		assertEquals("Titanic", machineService.findById(amusementParkId, machineId).getFantasyName());
 		select++;
 		assertStatements();
 	}
 
-	private void findOne() {
-		assertEquals(machine, machineService.findOne(amusementParkId, machine.getId()));
-		select++;
+	@Test
+	public void findAllTest() {
+		MachineSearchRequestDto dto = new MachineSearchRequestDto();
+		dto.setFantasyName("tani");
+
+		Page<MachineSearchResponseDto> page = machineService.findAll(dto, PageRequest.of(0, 10));
+
+		assertEquals(2, page.getTotalElements());
+
+		select += 2;
 		assertStatements();
 	}
 

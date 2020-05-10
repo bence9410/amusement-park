@@ -1,11 +1,10 @@
 package hu.beni.amusementpark.dto.resource;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.RepresentationModel;
 
 import lombok.Builder;
 import lombok.Data;
@@ -15,9 +14,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class GuestBookRegistryResource extends ResourceSupport implements Serializable {
-
-	private static final long serialVersionUID = -5588641314911131702L;
+public class GuestBookRegistryResource extends RepresentationModel<GuestBookRegistryResource> {
 
 	private Long identifier;
 

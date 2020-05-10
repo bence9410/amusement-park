@@ -51,23 +51,23 @@ public class GuestBookServiceUnitTests {
 	}
 
 	@Test
-	public void findOneNegativeNoGuestBook() {
+	public void findByIdNegativeNoGuestBook() {
 		Long guestBookRegistryId = 0L;
 
-		assertThatThrownBy(() -> guestBookService.findOne(guestBookRegistryId))
+		assertThatThrownBy(() -> guestBookService.findById(guestBookRegistryId))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_GUEST_BOOK_REGISTRY_WITH_ID);
 
 		verify(guestBookRegistryRepository).findById(guestBookRegistryId);
 	}
 
 	@Test
-	public void findOnePositive() {
+	public void findByIdPositive() {
 		GuestBookRegistry guestBookRegistry = GuestBookRegistry.builder().id(0L).build();
 		Long guestBookRegistryId = guestBookRegistry.getId();
 
 		when(guestBookRegistryRepository.findById(guestBookRegistryId)).thenReturn(Optional.of(guestBookRegistry));
 
-		assertEquals(guestBookRegistry, guestBookService.findOne(guestBookRegistryId));
+		assertEquals(guestBookRegistry, guestBookService.findById(guestBookRegistryId));
 
 		verify(guestBookRegistryRepository).findById(guestBookRegistryId);
 	}

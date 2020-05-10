@@ -23,9 +23,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.AmusementParkKnowVisitor;
@@ -40,8 +39,8 @@ import hu.beni.amusementpark.service.VisitorService;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class VisitorServiceImpl implements VisitorService {
 
 	private final AmusementParkRepository amusementParkRepository;
@@ -51,7 +50,7 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Override
 	public Visitor findByEmail(String visitorEmail) {
-		return ifNull(visitorRepository.findByEmail(visitorEmail), String.format(COULD_NOT_FIND_USER, visitorEmail));
+		return ifNull(visitorRepository.findById(visitorEmail), String.format(COULD_NOT_FIND_USER, visitorEmail));
 	}
 
 	@Override
@@ -65,11 +64,6 @@ public class VisitorServiceImpl implements VisitorService {
 
 	public void uploadMoney(Integer ammount, String visitorEmail) {
 		visitorRepository.incrementSpendingMoneyByEmail(ammount, visitorEmail);
-	}
-
-	@Override
-	public Visitor findOne(String visitorEmail) {
-		return ifNull(visitorRepository.findById(visitorEmail), VISITOR_NOT_SIGNED_UP);
 	}
 
 	@Override
@@ -156,5 +150,13 @@ public class VisitorServiceImpl implements VisitorService {
 			throw new AmusementParkException(CAN_NOT_DELETE_ADMIN);
 		}
 		visitorRepository.deleteById(visitorEmail);
+	}
+
+	@Override
+	public Visitor getOffMachineAndLeavePark(String visitorEmail) {
+		Visitor visitor = visitorRepository.findById(visitorEmail).get();
+		visitor.setMachine(null);
+		visitor.setAmusementPark(null);
+		return visitor;
 	}
 }

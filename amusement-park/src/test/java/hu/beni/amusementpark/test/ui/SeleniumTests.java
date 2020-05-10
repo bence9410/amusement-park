@@ -30,12 +30,13 @@ import hu.beni.amusementpark.helper.po.LoginAndSignUpPageObject;
 import hu.beni.amusementpark.helper.po.MachinePageObject;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = "spring.datasource.initialization-mode=NEVER")
 public class SeleniumTests {
 
 	static {
-		//System.setProperty("webdriver.gecko.driver", "/home/bence/Downloads/geckodriver");
-		System.setProperty("webdriver.gecko.driver", "C:\\geckodriver\\geckodriver.exe");
+		System.setProperty("webdriver.gecko.driver", "/home/bence/Downloads/geckodriver");
+		// System.setProperty("webdriver.gecko.driver",
+		// "C:\\geckodriver\\geckodriver.exe");
 	}
 
 	@LocalServerPort
@@ -48,10 +49,10 @@ public class SeleniumTests {
 		@Override
 		protected void failed(Throwable e, Description description) {
 			try {
-				//File f = new File("/home/bence/Documents/kepek/" + description.getMethodName()
-					//	+ LocalDateTime.now().toString().replace(':', '-') + ".png");
-				File f = new File("C:\\kepek\\" + description.getMethodName()
-				+ LocalDateTime.now().toString().replace(':', '-') + ".jpg");
+				File f = new File("/home/bence/Documents/kepek/" + description.getMethodName()
+						+ LocalDateTime.now().toString().replace(':', '-') + ".png");
+				// File f = new File("C:\\kepek\\" + description.getMethodName()
+				// + LocalDateTime.now().toString().replace(':', '-') + ".jpg");
 				File a = driverFacade.takeScreenshot();
 
 				FileCopyUtils.copy(a, f);
@@ -72,7 +73,7 @@ public class SeleniumTests {
 	@Before
 	public void setUp() {
 		FirefoxBinary firefoxBinary = new FirefoxBinary();
-		//firefoxBinary.addCommandLineOptions("--headless");
+		// firefoxBinary.addCommandLineOptions("--headless");
 		FirefoxOptions firefoxOptions = new FirefoxOptions();
 		firefoxOptions.setBinary(firefoxBinary);
 		driverFacade = new DriverFacade(new FirefoxDriver(firefoxOptions));
