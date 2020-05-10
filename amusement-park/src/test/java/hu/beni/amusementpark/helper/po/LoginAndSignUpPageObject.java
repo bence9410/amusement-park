@@ -31,4 +31,10 @@ public class LoginAndSignUpPageObject {
 		return new AmusementParkPageObject(driverFacade,email,photo);
 	}
 	
+	public AmusementParkPageObject login(String email,String password, String photo) {
+		driverFacade.write("#loginEmail", email);
+		driverFacade.write("#password", password);
+		driverFacade.click("#login");
+		return new AmusementParkPageObject(driverFacade,email,photo);
+	}
 }
