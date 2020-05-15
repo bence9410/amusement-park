@@ -90,9 +90,9 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	private void incrementCaitalAndDecreaseSpendingMoneyAndSetPark(AmusementPark amusementPark, Visitor visitor) {
+		amusementParkRepository.incrementCapitalById(amusementPark.getEntranceFee(), amusementPark.getId());
 		visitor.setSpendingMoney(visitor.getSpendingMoney() - amusementPark.getEntranceFee());
 		visitor.setAmusementPark(amusementPark);
-		amusementParkRepository.incrementCapitalById(amusementPark.getEntranceFee(), amusementPark.getId());
 	}
 
 	@Override
