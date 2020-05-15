@@ -130,7 +130,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			response.setHeader(HttpHeaders.CONTENT_TYPE, "application/hal+json");
 			visitorService.getOffMachineAndLeavePark(authentication.getName());
 			response.getWriter().println(objectMapper
-					.writeValueAsString(visitorMapper.toModel(visitorService.findByEmail(authentication.getName())))
+					.writeValueAsString(
+							visitorMapper.toModelWithPhoto(visitorService.findByEmail(authentication.getName())))
 					.replace("links\":[", "_links\":").replace("\"rel\":\"self\",", "\"self\":{")
 					.replace("{\"rel\":\"uploadMoney\",", "\"uploadMoney\":{")
 					.replace("{\"rel\":\"amusementPark\",", "\"amusementPark\":{").replace(']', '}'));

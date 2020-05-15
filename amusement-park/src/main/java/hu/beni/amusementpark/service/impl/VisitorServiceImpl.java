@@ -22,6 +22,7 @@ import static hu.beni.amusementpark.exception.ExceptionUtil.ifPrimitivesEquals;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.AmusementParkKnowVisitor;
 import hu.beni.amusementpark.entity.Machine;
+import hu.beni.amusementpark.entity.Photo;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkKnowVisitorRepository;
@@ -50,7 +52,10 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Override
 	public Visitor findByEmail(String visitorEmail) {
-		return ifNull(visitorRepository.findById(visitorEmail), String.format(COULD_NOT_FIND_USER, visitorEmail));
+		Visitor visitor = ifNull(visitorRepository.findById(visitorEmail),
+				String.format(COULD_NOT_FIND_USER, visitorEmail));
+		Optional.ofNullable(visitor.getPhoto()).map(Photo::getPhoto);
+		return visitor;
 	}
 
 	@Override

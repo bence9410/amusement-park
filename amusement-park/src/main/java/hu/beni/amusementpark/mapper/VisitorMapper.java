@@ -21,6 +21,7 @@ import hu.beni.amusementpark.controller.VisitorController;
 import hu.beni.amusementpark.dto.resource.VisitorResource;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
+import hu.beni.amusementpark.entity.Photo;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.factory.LinkFactory;
 
@@ -43,7 +44,17 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 				.authority(entity.getAuthority())
 				.dateOfBirth(entity.getDateOfBirth())
 				.spendingMoney(entity.getSpendingMoney())
-				.photo(entity.getPhoto())
+				.links(createLinks(entity)).build(); //@formatter:on
+	}
+
+	public VisitorResource toModelWithPhoto(Visitor entity) {
+		return VisitorResource
+				.builder() //@formatter:off
+				.email(entity.getEmail())
+				.authority(entity.getAuthority())
+				.dateOfBirth(entity.getDateOfBirth())
+				.spendingMoney(entity.getSpendingMoney())
+				.photo(entity.getPhoto().getPhoto())
 				.links(createLinks(entity)).build(); //@formatter:on
 	}
 
@@ -55,7 +66,7 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 				.password(passwordEncoder.encode(resource.getPassword()))
 				.dateOfBirth(resource.getDateOfBirth())
 				.spendingMoney(resource.getSpendingMoney())
-				.photo(resource.getPhoto()).build(); //@formatter:on
+				.photo(new Photo(resource.getPhoto())).build(); //@formatter:on
 	}
 
 	private Link[] createLinks(Visitor visitor) {

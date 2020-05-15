@@ -40,14 +40,14 @@ public class VisitorController {
 		Optional<Visitor> visitor = Optional.ofNullable(principal).map(Principal::getName)
 				.map(visitorService::findByEmail);
 		visitor.ifPresent(v -> visitorService.getOffMachineAndLeavePark(v.getEmail()));
-		return visitor.map(visitorMapper::toModel).map(ResponseEntity::ok)
+		return visitor.map(visitorMapper::toModelWithPhoto).map(ResponseEntity::ok)
 				.orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
 	}
 
 	@PostMapping("/signUp")
 	public VisitorResource signUp(@Valid @RequestBody VisitorResource visitorResource) {
 		VisitorResource responseVisitorResource = visitorMapper
-				.toModel(visitorService.signUp(visitorMapper.toEntity(visitorResource)));
+				.toModelWithPhoto(visitorService.signUp(visitorMapper.toEntity(visitorResource)));
 		SecurityContextHolder.getContext().setAuthentication(
 				new UsernamePasswordAuthenticationToken(visitorResource.getEmail(), visitorResource.getPassword()));
 		return responseVisitorResource;
