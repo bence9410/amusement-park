@@ -36,18 +36,25 @@ create table machine (
         primary key (id)
     ); 
     
+create table photo (
+       id  bigserial not null,
+        photo text,
+        primary key (id)
+    );
+
 create table visitor (
        email varchar(255) not null,
         authority varchar(25) not null,
         date_of_birth date not null,
         date_of_sign_up timestamp,
         password varchar(60) not null,
-        photo text,
         spending_money int4 not null check (spending_money>=0 AND spending_money<=2147483647),
         amusement_park_id int8,
         machine_id int8,
+        photo_id int8,
         primary key (email)
-    ); 
+    );
+
     
 alter table amusement_park_know_visitor 
        add constraint FKky6jelw83grnwfe2dkgyxpsqa 
@@ -83,6 +90,11 @@ alter table visitor
        add constraint FKpvxnx2xymk3l883u40s0n2gng 
        foreign key (machine_id) 
        references machine;
+
+alter table visitor 
+       add constraint FKm7oekhmmpefh1u3qmqtxhl693 
+       foreign key (photo_id) 
+       references photo;
 
 CREATE TABLE SPRING_SESSION (
 	PRIMARY_ID CHAR(36) NOT NULL,
