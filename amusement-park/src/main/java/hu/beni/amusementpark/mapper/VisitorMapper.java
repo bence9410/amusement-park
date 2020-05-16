@@ -10,6 +10,7 @@ import static hu.beni.amusementpark.factory.LinkFactory.createVisitorLeavePark;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -48,14 +49,15 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 	}
 
 	public VisitorResource toModelWithPhoto(Visitor entity) {
-		return VisitorResource
+		VisitorResource visitorResource = VisitorResource
 				.builder() //@formatter:off
 				.email(entity.getEmail())
 				.authority(entity.getAuthority())
 				.dateOfBirth(entity.getDateOfBirth())
 				.spendingMoney(entity.getSpendingMoney())
-				.photo(entity.getPhoto().getPhoto())
 				.links(createLinks(entity)).build(); //@formatter:on
+		Optional.ofNullable(entity.getPhoto()).map(Photo::getPhoto).ifPresent(visitorResource::setPhoto);
+		return visitorResource;
 	}
 
 	@Override
