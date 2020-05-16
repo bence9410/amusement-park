@@ -3,37 +3,37 @@ package hu.beni.amusementpark.helper.po;
 import hu.beni.amusementpark.enums.MachineType;
 import hu.beni.amusementpark.helper.DriverFacade;
 
-public class MachinePageObject extends GuestBookPageObject{
+public class MachinePageObject extends GuestBookPageObject {
 
-	private final DriverFacade driverFacade;
-	
 	public MachinePageObject(DriverFacade driverFacade) {
 		super(driverFacade);
-		this.driverFacade=driverFacade;
 		driverFacade.visible("#leave");
 	}
-	
-	public void createButtonHidden () {
+
+	public void createButtonHidden() {
 		driverFacade.notPresent("#machineShowCreateButton");
 	}
+
 	public void tableNumberOfRows(int rows) {
 		driverFacade.numberOfRowsInTable("#tableBody", rows);
 	}
+
 	public void numberOfPage(String page) {
 		driverFacade.text("#numberOfPage", page);
 	}
-	
+
 	public void scrollAndNumberOfPage(String page, String pageNumber) {
-		driverFacade.click("#"+page);
+		driverFacade.click("#" + page);
 		driverFacade.text("#numberOfPage", pageNumber);
 	}
-	
+
 	public void getOnAndOffMachine(int numberOfRow) {
 		driverFacade.click("#tableBody tr:nth-child(" + numberOfRow + ") input");
 		driverFacade.click("#machineModalExit");
 		driverFacade.hidden(".modal-backdrop");
 
 	}
+
 	public void guestBookWrite(String textOfRegistry) {
 		driverFacade.click("#guestBookButton");
 		driverFacade.write("#guestBookText", textOfRegistry);
@@ -42,17 +42,18 @@ public class MachinePageObject extends GuestBookPageObject{
 		driverFacade.hidden(".modal-backdrop");
 
 	}
+
 	public void guestBookButtonClick() {
 		driverFacade.click("#guestBookButton");
 	}
-	
+
 	public void guestBookModalClose() {
 		driverFacade.click("#guestBookModal button");
 		driverFacade.hidden(".modal-backdrop");
 	}
-	
-	public void create(String name, int size, int price, int numberOfSeats, int minimumRequiredAge,
-			int ticketPrice, MachineType type) {
+
+	public void create(String name, int size, int price, int numberOfSeats, int minimumRequiredAge, int ticketPrice,
+			MachineType type) {
 		driverFacade.click("#machineShowCreateButton");
 		driverFacade.write("#machineCreateFantasyName", name);
 		driverFacade.write("#machineCreateSize", Integer.toString(size));
@@ -65,14 +66,14 @@ public class MachinePageObject extends GuestBookPageObject{
 		driverFacade.hidden(".modal-backdrop");
 
 	}
-	
+
 	public void searchButtonClick() {
 		driverFacade.click("#headerButton input:nth-child(3)");
 	}
-	
+
 	public void search(String name, int sizeMin, int sizeMax, int priceMin, int priceMax, int numberOfSeatsMin,
 			int numberOfSeatsMax, int minimumRequiredAgeMin, int minimumRequiredAgeMax, int ticketPriceMin,
-			int ticketPriceMax, String type,int rows) {
+			int ticketPriceMax, String type, int rows) {
 		driverFacade.write("#machineSearchFantasyName", name);
 		driverFacade.write("#machineSearchSizeMin", Integer.toString(sizeMin));
 		driverFacade.write("#machineSearchSizeMax", Integer.toString(sizeMax));
@@ -103,7 +104,7 @@ public class MachinePageObject extends GuestBookPageObject{
 		driverFacade.deleteText("#machineSearchTicketPriceMax");
 		driverFacade.select("#machineSearchType", "");
 	}
-	
+
 	public void leave() {
 		driverFacade.click("#leave");
 	}

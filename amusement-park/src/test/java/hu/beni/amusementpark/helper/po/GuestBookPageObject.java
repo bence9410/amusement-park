@@ -28,16 +28,16 @@ public class GuestBookPageObject {
 		driverFacade.deleteText("#guestBookSearchText");
 
 	}
-	
+
 	public void guestBookNumberOfPage(String pageNumber) {
-		driverFacade.text("#guestBookNumberOfPage",pageNumber);
-	}
-	
-	public void guestBookScrollAndNumberOfPage(String page,String pageNumber) {
-		driverFacade.click("#guestBook"+page);
 		driverFacade.text("#guestBookNumberOfPage", pageNumber);
 	}
-	
+
+	public void guestBookScrollAndNumberOfPage(String page, String pageNumber) {
+		driverFacade.click("#guestBook" + page);
+		driverFacade.text("#guestBookNumberOfPage", pageNumber);
+	}
+
 	public void guestBookTableNumberOfRows(int rows) {
 		driverFacade.numberOfRowsInTable("#guestBookTable", rows);
 	}
