@@ -1,4 +1,4 @@
-package hu.beni.amusementpark.constraint;
+package hu.beni.amusementpark.validation.constraint;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import hu.beni.amusementpark.validator.EnumValidator;
+import hu.beni.amusementpark.validation.validator.EnumValidator;
 
 @Target(FIELD)
 @Retention(RUNTIME)

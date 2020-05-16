@@ -1,4 +1,4 @@
-package hu.beni.amusementpark.validator;
+package hu.beni.amusementpark.validation.validator;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import hu.beni.amusementpark.constraint.EnumConstraint;
+import hu.beni.amusementpark.validation.constraint.EnumConstraint;
 
 public class EnumValidator implements ConstraintValidator<EnumConstraint, String> {
 

@@ -10,8 +10,8 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 
-import hu.beni.amusementpark.constraint.EnumConstraint;
 import hu.beni.amusementpark.enums.MachineType;
+import hu.beni.amusementpark.validation.constraint.EnumConstraint;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

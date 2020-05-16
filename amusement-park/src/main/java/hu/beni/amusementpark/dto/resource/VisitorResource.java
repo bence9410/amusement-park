@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 
-import hu.beni.amusementpark.constraint.PasswordConfirmPasswordSameConstraint;
+import hu.beni.amusementpark.validation.constraint.PasswordConfirmPasswordSameConstraint;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
