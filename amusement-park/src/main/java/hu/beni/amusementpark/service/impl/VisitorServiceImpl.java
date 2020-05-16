@@ -21,9 +21,14 @@ import static hu.beni.amusementpark.exception.ExceptionUtil.ifPrimitivesEquals;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +54,14 @@ public class VisitorServiceImpl implements VisitorService {
 	private final MachineRepository machineRepository;
 	private final VisitorRepository visitorRepository;
 	private final AmusementParkKnowVisitorRepository amusementParkKnowVisitorRepository;
+
+	@Override
+	public UserDetails loadUserByUsername(String email) {
+		Visitor visitor = visitorRepository.findById(email)
+				.orElseThrow(() -> new UsernameNotFoundException(String.format(COULD_NOT_FIND_USER, email)));
+		return new User(email, visitor.getPassword(),
+				Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority())));
+	}
 
 	@Override
 	public Visitor findByEmail(String visitorEmail) {

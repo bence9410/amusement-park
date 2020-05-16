@@ -2,9 +2,11 @@ package hu.beni.amusementpark.service;
 
 import java.util.List;
 
+import org.springframework.security.core.userdetails.UserDetailsService;
+
 import hu.beni.amusementpark.entity.Visitor;
 
-public interface VisitorService {
+public interface VisitorService extends UserDetailsService {
 
 	Visitor findByEmail(String visitorEmail);
 
