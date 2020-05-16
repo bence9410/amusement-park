@@ -14,8 +14,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@Entity
 @Data
+@Entity
 @EqualsAndHashCode(of = "id")
 public class AmusementParkKnowVisitor {
 
@@ -38,7 +38,7 @@ public class AmusementParkKnowVisitor {
 		this.visitor = visitor;
 	}
 
-	public AmusementParkKnowVisitor() {
+	protected AmusementParkKnowVisitor() {
 		super();
 	}
 

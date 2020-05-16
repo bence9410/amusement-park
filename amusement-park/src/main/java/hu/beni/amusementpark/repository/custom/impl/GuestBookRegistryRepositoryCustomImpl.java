@@ -45,28 +45,25 @@ public class GuestBookRegistryRepositoryCustomImpl implements GuestBookRegistryR
 			GuestBookRegistrySearchRequestDto dto) {
 		List<Predicate> predicates = new ArrayList<>();
 
-		if (dto != null) {
-			ofNullable(dto.getAmusementParkId()).map(amusementParkId -> cb
-					.equal(root.get(GuestBookRegistry_.amusementPark).get(AmusementPark_.id), amusementParkId))
-					.ifPresent(predicates::add);
+		predicates.add(
+				cb.equal(root.get(GuestBookRegistry_.amusementPark).get(AmusementPark_.id), dto.getAmusementParkId()));
 
-			ofNullable(dto.getVisitorEmail()).map(visitorEmail -> cb
-					.like(root.get(GuestBookRegistry_.visitor).get(Visitor_.email), "%" + visitorEmail + "%"))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getVisitorEmail()).map(visitorEmail -> cb
+				.like(root.get(GuestBookRegistry_.visitor).get(Visitor_.email), "%" + visitorEmail + "%"))
+				.ifPresent(predicates::add);
 
-			ofNullable(dto.getTextOfRegistry()).map(
-					textOfRegistry -> cb.like(root.get(GuestBookRegistry_.textOfRegistry), "%" + textOfRegistry + "%"))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getTextOfRegistry())
+				.map(textOfRegistry -> cb.like(root.get(GuestBookRegistry_.textOfRegistry), "%" + textOfRegistry + "%"))
+				.ifPresent(predicates::add);
 
-			ofNullable(dto.getDateOfRegistryMin()).map(dateOfRegistryMin -> cb
-					.greaterThanOrEqualTo(root.get(GuestBookRegistry_.dateOfRegistry), dateOfRegistryMin))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getDateOfRegistryMin()).map(dateOfRegistryMin -> cb
+				.greaterThanOrEqualTo(root.get(GuestBookRegistry_.dateOfRegistry), dateOfRegistryMin))
+				.ifPresent(predicates::add);
 
-			ofNullable(dto.getDateOfRegistryMax()).map(dateOfRegistryMax -> cb
-					.lessThanOrEqualTo(root.get(GuestBookRegistry_.dateOfRegistry), dateOfRegistryMax))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getDateOfRegistryMax()).map(dateOfRegistryMax -> cb
+				.lessThanOrEqualTo(root.get(GuestBookRegistry_.dateOfRegistry), dateOfRegistryMax))
+				.ifPresent(predicates::add);
 
-		}
 		return predicates.toArray(new Predicate[predicates.size()]);
 	}
 
@@ -79,8 +76,8 @@ public class GuestBookRegistryRepositoryCustomImpl implements GuestBookRegistryR
 				.getSingleResult();
 	}
 
-	private List<GuestBookRegistrySearchResponseDto> executeSearchQuery(CriteriaBuilder cb, GuestBookRegistrySearchRequestDto dto,
-			Pageable pageable) {
+	private List<GuestBookRegistrySearchResponseDto> executeSearchQuery(CriteriaBuilder cb,
+			GuestBookRegistrySearchRequestDto dto, Pageable pageable) {
 		CriteriaQuery<GuestBookRegistrySearchResponseDto> cq = cb.createQuery(GuestBookRegistrySearchResponseDto.class);
 		Root<GuestBookRegistry> root = cq.from(GuestBookRegistry.class);
 

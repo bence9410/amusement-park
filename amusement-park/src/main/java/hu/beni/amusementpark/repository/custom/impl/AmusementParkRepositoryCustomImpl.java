@@ -52,29 +52,26 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
 			AmusementParkSearchRequestDto dto) {
 		List<Predicate> predicates = new ArrayList<>();
 
-		if (dto != null) {
-			ofNullable(dto.getName()).map(name -> cb.like(root.get(AmusementPark_.name), "%" + name + "%"))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getName()).map(name -> cb.like(root.get(AmusementPark_.name), "%" + name + "%"))
+				.ifPresent(predicates::add);
 
-			ofNullable(dto.getCapitalMin()).map(capitalMin -> cb.ge(root.get(AmusementPark_.capital), capitalMin))
-					.ifPresent(predicates::add);
-			ofNullable(dto.getCapitalMax()).map(capitalMax -> cb.le(root.get(AmusementPark_.capital), capitalMax))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getCapitalMin()).map(capitalMin -> cb.ge(root.get(AmusementPark_.capital), capitalMin))
+				.ifPresent(predicates::add);
+		ofNullable(dto.getCapitalMax()).map(capitalMax -> cb.le(root.get(AmusementPark_.capital), capitalMax))
+				.ifPresent(predicates::add);
 
-			ofNullable(dto.getTotalAreaMin())
-					.map(totalAreaMin -> cb.ge(root.get(AmusementPark_.totalArea), totalAreaMin))
-					.ifPresent(predicates::add);
-			ofNullable(dto.getTotalAreaMax())
-					.map(totalAreaMax -> cb.le(root.get(AmusementPark_.totalArea), totalAreaMax))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getTotalAreaMin()).map(totalAreaMin -> cb.ge(root.get(AmusementPark_.totalArea), totalAreaMin))
+				.ifPresent(predicates::add);
+		ofNullable(dto.getTotalAreaMax()).map(totalAreaMax -> cb.le(root.get(AmusementPark_.totalArea), totalAreaMax))
+				.ifPresent(predicates::add);
 
-			ofNullable(dto.getEntranceFeeMin())
-					.map(entranceFeeMin -> cb.ge(root.get(AmusementPark_.entranceFee), entranceFeeMin))
-					.ifPresent(predicates::add);
-			ofNullable(dto.getEntranceFeeMax())
-					.map(entranceFeeMax -> cb.le(root.get(AmusementPark_.entranceFee), entranceFeeMax))
-					.ifPresent(predicates::add);
-		}
+		ofNullable(dto.getEntranceFeeMin())
+				.map(entranceFeeMin -> cb.ge(root.get(AmusementPark_.entranceFee), entranceFeeMin))
+				.ifPresent(predicates::add);
+		ofNullable(dto.getEntranceFeeMax())
+				.map(entranceFeeMax -> cb.le(root.get(AmusementPark_.entranceFee), entranceFeeMax))
+				.ifPresent(predicates::add);
+
 		return predicates.toArray(new Predicate[predicates.size()]);
 	}
 
@@ -86,8 +83,8 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
 				.getSingleResult();
 	}
 
-	private List<AmusementParkDetailResponseDto> executeSearchQuery(CriteriaBuilder cb, AmusementParkSearchRequestDto dto,
-			Pageable pageable) {
+	private List<AmusementParkDetailResponseDto> executeSearchQuery(CriteriaBuilder cb,
+			AmusementParkSearchRequestDto dto, Pageable pageable) {
 		CriteriaQuery<AmusementParkDetailResponseDto> cq = cb.createQuery(AmusementParkDetailResponseDto.class);
 		Root<AmusementPark> root = cq.from(AmusementPark.class);
 

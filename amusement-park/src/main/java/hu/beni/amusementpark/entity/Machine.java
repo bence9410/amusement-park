@@ -20,17 +20,14 @@ import org.hibernate.validator.constraints.Range;
 
 import hu.beni.amusementpark.enums.MachineType;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Tolerate;
 
+@Data
 @Entity
-@Getter
-@Setter
 @Builder
-@EqualsAndHashCode(of = { "id", "fantasyName", "size", "price", "numberOfSeats", "minimumRequiredAge", "ticketPrice",
-		"type" })
+@EqualsAndHashCode(of = "id")
 public class Machine {
 
 	@Id

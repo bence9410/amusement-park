@@ -8,9 +8,11 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @Entity
+@EqualsAndHashCode(of = "id")
 public class Photo {
 
 	@Id

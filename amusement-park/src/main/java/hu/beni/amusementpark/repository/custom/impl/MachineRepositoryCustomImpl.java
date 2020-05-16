@@ -42,55 +42,48 @@ public class MachineRepositoryCustomImpl implements MachineRepositoryCustom {
 	private Predicate[] createPredicates(CriteriaBuilder cb, Root<Machine> root, MachineSearchRequestDto dto) {
 		List<Predicate> predicates = new ArrayList<>();
 
-		if (dto != null) {
-			ofNullable(dto.getAmusementParkId()).map(amusementParkId -> cb
-					.equal(root.get(Machine_.amusementPark).get(AmusementPark_.id), amusementParkId))
-					.ifPresent(predicates::add);
+		predicates.add(cb.equal(root.get(Machine_.amusementPark).get(AmusementPark_.id), dto.getAmusementParkId()));
 
-			ofNullable(dto.getFantasyName())
-					.map(fantasyName -> cb.like(root.get(Machine_.fantasyName), "%" + fantasyName + "%"))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getFantasyName())
+				.map(fantasyName -> cb.like(root.get(Machine_.fantasyName), "%" + fantasyName + "%"))
+				.ifPresent(predicates::add);
 
-			ofNullable(dto.getSizeMin()).map(sizeMin -> cb.ge(root.get(Machine_.size), sizeMin))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getSizeMin()).map(sizeMin -> cb.ge(root.get(Machine_.size), sizeMin)).ifPresent(predicates::add);
 
-			ofNullable(dto.getSizeMax()).map(sizeMax -> cb.le(root.get(Machine_.size), sizeMax))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getSizeMax()).map(sizeMax -> cb.le(root.get(Machine_.size), sizeMax)).ifPresent(predicates::add);
 
-			ofNullable(dto.getPriceMin()).map(priceMin -> cb.ge(root.get(Machine_.price), priceMin))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getPriceMin()).map(priceMin -> cb.ge(root.get(Machine_.price), priceMin))
+				.ifPresent(predicates::add);
 
-			ofNullable(dto.getPriceMax()).map(priceMax -> cb.le(root.get(Machine_.price), priceMax))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getPriceMax()).map(priceMax -> cb.le(root.get(Machine_.price), priceMax))
+				.ifPresent(predicates::add);
 
-			ofNullable(dto.getNumberOfSeatsMin())
-					.map(numberOfSeatsMin -> cb.ge(root.get(Machine_.numberOfSeats), numberOfSeatsMin))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getNumberOfSeatsMin())
+				.map(numberOfSeatsMin -> cb.ge(root.get(Machine_.numberOfSeats), numberOfSeatsMin))
+				.ifPresent(predicates::add);
 
-			ofNullable(dto.getNumberOfSeatsMax())
-					.map(numberOfSeatsMax -> cb.le(root.get(Machine_.numberOfSeats), numberOfSeatsMax))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getNumberOfSeatsMax())
+				.map(numberOfSeatsMax -> cb.le(root.get(Machine_.numberOfSeats), numberOfSeatsMax))
+				.ifPresent(predicates::add);
 
-			ofNullable(dto.getMinimumRequiredAgeMin())
-					.map(minimumRequiredAgeMin -> cb.ge(root.get(Machine_.minimumRequiredAge), minimumRequiredAgeMin))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getMinimumRequiredAgeMin())
+				.map(minimumRequiredAgeMin -> cb.ge(root.get(Machine_.minimumRequiredAge), minimumRequiredAgeMin))
+				.ifPresent(predicates::add);
 
-			ofNullable(dto.getMinimumRequiredAgeMax())
-					.map(minimumRequiredAgeMax -> cb.le(root.get(Machine_.minimumRequiredAge), minimumRequiredAgeMax))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getMinimumRequiredAgeMax())
+				.map(minimumRequiredAgeMax -> cb.le(root.get(Machine_.minimumRequiredAge), minimumRequiredAgeMax))
+				.ifPresent(predicates::add);
 
-			ofNullable(dto.getTicketPriceMin())
-					.map(ticketPriceMin -> cb.ge(root.get(Machine_.ticketPrice), ticketPriceMin))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getTicketPriceMin()).map(ticketPriceMin -> cb.ge(root.get(Machine_.ticketPrice), ticketPriceMin))
+				.ifPresent(predicates::add);
 
-			ofNullable(dto.getTicketPriceMax())
-					.map(ticketPriceMax -> cb.le(root.get(Machine_.ticketPrice), ticketPriceMax))
-					.ifPresent(predicates::add);
+		ofNullable(dto.getTicketPriceMax()).map(ticketPriceMax -> cb.le(root.get(Machine_.ticketPrice), ticketPriceMax))
+				.ifPresent(predicates::add);
 
-			ofNullable(dto.getType()).map(type -> cb.equal(root.get(Machine_.type), type)).ifPresent(predicates::add);
+		ofNullable(dto.getType()).map(type -> cb.equal(root.get(Machine_.type), type)).ifPresent(predicates::add);
 
-		}
 		return predicates.toArray(new Predicate[predicates.size()]);
+
 	}
 
 	private Long executeCountQuery(CriteriaBuilder cb, MachineSearchRequestDto dto) {

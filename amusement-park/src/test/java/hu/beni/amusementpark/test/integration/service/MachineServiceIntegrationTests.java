@@ -45,11 +45,12 @@ public class MachineServiceIntegrationTests extends AbstractStatementCounterTest
 	@Test
 	public void findAllTest() {
 		MachineSearchRequestDto dto = new MachineSearchRequestDto();
+		dto.setAmusementParkId(amusementParkId);
 		dto.setFantasyName("tani");
 
 		Page<MachineSearchResponseDto> page = machineService.findAll(dto, PageRequest.of(0, 10));
 
-		assertEquals(2, page.getTotalElements());
+		assertEquals(1, page.getTotalElements());
 
 		select += 2;
 		assertStatements();

@@ -16,16 +16,14 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Range;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Tolerate;
 
+@Data
 @Entity
-@Getter
-@Setter
 @Builder
-@EqualsAndHashCode(of = { "id", "name", "capital", "totalArea", "entranceFee" })
+@EqualsAndHashCode(of = "id")
 public class AmusementPark {
 
 	@Id

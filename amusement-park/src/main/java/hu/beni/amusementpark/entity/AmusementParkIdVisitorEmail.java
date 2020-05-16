@@ -6,8 +6,8 @@ import javax.persistence.Embeddable;
 
 import lombok.Data;
 
-@Embeddable
 @Data
+@Embeddable
 public class AmusementParkIdVisitorEmail implements Serializable {
 
 	private static final long serialVersionUID = 1L;

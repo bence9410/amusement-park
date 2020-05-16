@@ -11,9 +11,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -73,6 +73,9 @@ public class AmusementParkController {
 	@GetMapping
 	public PagedModel<EntityModel<AmusementParkDetailResponseDto>> findAllPaged(
 			@RequestParam(required = false) AmusementParkSearchRequestDto input, @PageableDefault Pageable pageable) {
+		if (input == null) {
+			input = new AmusementParkSearchRequestDto();
+		}
 		PagedModel<EntityModel<AmusementParkDetailResponseDto>> result = pagedResourcesAssembler
 				.toModel(amusementParkService.findAll(input, pageable));
 

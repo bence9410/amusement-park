@@ -15,16 +15,14 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Tolerate;
 
+@Data
 @Entity
-@Getter
-@Setter
 @Builder
-@EqualsAndHashCode(of = { "id", "textOfRegistry", "dateOfRegistry" })
+@EqualsAndHashCode(of = "id")
 public class GuestBookRegistry {
 
 	@Id
