@@ -88,6 +88,8 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
 		CriteriaQuery<AmusementParkDetailResponseDto> cq = cb.createQuery(AmusementParkDetailResponseDto.class);
 		Root<AmusementPark> root = cq.from(AmusementPark.class);
 
+		cq.orderBy(cb.asc(root.get(AmusementPark_.id)));
+
 		Subquery<Long> countMachines = cq.subquery(Long.class);
 		Root<Machine> machineRoot = countMachines.from(Machine.class);
 		countMachines.where(cb.equal(root, machineRoot.get(Machine_.amusementPark)));
