@@ -1,1 +1,1 @@
-mvn spring-boot:run -Dspring-boot.run.profiles=postgres
+mvn clean spring-boot:run -Dspring-boot.run.profiles=postgres
