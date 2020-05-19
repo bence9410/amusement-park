@@ -29,6 +29,7 @@ public class MachinePageObject extends GuestBookPageObject {
 
 	public void getOnAndOffMachine(int numberOfRow) {
 		driverFacade.click("#tableBody tr:nth-child(" + numberOfRow + ") input");
+		driverFacade.sleep(1);
 		driverFacade.click("#machineModalExit");
 		driverFacade.hidden(".modal-backdrop");
 

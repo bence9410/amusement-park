@@ -27,6 +27,14 @@ public class DriverFacade {
 		wait = new WebDriverWait(driver, 10);
 	}
 
+	public void sleep(int sec) {
+		try {
+			Thread.sleep(sec * 1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public void get(String url) {
 		webDriver.get(url);
 	}
