@@ -24,7 +24,7 @@ function machineCreate(url) {
 		},
 		error : function(response) {
 			var errorId=(Math.random()+ "").replace("0.", "")
-			$("#machineCreateErrorMessage").html("<div id='"+errorId+"' class='alert alert-danger' role='alert'>"+"error: " + response.responseText+"</div>")
+			$("#machineCreateErrorMessage").html("<div id='"+errorId+"' class='alert alert-danger' role='alert'>"+ response.responseText+"</div>")
 			setTimeout(function() {
 				$("#"+errorId).remove()
 			}, 7000);
