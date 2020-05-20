@@ -338,13 +338,13 @@ function getMachinePage(enterParkData) {
 
 					$("#headerButton")
 							.append(
-									"<input id='showMachineSearch' class='btn btn-secondary my-2' type='button' value='Search'"
+									"<input id='showMachineSearch' class='btn btn-secondary my-2 mr-1' type='button' value='Search'"
 											+ "onclick='$(\"#machineSearch\").toggle()'>")
 
 					if (isAdmin) {
 						$("#headerButton")
 								.append(
-										"<input id='machineShowCreateButton' class='btn btn-secondary my-2 mr-1 ' type='button' value='Create'"
+										"<input id='machineShowCreateButton' class='btn btn-secondary my-2' type='button' value='Create'"
 												+ "onclick='clearAndShowMachineCreateModal()'>")
 						$("#machineCreateButton").attr(
 								"onclick",
