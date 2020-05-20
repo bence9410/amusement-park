@@ -9,10 +9,12 @@ $(function() {
 					"<input id='amusementParkShowSearchButton' class='btn btn-secondary my-2 mr-1' type='button'"
 							+ " value='Search' onclick='$(\"#amusementParkSearchDiv\").toggle()'>")
 	if (isAdmin) {
-		$("#headerButton").append(
-				"<input id='amusementParkShowCreateButton' class='btn btn-secondary my-2 mr-1 ' type='button' value='Create'"
-						+ "onclick='clearAndShowAmusementParkCreateModal()'>")
-		$("#createAmusementParkButton").attr("onclick", "amusementParkCreate('"+links.amusementPark+"')")
+		$("#headerButton")
+				.append(
+						"<input id='amusementParkShowCreateButton' class='btn btn-secondary my-2 mr-1 ' type='button' value='Create'"
+								+ "onclick='clearAndShowAmusementParkCreateModal()'>")
+		$("#createAmusementParkButton").attr("onclick",
+				"amusementParkCreate('" + links.amusementPark + "')")
 	}
 })
 
@@ -37,10 +39,13 @@ function amusementParkCreate(url) {
 			getAmusementParks(url)
 		},
 		error : function(response) {
-			var errorId=(Math.random()+ "").replace("0.", "")
-			$("#createAmusementParkErrorMessage").html("<div id='"+errorId+"' class='alert alert-danger' role='alert'>" +response.responseText+"</div>")
+			var errorId = (Math.random() + "").replace("0.", "")
+			$("#createAmusementParkErrorMessage").html(
+					"<div id='" + errorId
+							+ "' class='alert alert-danger' role='alert'>"
+							+ response.responseText + "</div>")
 			setTimeout(function() {
-				$("#"+errorId).remove()
+				$("#" + errorId).remove()
 			}, 7000);
 		},
 		complete : function() {
@@ -279,10 +284,8 @@ function getGuestBooksSearch(url) {
 
 	guestBookSearch.visitorEmail = $("#guestBookSearchVisitorEmail").val()
 	guestBookSearch.textOfRegistry = $("#guestBookSearchText").val()
-	guestBookSearch.dateOfRegistryMin = $("#guestBookSearchTimestampMin")
-			.val()
-	guestBookSearch.dateOfRegistryMax = $("#guestBookSearchTimestampMax")
-			.val()
+	guestBookSearch.dateOfRegistryMin = $("#guestBookSearchTimestampMin").val()
+	guestBookSearch.dateOfRegistryMax = $("#guestBookSearchTimestampMax").val()
 
 	getGuestBooks(url + "?input=" + encodeURI(JSON.stringify(guestBookSearch)))
 }
@@ -297,10 +300,13 @@ function enterPark(href, machineHref) {
 			$(".modal-backdrop").remove()
 		},
 		error : function(data) {
-			var errorId=(Math.random()+ "").replace("0.", "")
-			$("#detailsError").html("<div id='"+errorId+"' class='alert alert-danger' role='alert'>"+data.responseText+"</div>")
+			var errorId = (Math.random() + "").replace("0.", "")
+			$("#detailsError").html(
+					"<div id='" + errorId
+							+ "' class='alert alert-danger' role='alert'>"
+							+ data.responseText + "</div>")
 			setTimeout(function() {
-				$("#"+errorId).remove()
+				$("#" + errorId).remove()
 			}, 7000);
 		}
 
@@ -330,6 +336,11 @@ function getMachinePage(enterParkData) {
 									+ enterParkData._links.addRegistry.href
 									+ "\")' value='Guest Book Writing'>")
 
+					$("#headerButton")
+							.append(
+									"<input id='showMachineSearch' class='btn btn-secondary my-2' type='button' value='Search'"
+											+ "onclick='$(\"#machineSearch\").toggle()'>")
+
 					if (isAdmin) {
 						$("#headerButton")
 								.append(
@@ -342,10 +353,6 @@ function getMachinePage(enterParkData) {
 										+ "')")
 					}
 
-					$("#headerButton")
-							.append(
-									"<input class='btn btn-secondary my-2' type='button' value='Search'"
-											+ "onclick='$(\"#machineSearch\").toggle()'>")
 					$("#headerButton").append(
 							"<input id='leave' type='button' class='btn btn-secondary my-2 ml-1' "
 									+ "value='Leave' onclick='leavePark(\""

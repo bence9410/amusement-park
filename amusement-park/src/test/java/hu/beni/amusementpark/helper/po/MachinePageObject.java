@@ -69,7 +69,7 @@ public class MachinePageObject extends GuestBookPageObject {
 	}
 
 	public void searchButtonClick() {
-		driverFacade.click("#headerButton input:nth-child(3)");
+		driverFacade.click("#showMachineSearch");
 	}
 
 	public void search(String name, int sizeMin, int sizeMax, int priceMin, int priceMax, int numberOfSeatsMin,
