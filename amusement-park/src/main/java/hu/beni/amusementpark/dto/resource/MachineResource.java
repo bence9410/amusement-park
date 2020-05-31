@@ -38,7 +38,7 @@ public class MachineResource extends RepresentationModel<MachineResource> {
 	private Integer price;
 
 	@NotNull
-	@Range(min = 5, max = 50)
+	@Range(min = 5, max = 250)
 	private Integer numberOfSeats;
 
 	@NotNull

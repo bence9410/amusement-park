@@ -156,21 +156,21 @@ public class MachineValidationTests extends AbstractValidation {
 
 		machine.setNumberOfSeats(numberOfSeats);
 		validateAndAssertViolationsSizeIsOneAndViolationIs(machine, machine.getNumberOfSeats(), NUMBER_OF_SEATS,
-				rangeMessage(5, 50));
+				rangeMessage(5, 250));
 
 		machineResource.setNumberOfSeats(numberOfSeats);
 		validateAndAssertViolationsSizeIsOneAndViolationIs(machineResource, machineResource.getNumberOfSeats(),
-				NUMBER_OF_SEATS, rangeMessage(5, 50));
+				NUMBER_OF_SEATS, rangeMessage(5, 250));
 
-		numberOfSeats = 51;
+		numberOfSeats = 251;
 
 		machine.setNumberOfSeats(numberOfSeats);
 		validateAndAssertViolationsSizeIsOneAndViolationIs(machine, machine.getNumberOfSeats(), NUMBER_OF_SEATS,
-				rangeMessage(5, 50));
+				rangeMessage(5, 250));
 
 		machineResource.setNumberOfSeats(numberOfSeats);
 		validateAndAssertViolationsSizeIsOneAndViolationIs(machineResource, machineResource.getNumberOfSeats(),
-				NUMBER_OF_SEATS, rangeMessage(5, 50));
+				NUMBER_OF_SEATS, rangeMessage(5, 250));
 	}
 
 	@Test
