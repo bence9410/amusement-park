@@ -7,7 +7,10 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.validationEr
 
 import java.util.stream.Stream;
 
+import javax.validation.ConstraintViolationException;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -45,6 +48,19 @@ public class AmusementParkRestAdvice {
 				.concat(bindingResult.getFieldErrors().stream().map(this::convertToMessage),
 						bindingResult.getGlobalErrors().stream().map(this::convertToMessage))
 				.reduce(String::concat).orElse(COULD_NOT_GET_VALIDATION_MESSAGE);
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public String handleConstraintViolationException(ConstraintViolationException constraintViolationException) {
+		log.error(ERROR, constraintViolationException);
+		return constraintViolationException.getMessage();
+	}
+
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public String handleHttpMessageNotReadableException(
+			HttpMessageNotReadableException httpMessageNotReadableException) {
+		log.error(ERROR, httpMessageNotReadableException);
+		return "No input.";
 	}
 
 	private String convertToMessage(FieldError fieldError) {

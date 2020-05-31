@@ -6,12 +6,15 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 
+import javax.validation.constraints.Size;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -31,6 +34,7 @@ import hu.beni.amusementpark.mapper.GuestBookRegistryMapper;
 import hu.beni.amusementpark.service.GuestBookRegistryService;
 import lombok.RequiredArgsConstructor;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @ConditionalOnWebApplication
@@ -57,8 +61,8 @@ public class GuestBookRegistryController {
 	}
 
 	@PostMapping("/amusement-parks/{amusementParkId}/visitors/guest-book-registries")
-	public GuestBookRegistryResource addRegistry(@PathVariable Long amusementParkId, @RequestBody String textOfRegistry,
-			Principal principal) {
+	public GuestBookRegistryResource addRegistry(@PathVariable Long amusementParkId,
+			@Size(min = 2, max = 100) @RequestBody String textOfRegistry, Principal principal) {
 		return guestBookRegistryMapper
 				.toModel(guestBookRegistryService.addRegistry(amusementParkId, principal.getName(), textOfRegistry));
 	}

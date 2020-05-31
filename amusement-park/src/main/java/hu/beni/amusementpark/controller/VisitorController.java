@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.hibernate.validator.constraints.Range;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +29,7 @@ import hu.beni.amusementpark.mapper.VisitorMapper;
 import hu.beni.amusementpark.service.VisitorService;
 import lombok.RequiredArgsConstructor;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @ConditionalOnWebApplication
@@ -54,7 +57,7 @@ public class VisitorController {
 	}
 
 	@PostMapping("/visitors/uploadMoney")
-	public ResponseEntity<Void> uploadMoney(@RequestBody Integer ammount, Principal principal) {
+	public ResponseEntity<Void> uploadMoney(@Range(min = 1) @RequestBody Integer ammount, Principal principal) {
 		visitorService.uploadMoney(ammount, principal.getName());
 		return ResponseEntity.ok().build();
 	}
