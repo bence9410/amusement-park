@@ -29,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -74,6 +75,10 @@ public class AmusementParkApplicationTests {
 
 	public static final PagedModelType<AmusementParkResource> PAGED_AMUSEMENT_PARK = new PagedModelType<AmusementParkResource>() {
 	};
+	
+	static {
+		Locale.setDefault(Locale.ENGLISH);
+	}
 
 	private static Map<String, String> links;
 

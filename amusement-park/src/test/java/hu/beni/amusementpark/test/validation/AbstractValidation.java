@@ -3,6 +3,7 @@ package hu.beni.amusementpark.test.validation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Locale;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -10,6 +11,10 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 public abstract class AbstractValidation {
+	
+	static {
+		Locale.setDefault(Locale.ENGLISH);
+	}
 
 	private final Validator validator;
 
