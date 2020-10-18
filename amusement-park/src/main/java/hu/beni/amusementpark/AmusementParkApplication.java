@@ -1,7 +1,6 @@
 package hu.beni.amusementpark;
 
 import java.time.LocalDate;
-import java.util.stream.IntStream;
 
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -119,15 +118,4 @@ public class AmusementParkApplication {
 		};
 	}
 
-	@Bean
-	@Profile("performanceTest")
-	public ApplicationRunner applicationRunnerOracle(VisitorRepository visitorRepository) {
-		PasswordEncoder encoder = new BCryptPasswordEncoder(); // @formatter:off
-		return args -> IntStream.range(0, 5).forEach(i -> visitorRepository.save(Visitor.builder() 
-						.email("admin" + i + "@gmail.com")
-						.password(encoder.encode("password"))
-						.authority("ROLE_ADMIN")
-						.spendingMoney(5000)
-						.dateOfBirth(LocalDate.of(1994, 10, 22)).build())); // @formatter:on
-	}
 }
