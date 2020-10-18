@@ -11,7 +11,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 public abstract class AbstractValidation {
-	
+
 	static {
 		Locale.setDefault(Locale.ENGLISH);
 	}

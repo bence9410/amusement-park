@@ -75,7 +75,7 @@ public class AmusementParkApplicationTests {
 
 	public static final PagedModelType<AmusementParkResource> PAGED_AMUSEMENT_PARK = new PagedModelType<AmusementParkResource>() {
 	};
-	
+
 	static {
 		Locale.setDefault(Locale.ENGLISH);
 	}
