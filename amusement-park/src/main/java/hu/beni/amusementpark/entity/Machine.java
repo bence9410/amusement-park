@@ -69,6 +69,9 @@ public class Machine {
 	@OneToMany(mappedBy = "machine")
 	private List<Visitor> visitors;
 
+	@OneToMany(mappedBy = "machine")
+	private List<VisitorEvent> visitorEvents;
+
 	@Tolerate
 	protected Machine() {
 		super();

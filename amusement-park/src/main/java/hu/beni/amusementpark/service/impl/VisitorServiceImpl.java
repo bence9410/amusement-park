@@ -37,10 +37,13 @@ import hu.beni.amusementpark.entity.AmusementParkKnowVisitor;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Photo;
 import hu.beni.amusementpark.entity.Visitor;
+import hu.beni.amusementpark.entity.VisitorEvent;
+import hu.beni.amusementpark.enums.VisitorEventType;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkKnowVisitorRepository;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
+import hu.beni.amusementpark.repository.VisitorEventRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.VisitorService;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +57,7 @@ public class VisitorServiceImpl implements VisitorService {
 	private final MachineRepository machineRepository;
 	private final VisitorRepository visitorRepository;
 	private final AmusementParkKnowVisitorRepository amusementParkKnowVisitorRepository;
+	private final VisitorEventRepository visitorEventRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) {
@@ -92,6 +96,8 @@ public class VisitorServiceImpl implements VisitorService {
 		checkIfVisitorAbleToEnterPark(amusementPark.getEntranceFee(), visitor);
 		addToKnownVisitorsIfFirstEnter(amusementPark, visitor);
 		incrementCaitalAndDecreaseSpendingMoneyAndSetPark(amusementPark, visitor);
+		visitorEventRepository.save(VisitorEvent.builder().type(VisitorEventType.ENTER_PARK)
+				.amusementPark(amusementPark).visitor(visitor).build());
 		return visitor;
 	}
 
@@ -121,6 +127,9 @@ public class VisitorServiceImpl implements VisitorService {
 				NO_VISITOR_IN_PARK_WITH_ID);
 		checkIfVisitorAbleToGetOnMachine(machine, visitor);
 		incrementCapitalAndDecreaseSpendingMoneyAndSetMachine(amusementParkId, machine, visitor);
+		visitorEventRepository.save(VisitorEvent.builder().type(VisitorEventType.GET_ON_MACHINE)
+				.amusementPark(AmusementPark.builder().id(amusementParkId).build()).machine(machine).visitor(visitor)
+				.build());
 		return visitor;
 	}
 
@@ -141,10 +150,13 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public Visitor getOffMachine(Long machineId, String visitorEmail) {
+	public Visitor getOffMachine(Long amusementParkId, Long machineId, String visitorEmail) {
 		Visitor visitor = ifNull(visitorRepository.findByMachineIdAndVisitorEmail(machineId, visitorEmail),
 				NO_VISITOR_ON_MACHINE_WITH_ID);
 		visitor.setMachine(null);
+		visitorEventRepository.save(VisitorEvent.builder().type(VisitorEventType.GET_OFF_MACHINE)
+				.amusementPark(AmusementPark.builder().id(amusementParkId).build())
+				.machine(Machine.builder().id(machineId).build()).visitor(visitor).build());
 		return visitor;
 	}
 
@@ -153,6 +165,8 @@ public class VisitorServiceImpl implements VisitorService {
 		Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail),
 				NO_VISITOR_IN_PARK_WITH_ID);
 		visitor.setAmusementPark(null);
+		visitorEventRepository.save(VisitorEvent.builder().type(VisitorEventType.LEAVE_PARK)
+				.amusementPark(AmusementPark.builder().id(amusementParkId).build()).visitor(visitor).build());
 		return visitor;
 	}
 

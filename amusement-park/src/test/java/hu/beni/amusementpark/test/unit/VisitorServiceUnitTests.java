@@ -35,10 +35,13 @@ import org.junit.Test;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
+import hu.beni.amusementpark.entity.VisitorEvent;
+import hu.beni.amusementpark.enums.VisitorEventType;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkKnowVisitorRepository;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
+import hu.beni.amusementpark.repository.VisitorEventRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.VisitorService;
 import hu.beni.amusementpark.service.impl.VisitorServiceImpl;
@@ -49,6 +52,7 @@ public class VisitorServiceUnitTests {
 	private MachineRepository machineRepository;
 	private VisitorRepository visitorRepository;
 	private AmusementParkKnowVisitorRepository amusementParkKnowVisitorRepository;
+	private VisitorEventRepository visitorEventRepository;
 
 	private VisitorService visitorService;
 
@@ -58,8 +62,9 @@ public class VisitorServiceUnitTests {
 		machineRepository = mock(MachineRepository.class);
 		visitorRepository = mock(VisitorRepository.class);
 		amusementParkKnowVisitorRepository = mock(AmusementParkKnowVisitorRepository.class);
+		visitorEventRepository = mock(VisitorEventRepository.class);
 		visitorService = new VisitorServiceImpl(amusementParkRepository, machineRepository, visitorRepository,
-				amusementParkKnowVisitorRepository);
+				amusementParkKnowVisitorRepository, visitorEventRepository);
 	}
 
 	@After
@@ -200,6 +205,8 @@ public class VisitorServiceUnitTests {
 		verify(amusementParkKnowVisitorRepository).countByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);
 		verify(amusementParkKnowVisitorRepository).save(any());
 		verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
+		verify(visitorEventRepository).save(VisitorEvent.builder().type(VisitorEventType.ENTER_PARK)
+				.amusementPark(amusementPark).visitor(visitor).build());
 	}
 
 	@Test
@@ -226,6 +233,8 @@ public class VisitorServiceUnitTests {
 		verify(visitorRepository).findById(visitorEmail);
 		verify(amusementParkKnowVisitorRepository).countByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);
 		verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
+		verify(visitorEventRepository).save(VisitorEvent.builder().type(VisitorEventType.ENTER_PARK)
+				.amusementPark(amusementPark).visitor(visitor).build());
 	}
 
 	@Test
@@ -366,14 +375,18 @@ public class VisitorServiceUnitTests {
 		verify(visitorRepository).findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);
 		verify(visitorRepository).countByMachineId(machineId);
 		verify(amusementParkRepository).incrementCapitalById(machine.getTicketPrice(), amusementParkId);
+		verify(visitorEventRepository).save(VisitorEvent.builder().type(VisitorEventType.GET_ON_MACHINE)
+				.amusementPark(AmusementPark.builder().id(amusementParkId).build()).machine(machine).visitor(visitor)
+				.build());
 	}
 
 	@Test
 	public void getOffMachineNegativeNoVisitor() {
+		Long amusementParkId = 10L;
 		Long machineId = 0L;
 		String visitorEmail = "benike@gmail.com";
 
-		assertThatThrownBy(() -> visitorService.getOffMachine(machineId, visitorEmail))
+		assertThatThrownBy(() -> visitorService.getOffMachine(amusementParkId, machineId, visitorEmail))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_VISITOR_ON_MACHINE_WITH_ID);
 
 		verify(visitorRepository).findByMachineIdAndVisitorEmail(machineId, visitorEmail);
@@ -381,18 +394,23 @@ public class VisitorServiceUnitTests {
 
 	@Test
 	public void getOffMachinePositive() {
+		Long amusementParkId = 10L;
 		Long machineId = 0L;
-		Visitor visitor = Visitor.builder().email("benike@gmail.com").machine(Machine.builder().build()).build();
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").machine(Machine.builder().id(machineId).build())
+				.build();
 		String visitorEmail = visitor.getEmail();
 
 		when(visitorRepository.findByMachineIdAndVisitorEmail(machineId, visitorEmail))
 				.thenReturn(Optional.of(visitor));
 
-		assertEquals(visitor, visitorService.getOffMachine(machineId, visitorEmail));
+		assertEquals(visitor, visitorService.getOffMachine(amusementParkId, machineId, visitorEmail));
 
 		assertNull(visitor.getMachine());
 
 		verify(visitorRepository).findByMachineIdAndVisitorEmail(machineId, visitorEmail);
+		verify(visitorEventRepository).save(VisitorEvent.builder().type(VisitorEventType.GET_OFF_MACHINE)
+				.amusementPark(AmusementPark.builder().id(amusementParkId).build())
+				.machine(Machine.builder().id(machineId).build()).visitor(visitor).build());
 	}
 
 	@Test
@@ -422,6 +440,8 @@ public class VisitorServiceUnitTests {
 		assertNotNull(visitor.getSpendingMoney());
 
 		verify(visitorRepository).findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);
+		verify(visitorEventRepository).save(VisitorEvent.builder().type(VisitorEventType.LEAVE_PARK)
+				.amusementPark(AmusementPark.builder().id(amusementParkId).build()).visitor(visitor).build());
 	}
 
 	@Test

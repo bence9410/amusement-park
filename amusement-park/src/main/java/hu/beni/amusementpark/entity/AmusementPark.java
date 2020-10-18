@@ -3,7 +3,6 @@ package hu.beni.amusementpark.entity;
 import static javax.persistence.CascadeType.REMOVE;
 import static javax.persistence.GenerationType.IDENTITY;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -47,16 +46,19 @@ public class AmusementPark {
 	private Integer entranceFee;
 
 	@OneToMany(mappedBy = "amusementPark", cascade = REMOVE)
-	private List<GuestBookRegistry> guestBookRegistries;
+	private Set<GuestBookRegistry> guestBookRegistries;
 
 	@OneToMany(mappedBy = "amusementPark", cascade = REMOVE)
-	private List<Machine> machines;
+	private Set<Machine> machines;
 
 	@OneToMany(mappedBy = "amusementPark")
-	private List<Visitor> activeVisitors;
+	private Set<Visitor> activeVisitors;
 
 	@OneToMany(mappedBy = "amusementPark", cascade = REMOVE)
 	private Set<AmusementParkKnowVisitor> knownVisitors;
+
+	@OneToMany(mappedBy = "amusementPark", cascade = REMOVE)
+	private Set<VisitorEvent> visitorEvents;
 
 	@Tolerate
 	protected AmusementPark() {

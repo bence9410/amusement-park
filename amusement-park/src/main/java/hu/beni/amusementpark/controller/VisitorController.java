@@ -103,6 +103,6 @@ public class VisitorController {
 	@PutMapping("amusement-parks/{amusementParkId}/machines/{machineId}/visitors/get-off-machine")
 	public VisitorResource getOffMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
 			Principal principal) {
-		return visitorMapper.toModel(visitorService.getOffMachine(machineId, principal.getName()));
+		return visitorMapper.toModel(visitorService.getOffMachine(amusementParkId, machineId, principal.getName()));
 	}
 }

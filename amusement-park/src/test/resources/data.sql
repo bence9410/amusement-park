@@ -4,6 +4,8 @@ insert into amusement_park(id, name, capital, total_area, entrance_fee) values (
 
 insert into machine(id, fantasy_name, minimum_required_age, number_of_seats, price, size_of_machine, ticket_price, type, amusement_park_id) values (10, 'Titanic', 10, 10, 200, 200, 20, 'SHIP', 100);
 
+insert into machine(id, fantasy_name, minimum_required_age, number_of_seats, price, size_of_machine, ticket_price, type, amusement_park_id) values (11, 'Titanic', 10, 10, 200, 200, 20, 'SHIP', 101);
+
 insert into visitor(email, authority, date_of_birth, date_of_sign_up, password, spending_money) values('test@gmail.com', 'ROLE_VISITOR', '1994-10-22', '2020-05-06 15:33:03.894', '$2a$10$kySxWnr0wtD6KKV59TKHIO/N3G58IpSfRn7a7cvZ.5TpaWUXaHus6', 1000);
 
 insert into visitor(email, authority, date_of_birth, date_of_sign_up, password, spending_money, amusement_park_id) values('inPark@gmail.com', 'ROLE_VISITOR', '1994-10-22', '2020-05-06 15:33:03.894', '$2a$10$kySxWnr0wtD6KKV59TKHIO/N3G58IpSfRn7a7cvZ.5TpaWUXaHus6', 1000, 100);

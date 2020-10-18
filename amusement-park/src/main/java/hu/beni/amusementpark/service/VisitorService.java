@@ -20,7 +20,7 @@ public interface VisitorService extends UserDetailsService {
 
 	Visitor getOnMachine(Long amusementParkId, Long machineId, String visitorEmail);
 
-	Visitor getOffMachine(Long machineId, String visitorEmail);
+	Visitor getOffMachine(Long amusementParkId, Long machineId, String visitorEmail);
 
 	List<Visitor> findAllVisitor();
 

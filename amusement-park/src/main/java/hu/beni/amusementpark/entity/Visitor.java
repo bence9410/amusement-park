@@ -6,7 +6,6 @@ import static javax.persistence.FetchType.LAZY;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -69,10 +68,13 @@ public class Visitor {
 	private Machine machine;
 
 	@OneToMany(mappedBy = "visitor")
-	private List<GuestBookRegistry> guestBookRegistries;
+	private Set<GuestBookRegistry> guestBookRegistries;
 
 	@OneToMany(mappedBy = "visitor")
 	private Set<AmusementParkKnowVisitor> knownAmusementParks;
+
+	@OneToMany(mappedBy = "visitor")
+	private Set<VisitorEvent> visitorEvents;
 
 	@Tolerate
 	protected Visitor() {
