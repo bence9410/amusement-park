@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  db:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=amusement_park
+  db-admin:
+    image: dpage/pgadmin4
+    ports:
+      - 8079:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=nembence1994@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
