@@ -91,7 +91,7 @@ public class AmusementParkController {
 	public EntityModel<AmusementParkDetailResponseDto> findOne(@PathVariable Long amusementParkId) {
 		AmusementParkDetailResponseDto amusementParkPageResponseDto = amusementParkService
 				.findDetailById(amusementParkId);
-		return new EntityModel<>(amusementParkPageResponseDto, LinkFactory.createAmusementParkSelfLink(amusementParkId),
+		return EntityModel.of(amusementParkPageResponseDto, LinkFactory.createAmusementParkSelfLink(amusementParkId),
 				LinkFactory.createVisitorEnterParkLink(amusementParkId),
 				LinkFactory.createAddGuestBookRegistryLink(amusementParkId),
 				LinkFactory.createMachineLink(amusementParkId));
