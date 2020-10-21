@@ -1,10 +1,8 @@
 <template>
   <v-app>
-    <router-link to="/login"></router-link>
+    <router-link to="/login">Login</router-link>
     <v-main>
-      <v-container>
-        <router-view />
-      </v-container>
+      <router-view />
     </v-main>
   </v-app>
 </template>
