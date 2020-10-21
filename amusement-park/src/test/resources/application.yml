@@ -1,3 +1,4 @@
+amusement-park.transaction-logging: true
 spring:
   jmx.enabled: false
   datasource.platform: h2
@@ -10,6 +11,7 @@ logging.level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE
   
 ---
 
+amusement-park.transaction-logging: true
 spring:
   profiles: postgres
   jmx.enabled: false

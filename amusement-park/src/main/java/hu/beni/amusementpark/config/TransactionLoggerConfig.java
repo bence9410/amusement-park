@@ -13,9 +13,9 @@ import org.springframework.aop.ClassFilter;
 import org.springframework.aop.MethodMatcher;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 import hu.beni.amusementpark.service.impl.AmusementParkServiceImpl;
 import hu.beni.amusementpark.service.impl.GuestBookRegistryServiceImpl;
@@ -38,7 +38,7 @@ public class TransactionLoggerConfig {
 	}
 
 	@Bean
-	@Profile({ "default", "postgres" })
+	@ConditionalOnProperty("amusement-park.transaction-logging")
 	public DefaultPointcutAdvisor transactionLoggerAdvisor() {
 		return new DefaultPointcutAdvisor(createPointcut(), createMethodInterceptor());
 	}
