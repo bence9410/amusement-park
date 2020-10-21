@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 
+import org.hibernate.annotations.Type;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,6 +22,7 @@ public class Photo {
 	private Long id;
 
 	@Lob
+	@Type(type = "org.hibernate.type.TextType")
 	private String photo;
 
 	public Photo(String photo) {

@@ -56,6 +56,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import hu.beni.amusementpark.AmusementParkApplication;
+import hu.beni.amusementpark.config.DataSourceInitializator;
 import hu.beni.amusementpark.config.RestTemplateConfig;
 import hu.beni.amusementpark.dto.resource.AmusementParkResource;
 import hu.beni.amusementpark.dto.resource.GuestBookRegistryResource;
@@ -70,7 +71,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { AmusementParkApplication.class,
-		RestTemplateConfig.class })
+		RestTemplateConfig.class, DataSourceInitializator.class })
 public class AmusementParkApplicationTests {
 
 	public static final PagedModelType<AmusementParkResource> PAGED_AMUSEMENT_PARK = new PagedModelType<AmusementParkResource>() {
@@ -216,7 +217,7 @@ public class AmusementParkApplicationTests {
 
 	private VisitorResource loginAsAdmin() {
 		ResponseEntity<VisitorResource> response = restTemplate.postForEntity(links.get(LOGIN),
-				createMap("bence@gmail.com", "password"), VisitorResource.class);
+				createMap("nembence1994@gmail.com", "password"), VisitorResource.class);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertTrue(response.getHeaders().getFirst("Set-Cookie").contains("SESSION="));
@@ -230,7 +231,7 @@ public class AmusementParkApplicationTests {
 		assertTrue(visitorResource.getLink(AMUSEMENT_PARK).isPresent());
 		assertTrue(visitorResource.getLink(UPLOAD_MONEY).isPresent());
 
-		assertEquals("bence@gmail.com", visitorResource.getEmail());
+		assertEquals("nembence1994@gmail.com", visitorResource.getEmail());
 		assertEquals("ROLE_ADMIN", visitorResource.getAuthority());
 
 		return visitorResource;

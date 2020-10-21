@@ -29,7 +29,7 @@ create table machine (
         minimum_required_age int4 not null check (minimum_required_age<=21 AND minimum_required_age>=0),
         number_of_seats int4 not null check (number_of_seats<=250 AND number_of_seats>=5),
         price int4 not null check (price<=2000 AND price>=50),
-        size_of_machine int4 not null check (size_of_machine>=20 AND size_of_machine<=200),
+        size_of_machine int4 not null check (size_of_machine>=20 AND size_of_machine<=750),
         ticket_price int4 not null check (ticket_price>=5 AND ticket_price<=30),
         type varchar(255) not null,
         amusement_park_id int8 not null,

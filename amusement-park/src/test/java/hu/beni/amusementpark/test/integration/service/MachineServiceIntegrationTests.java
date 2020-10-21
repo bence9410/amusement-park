@@ -25,7 +25,7 @@ public class MachineServiceIntegrationTests extends AbstractStatementCounterTest
 		Machine machine = machineService.addMachine(amusementParkId, ValidEntityFactory.createMachine());
 		assertNotNull(machine.getId());
 		assertNotNull(machine.getAmusementPark());
-		assertEquals(amusementParkId.longValue(), machine.getAmusementPark().getId().longValue());
+		assertEquals(amusementParkId, machine.getAmusementPark().getId().longValue());
 		select += 2;
 		update++;
 		insert++;
@@ -37,7 +37,7 @@ public class MachineServiceIntegrationTests extends AbstractStatementCounterTest
 
 	@Test
 	public void findByIdTest() {
-		assertEquals("Titanic", machineService.findById(amusementParkId, machineId).getFantasyName());
+		assertEquals("test Titanic", machineService.findById(amusementParkId, machineId).getFantasyName());
 		select++;
 		assertStatements();
 	}

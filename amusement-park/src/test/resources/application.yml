@@ -18,7 +18,7 @@ spring:
     username: postgres
     password: admin
     platform: postgresql
-    initialization-mode: ALWAYS
+    initialization-mode: always
   jpa:
     open-in-view: false
     show-sql: true
@@ -28,5 +28,5 @@ spring:
     properties.hibernate.jdbc.lob.non_contextual_creation: true
   session:
     store-type: jdbc
-    jdbc.initialize-schema: ALWAYS
+    jdbc.initialize-schema: always
 logging.level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE
