@@ -116,7 +116,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 	@Test
 	public void findAllVisitorTest() {
 		List<Visitor> visitors = visitorService.findAllVisitor();
-		assertEquals(4, visitors.size());
+		assertEquals(5, visitors.size());
 		assertFalse(visitors.stream().map(Visitor::getAuthority).anyMatch("ROLE_ADMIN"::equals));
 		select++;
 		assertStatements();
