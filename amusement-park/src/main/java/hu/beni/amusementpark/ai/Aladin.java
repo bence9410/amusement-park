@@ -58,7 +58,7 @@ public class Aladin {
 	@Scheduled(fixedRate = 25 * 60 * 1000)
 	public void start() {
 		links = links == null
-				? Stream.of(restTemplate.getForObject("http://localhost:" + port + "/links", Link[].class)).collect(
+				? Stream.of(restTemplate.getForObject("http://localhost:" + port + "/api/links", Link[].class)).collect(
 						Collectors.toMap(link -> link.getRel().value(), Link::getHref))
 				: links;
 

@@ -5,7 +5,7 @@ var isAdmin
 
 function init() {
 	$.ajax({
-		url : "/links",
+		url : "/api/links",
 		success : function(data) {
 			links = {}
 			$.each(data, function(i, e) {

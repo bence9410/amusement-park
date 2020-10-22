@@ -16,6 +16,6 @@ public class Constants {
 
 	public static final String GUEST_BOOK_REGISTRY_TEXT = "Nice park.";
 
-	public static final String LINKS_URL = "http://localhost:8080/links";
+	public static final String LINKS_URL = "http://localhost:8080/api/links";
 
 }

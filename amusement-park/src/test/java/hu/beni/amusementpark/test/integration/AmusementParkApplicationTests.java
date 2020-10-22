@@ -95,12 +95,12 @@ public class AmusementParkApplicationTests {
 	}
 
 	private Map<String, String> getBaseLinks() {
-		return Stream.of(restTemplate.getForObject("http://localhost:" + port + "/links", Link[].class))
+		return Stream.of(restTemplate.getForObject("http://localhost:" + port + "/api/links", Link[].class))
 				.collect(toMap(link -> link.getRel().value(), Link::getHref));
 	}
 
 	@Test
-	public void signUpAndUploadMoneyAndVisitorCanNotCreateParkTest() {
+	public void signUpAndUploadMoneyAndVisitorCanNotCreateParkAndLogoutTest() {
 		VisitorResource inputVisitorResource = ValidResourceFactory.createVisitor();
 
 		VisitorResource responseVisitorResource = signUp(inputVisitorResource);
