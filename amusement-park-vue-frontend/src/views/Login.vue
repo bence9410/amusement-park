@@ -28,7 +28,13 @@
             @click:append="show1 = !show1"
           ></v-text-field>
           <div class="text-center mt-2">
-            <v-btn color="blue darken-1" elevation="7" dark class="mr-2 px-5">
+            <v-btn
+              color="blue darken-1"
+              elevation="7"
+              dark
+              class="mr-2 px-5"
+              @click="login"
+            >
               Login
             </v-btn>
             <v-btn color="blue darken-1" elevation="7" dark to="sign-up">
@@ -55,5 +61,11 @@ export default {
       emailMatch: () => "The email and password you entered don't match",
     },
   }),
+  methods: {
+    login() {
+      this.$emit("login");
+      this.$router.push("/amusement-park");
+    },
+  },
 };
 </script>
