@@ -1,13 +1,14 @@
 <template>
-  <v-col col="12">
+  <div>
     <div class="text-center py-5" style="background-color: #e9ecef">
       <h1>Welcome visitor</h1>
     </div>
-    <v-form>
+    <v-form ref="loginForm">
       <v-container>
         <v-col col="12" md="4" offset-md="4">
           <v-text-field
             label="Email*"
+            v-model="email"
             required
             :rules="[
               (v) =>
@@ -16,16 +17,20 @@
             ]"
             :counter="50"
           ></v-text-field>
+          <!-- :rules="[
+              (v) =>
+                (!!v && passwordRegexp.test(v)) ||
+                'Must contain upper and lowercase characters and number and the length must be beetwen 8-25.',
+            ]"-->
           <v-text-field
             v-model="password"
-            :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="[rules.required, rules.min]"
-            :type="show1 ? 'text' : 'password'"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="showPassword ? 'text' : 'password'"
             name="input-10-1"
             label="Password*"
             hint="At least 8 characters"
             :counter="25"
-            @click:append="show1 = !show1"
+            @click:append="showPassword = !showPassword"
           ></v-text-field>
           <div class="text-center mt-2">
             <v-btn
@@ -44,27 +49,36 @@
         </v-col>
       </v-container>
     </v-form>
-  </v-col>
+  </div>
 </template>
 <script>
+import $ from "jquery";
+
 export default {
+  props: ["loginLink"],
   data: () => ({
     emailRegexp: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-
-    show1: false,
+    passwordRegexp: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,25}$/,
+    showPassword: false,
+    email: "",
     password: "",
-    rules: {
-      required: (value) => !!value || "Required.",
-      min: (v) =>
-        (v.length >= 8 && v.length <= 25) ||
-        "Password size must be between 8 and 25 ",
-      emailMatch: () => "The email and password you entered don't match",
-    },
   }),
   methods: {
     login() {
-      this.$router.push("/amusement-park");
-      this.$emit("login");
+      if (this.$refs.loginForm.validate()) {
+        $.ajax({
+          url: this.loginLink,
+          method: "POST",
+          data: "email=" + this.email + "&password=" + this.password,
+          success: (responseBody) => {
+            this.$emit("login", responseBody);
+          },
+          error: (response) => {
+            alert(response.responseText);
+            //TODO fancy error message
+          },
+        });
+      }
     },
   },
 };

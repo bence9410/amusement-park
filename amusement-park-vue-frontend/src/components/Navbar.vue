@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show">
+  <div v-if="visitor">
     <div>
       <v-toolbar prominent dense color="green" class="pt-5">
         <v-img
@@ -12,15 +12,11 @@
         />
 
         <v-avatar class="ml-1">
-          <v-img
-            class="pt-0"
-            src="https://cdn.vuetifyjs.com/images/john.jpg"
-            alt="Profile picture"
-          />
+          <v-img class="pt-0" :src="visitor.photo" alt="Profile picture" />
         </v-avatar>
         <div class="ml-1 mr-2">
-          <p id="email" class="mb-1">fenicser@gmail.com</p>
-          <p id="spendingMoney">250</p>
+          <p id="email" class="mb-1">{{ visitor.email }}</p>
+          <p id="spendingMoney">{{ visitor.spendingMoney }}</p>
         </div>
 
         <v-btn color="green darken-3" elevation="7" dark class="mt-2 bigScreen"
@@ -70,7 +66,7 @@
 </template>
 <script>
 export default {
-  props: ["show"],
+  props: ["visitor"],
   data: () => ({
     toolbar: true,
     drawer: false,

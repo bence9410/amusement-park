@@ -58,7 +58,7 @@ Total area min"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="3">
-          <v-btn color="blue darken-1" dark block> Search </v-btn>
+          <v-btn color="blue darken-1" dark block class="mt-1"> Search </v-btn>
         </v-col>
       </v-row>
     </v-container>
