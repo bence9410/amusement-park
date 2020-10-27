@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http //@formatter:off
             .authorizeRequests()
-            	.antMatchers("/", "/webjars/**", "/index.js", "/links", "/me", "/signUp",
+            	.antMatchers("/", "/webjars/**", "/index.js", "/api/links", "/api/me", "/api/signUp",
             			"/pages/login-and-sign-up.html", "/js/login-and-sign-up.js", "/img/**")
             	.permitAll()
                 .anyRequest()
@@ -54,6 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .addFilterBefore(new ValidateingUsernamePasswordAuthenticationFilter(visitorService, objectMapper, visitorMapper, authenticationManager()),
             		UsernamePasswordAuthenticationFilter.class)
             .logout()
+            	.logoutRequestMatcher(new AntPathRequestMatcher("/api/logout", "POST"))
             	.logoutSuccessUrl("/")
                 .and()
             .csrf()

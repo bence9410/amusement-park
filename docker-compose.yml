@@ -7,4 +7,4 @@ services:
     deploy:
       replicas: 2
   postgres:
-    image: bence/postgres
+    image: bence/postgres-performance-test

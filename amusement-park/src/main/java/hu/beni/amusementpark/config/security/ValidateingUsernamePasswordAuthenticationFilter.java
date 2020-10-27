@@ -5,27 +5,31 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.lang.Nullable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hu.beni.amusementpark.mapper.VisitorMapper;
 import hu.beni.amusementpark.service.VisitorService;
 
-public class ValidateingUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class ValidateingUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-	private boolean postOnly = true;
+	private String usernameParameter = "email";
+	private String passwordParameter = "password";
+
 	private int min = 5;
 	private int max = 25;
 
 	public ValidateingUsernamePasswordAuthenticationFilter(VisitorService visitorService, ObjectMapper objectMapper,
 			VisitorMapper visitorMapper, AuthenticationManager authenticationManager) {
-		setUsernameParameter("email");
+		super(new AntPathRequestMatcher("/api/login", "POST"));
 		setAuthenticationSuccessHandler(
 				new AmusementParkAuthenticationSuccessHandler(visitorService, objectMapper, visitorMapper));
 		setAuthenticationFailureHandler(new AmusementParkAuthenticationFailureHandler());
@@ -34,7 +38,7 @@ public class ValidateingUsernamePasswordAuthenticationFilter extends UsernamePas
 
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-		if (postOnly && !request.getMethod().equals("POST")) {
+		if (!request.getMethod().equals("POST")) {
 			throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
 		}
 
@@ -43,7 +47,7 @@ public class ValidateingUsernamePasswordAuthenticationFilter extends UsernamePas
 
 		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password);
 
-		setDetails(request, authRequest);
+		authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
 
 		return this.getAuthenticationManager().authenticate(authRequest);
 	}
@@ -64,6 +68,16 @@ public class ValidateingUsernamePasswordAuthenticationFilter extends UsernamePas
 
 	private boolean isLengthBetweenMinAndMax(String string) {
 		return string.length() >= min && string.length() <= max;
+	}
+
+	@Nullable
+	protected String obtainPassword(HttpServletRequest request) {
+		return request.getParameter(passwordParameter);
+	}
+
+	@Nullable
+	protected String obtainUsername(HttpServletRequest request) {
+		return request.getParameter(usernameParameter);
 	}
 
 }

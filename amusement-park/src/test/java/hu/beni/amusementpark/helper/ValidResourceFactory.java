@@ -23,7 +23,7 @@ public class ValidResourceFactory {
 	public static VisitorResource createVisitor() {
 		return VisitorResource
 				.builder() //@formatter:off
-				.email("nembence1994@gmail.com")
+				.email("resource@gmail.com")
     			.password("password")
     			.confirmPassword("password")
     			.dateOfBirth(LocalDate.of(1994, 10, 22)).build(); //@formatter:on

@@ -36,7 +36,7 @@ import hu.beni.amusementpark.service.MachineService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("amusement-parks/{amusementParkId}/machines")
+@RequestMapping("/api/amusement-parks/{amusementParkId}/machines")
 @RequiredArgsConstructor
 @ConditionalOnWebApplication
 public class MachineController {

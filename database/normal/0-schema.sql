@@ -29,7 +29,7 @@ create table machine (
         minimum_required_age int4 not null check (minimum_required_age<=21 AND minimum_required_age>=0),
         number_of_seats int4 not null check (number_of_seats<=250 AND number_of_seats>=5),
         price int4 not null check (price<=2000 AND price>=50),
-        size_of_machine int4 not null check (size_of_machine>=20 AND size_of_machine<=200),
+        size_of_machine int4 not null check (size_of_machine>=20 AND size_of_machine<=750),
         ticket_price int4 not null check (ticket_price>=5 AND ticket_price<=30),
         type varchar(255) not null,
         amusement_park_id int8 not null,
@@ -143,12 +143,3 @@ CREATE TABLE SPRING_SESSION_ATTRIBUTES (
 	CONSTRAINT SPRING_SESSION_ATTRIBUTES_PK PRIMARY KEY (SESSION_PRIMARY_ID, ATTRIBUTE_NAME),
 	CONSTRAINT SPRING_SESSION_ATTRIBUTES_FK FOREIGN KEY (SESSION_PRIMARY_ID) REFERENCES SPRING_SESSION(PRIMARY_ID) ON DELETE CASCADE
 );
-
-insert into visitor(email, password, authority, date_of_birth, date_of_sign_up, spending_money) values
-('admin0@gmail.com', '$2a$10$kySxWnr0wtD6KKV59TKHIO/N3G58IpSfRn7a7cvZ.5TpaWUXaHus6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 5000),
-('admin1@gmail.com', '$2a$10$kySxWnr0wtD6KKV59TKHIO/N3G58IpSfRn7a7cvZ.5TpaWUXaHus6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 5000),
-('admin2@gmail.com', '$2a$10$kySxWnr0wtD6KKV59TKHIO/N3G58IpSfRn7a7cvZ.5TpaWUXaHus6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 5000),
-('admin3@gmail.com', '$2a$10$kySxWnr0wtD6KKV59TKHIO/N3G58IpSfRn7a7cvZ.5TpaWUXaHus6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 5000),
-('admin4@gmail.com', '$2a$10$kySxWnr0wtD6KKV59TKHIO/N3G58IpSfRn7a7cvZ.5TpaWUXaHus6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 5000);
-
-

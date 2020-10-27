@@ -39,7 +39,7 @@ public class Machine {
 	private String fantasyName;
 
 	@NotNull
-	@Range(min = 20, max = 200)
+	@Range(min = 20, max = 750)
 	@Column(name = "Size_Of_Machine")
 	private Integer size;
 

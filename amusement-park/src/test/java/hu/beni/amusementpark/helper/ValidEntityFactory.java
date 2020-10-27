@@ -37,7 +37,7 @@ public class ValidEntityFactory {
 	public static Visitor createVisitor() {
 		return Visitor
 				.builder() //@formatter:off
-    			.email("nembence1994@gmail.com")
+    			.email("entity@gmail.com")
     			.password(PASSWORD_ENCODER.encode("password"))
     			.authority("ROLE_ADMIN")
         		.dateOfBirth(LocalDate.of(1994, 10, 22))

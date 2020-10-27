@@ -22,10 +22,10 @@ public class GuestBookServiceIntegrationTests extends AbstractStatementCounterTe
 
 	@Test
 	public void findByIdTest() {
-		GuestBookRegistry guestBookRegistry = guestBookService.findById(10L);
+		GuestBookRegistry guestBookRegistry = guestBookService.findById(guestBookId);
 
-		assertEquals("Amazeing.", guestBookRegistry.getTextOfRegistry());
-		assertEquals(amusementParkId.longValue(), guestBookRegistry.getAmusementPark().getId().longValue());
+		assertEquals("test Amazeing.", guestBookRegistry.getTextOfRegistry());
+		assertEquals(amusementParkId, guestBookRegistry.getAmusementPark().getId().longValue());
 		assertEquals(inParkVisitorEmail, guestBookRegistry.getVisitor().getEmail());
 
 		select++;

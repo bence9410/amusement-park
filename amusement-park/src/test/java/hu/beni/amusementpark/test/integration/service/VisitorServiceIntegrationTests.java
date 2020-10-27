@@ -40,11 +40,13 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 
 	@Test
 	public void uploadMoneyTest() {
-		visitorService.uploadMoney(500, testVisitorEmail);
+		Integer ammountToUpload = 500;
+		visitorService.uploadMoney(ammountToUpload, testVisitorEmail);
 		update++;
 		assertStatements();
 
-		assertEquals(1500, visitorService.findByEmail(testVisitorEmail).getSpendingMoney().intValue());
+		assertEquals(visitorSpendingMoney + ammountToUpload,
+				visitorService.findByEmail(testVisitorEmail).getSpendingMoney().intValue());
 		select++;
 		assertStatements();
 	}
@@ -72,8 +74,9 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 		assertStatements();
 
 		Visitor visitor = visitorService.findByEmail(testVisitorEmail);
-		assertEquals(5000 + 200, amusementParkRepository.findById(amusementParkId).get().getCapital().intValue());
-		assertEquals(1000 - 200, visitor.getSpendingMoney().intValue());
+		assertEquals(amusementParkCapital + amusementParkEntranceFee,
+				amusementParkRepository.findById(amusementParkId).get().getCapital().intValue());
+		assertEquals(visitorSpendingMoney - amusementParkEntranceFee, visitor.getSpendingMoney().intValue());
 		assertNotNull(visitor.getAmusementPark());
 		assertEquals(1, visitor.getVisitorEvents().size());
 		assertEquals(VisitorEventType.ENTER_PARK, visitor.getVisitorEvents().iterator().next().getType());
@@ -113,8 +116,8 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 	@Test
 	public void findAllVisitorTest() {
 		List<Visitor> visitors = visitorService.findAllVisitor();
-		assertEquals(3, visitors.size());
-		assertFalse(visitors.stream().anyMatch(v -> v.getAuthority().equals("ROLE_ADMIN")));
+		assertEquals(5, visitors.size());
+		assertFalse(visitors.stream().map(Visitor::getAuthority).anyMatch("ROLE_ADMIN"::equals));
 		select++;
 		assertStatements();
 	}

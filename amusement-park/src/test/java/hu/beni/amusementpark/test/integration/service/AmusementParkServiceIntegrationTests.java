@@ -47,7 +47,7 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
 		select++;
 		assertStatements();
 
-		amusementParkDetailResponseDto = amusementParkService.findDetailById(101L);
+		amusementParkDetailResponseDto = amusementParkService.findDetailById(anotherAmusementParkId);
 
 		assertEquals("test park 101", amusementParkDetailResponseDto.getName());
 		assertEquals(1, amusementParkDetailResponseDto.getNumberOfMachines().intValue());
@@ -61,7 +61,7 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
 
 	@Test
 	public void deleteTest() {
-		amusementParkService.delete(101L);
+		amusementParkService.delete(anotherAmusementParkId);
 		select += 6;
 		delete += 2;
 		assertStatements();
@@ -70,7 +70,8 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
 	@Test
 	public void findAllTest() {
 		AmusementParkSearchRequestDto dto = new AmusementParkSearchRequestDto();
-		dto.setName("test");
+		dto.setName("park");
+		dto.setEntranceFeeMin(200);
 
 		Page<AmusementParkDetailResponseDto> page = amusementParkService.findAll(dto, PageRequest.of(0, 10));
 

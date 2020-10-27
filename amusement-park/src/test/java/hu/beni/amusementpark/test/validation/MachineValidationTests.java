@@ -94,16 +94,16 @@ public class MachineValidationTests extends AbstractValidation {
 		size = 19;
 
 		machine.setSize(size);
-		validateAndAssertViolationsSizeIsOneAndViolationIs(machine, machine.getSize(), SIZE, rangeMessage(20, 200));
+		validateAndAssertViolationsSizeIsOneAndViolationIs(machine, machine.getSize(), SIZE, rangeMessage(20, 750));
 
 		machineResource.setSize(size);
 		validateAndAssertViolationsSizeIsOneAndViolationIs(machineResource, machineResource.getSize(), SIZE,
 				rangeMessage(20, 200));
 
-		size = 201;
+		size = 751;
 
 		machine.setSize(size);
-		validateAndAssertViolationsSizeIsOneAndViolationIs(machine, machine.getSize(), SIZE, rangeMessage(20, 200));
+		validateAndAssertViolationsSizeIsOneAndViolationIs(machine, machine.getSize(), SIZE, rangeMessage(20, 750));
 
 		machineResource.setSize(size);
 		validateAndAssertViolationsSizeIsOneAndViolationIs(machineResource, machineResource.getSize(), SIZE,

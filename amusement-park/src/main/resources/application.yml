@@ -1,3 +1,6 @@
+amusement-park:
+  ai: true
+  transaction-logging: true
 spring:
   jmx.enabled: false
   datasource.platform: h2
@@ -10,6 +13,9 @@ logging.level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE
   
 ---
 
+amusement-park:
+  ai: true
+  transaction-logging: true
 spring:
   profiles: postgres
   jmx.enabled: false
@@ -18,20 +24,22 @@ spring:
     username: postgres
     password: admin
     platform: postgresql
+    initialization-mode: never
   jpa:
     open-in-view: false
-    show-sql: true
-    properties.hibernate.format_sql: true
-    hibernate.ddl-auto: update
+    show-sql: false
+    properties.hibernate.format_sql: false
+    hibernate.ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties.hibernate.jdbc.lob.non_contextual_creation: true
   session:
     store-type: jdbc
-    jdbc.initialize-schema: ALWAYS
-logging.level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    jdbc.initialize-schema: never
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder: false
 
 ---
 
+amusement-park.transaction-logging: false
 spring:
   profiles: docker
   jmx.enabled: false
@@ -39,6 +47,7 @@ spring:
     url: jdbc:postgresql://postgres:5432/amusement_park
     username: postgres
     password: admin
+    initialization-mode: never
   jpa:
     show-sql: false
     properties.hibernate.format_sql: false
@@ -47,4 +56,6 @@ spring:
     properties.hibernate.jdbc.lob.non_contextual_creation: true
   session:
     store-type: jdbc
+    jdbc:
+      initialize-schema: never
 logging.level.org.hibernate.type.descriptor.sql.BasicBinder: false
