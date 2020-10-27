@@ -1,7 +1,6 @@
 <template>
   <v-app>
     <Navbar :show="showNavbar" />
-    <router-link to="/login">Login</router-link>
     <v-main>
       <router-view @login="showNavbar = true" />
     </v-main>

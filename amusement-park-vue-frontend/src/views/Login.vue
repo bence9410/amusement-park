@@ -63,8 +63,8 @@ export default {
   }),
   methods: {
     login() {
-      this.$emit("login");
       this.$router.push("/amusement-park");
+      this.$emit("login");
     },
   },
 };
