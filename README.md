@@ -13,3 +13,9 @@ If a visitor is in an amusement park or on a machine, then they are connected in
 - JDK-11
 - Maven 3
 - Docker in Swarm mode runnable without sudo
+
+#### Postgresql dev run
+
+- Run 'dockerRunPostgresWithAdmin.sh' to start postgres with tables and data and pgadmin.
+- Access pgadmin at localhost:8079 email:'nembence1994@gmail.com' pass:'admin'.
+- Host:'db', database:'amusement_park', user:'postgres', pass:'admin'.
