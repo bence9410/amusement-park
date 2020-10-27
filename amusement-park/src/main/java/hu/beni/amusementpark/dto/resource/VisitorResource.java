@@ -7,11 +7,12 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Past;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 
+import hu.beni.amusementpark.constants.Constants;
 import hu.beni.amusementpark.validation.constraint.PasswordConfirmPasswordSameConstraint;
 import lombok.Builder;
 import lombok.Data;
@@ -25,15 +26,15 @@ import lombok.ToString;
 public class VisitorResource extends RepresentationModel<VisitorResource> {
 
 	@NotNull
-	@Email(regexp = "^(.+)@(.+)$")
+	@Email(regexp = Constants.EMAIL_REGEXP)
 	private String email;
 
 	@NotNull
-	@Size(min = 5, max = 25)
+	@Pattern(regexp = Constants.PASSWORD_REGEXP)
 	private String password;
 
 	@NotNull
-	@Size(min = 5, max = 25)
+	@Pattern(regexp = Constants.PASSWORD_REGEXP)
 	private String confirmPassword;
 
 	@Null

@@ -145,10 +145,10 @@ CREATE TABLE SPRING_SESSION_ATTRIBUTES (
 );
 
 insert into visitor(email, password, authority, date_of_birth, date_of_sign_up, spending_money) values
-('admin0@gmail.com', '$2a$10$kySxWnr0wtD6KKV59TKHIO/N3G58IpSfRn7a7cvZ.5TpaWUXaHus6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 5000),
-('admin1@gmail.com', '$2a$10$kySxWnr0wtD6KKV59TKHIO/N3G58IpSfRn7a7cvZ.5TpaWUXaHus6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 5000),
-('admin2@gmail.com', '$2a$10$kySxWnr0wtD6KKV59TKHIO/N3G58IpSfRn7a7cvZ.5TpaWUXaHus6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 5000),
-('admin3@gmail.com', '$2a$10$kySxWnr0wtD6KKV59TKHIO/N3G58IpSfRn7a7cvZ.5TpaWUXaHus6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 5000),
-('admin4@gmail.com', '$2a$10$kySxWnr0wtD6KKV59TKHIO/N3G58IpSfRn7a7cvZ.5TpaWUXaHus6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 5000);
+('admin0@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 5000),
+('admin1@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 5000),
+('admin2@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 5000),
+('admin3@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 5000),
+('admin4@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 5000);
 
 

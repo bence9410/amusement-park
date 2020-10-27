@@ -3,7 +3,8 @@ package hu.beni.tester.service;
 import static hu.beni.tester.constants.Constants.EMAIL;
 import static hu.beni.tester.constants.Constants.GUEST_BOOK_REGISTRY_TEXT;
 import static hu.beni.tester.constants.Constants.LINKS_URL;
-import static hu.beni.tester.constants.Constants.PASSWORD;
+import static hu.beni.tester.constants.Constants.PASSWORD_FIELD;
+import static hu.beni.tester.constants.Constants.VALID_PASSWORD;
 import static hu.beni.tester.constants.HATEOASLinkRelConstants.ADD_REGISTRY;
 import static hu.beni.tester.constants.HATEOASLinkRelConstants.AMUSEMENT_PARK;
 import static hu.beni.tester.constants.HATEOASLinkRelConstants.GET_OFF_MACHINE;
@@ -94,7 +95,7 @@ public class AsyncService {
 	private MultiValueMap<String, String> createMapWithEmailAndPass() {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 		map.add(EMAIL, email);
-		map.add(PASSWORD, PASSWORD);
+		map.add(PASSWORD_FIELD, VALID_PASSWORD);
 		return map;
 	}
 

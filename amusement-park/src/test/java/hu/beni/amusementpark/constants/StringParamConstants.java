@@ -20,6 +20,14 @@ public class StringParamConstants {
 	public static final String STRING_WITH_61_LENGTH = STRING_WITH_59_LENGTH + STRING_WITH_2_LENGTH;
 	public static final String STRING_WITH_101_LENGTH;
 
+	public static final String VALID_PASSWORD = "Pass1234";
+	public static final String PASSWORD_TOO_SHORT = "Pa2";
+	public static final String PASSWORD_TOO_LONG = PASSWORD_TOO_SHORT + STRING_WITH_26_LENGTH;
+	public static final String PASSWORD_NO_LOWERCASE = "PASSWORD2";
+	public static final String PASSWORD_NO_UPPERCASE = "password2";
+	public static final String PASSWORD_NO_NUMBER = "Password";
+	public static final String PASSWORD_WITH_SPECIAL_CHARACTER = VALID_PASSWORD + "!";
+
 	static {
 		StringBuilder sb = new StringBuilder(STRING_WITH_26_LENGTH);
 		IntStream.range(0, 3).forEach(i -> sb.append(STRING_WITH_21_LENGTH));

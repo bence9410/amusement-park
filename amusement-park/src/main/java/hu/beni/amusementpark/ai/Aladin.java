@@ -86,7 +86,7 @@ public class Aladin {
 	private VisitorResource loginAsAladin() {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 		map.add("email", "aladin@gmail.com");
-		map.add("password", "password");
+		map.add("password", "Pass1234");
 		return restTemplate.postForObject(links.get(LOGIN), map, VisitorResource.class);
 	}
 

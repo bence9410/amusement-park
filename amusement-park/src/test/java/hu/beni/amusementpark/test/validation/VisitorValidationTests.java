@@ -1,10 +1,15 @@
 package hu.beni.amusementpark.test.validation;
 
-import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_16_LENGTH;
-import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_21_LENGTH;
+import static hu.beni.amusementpark.constants.StringParamConstants.PASSWORD_NO_LOWERCASE;
+import static hu.beni.amusementpark.constants.StringParamConstants.PASSWORD_NO_NUMBER;
+import static hu.beni.amusementpark.constants.StringParamConstants.PASSWORD_NO_UPPERCASE;
+import static hu.beni.amusementpark.constants.StringParamConstants.PASSWORD_TOO_LONG;
+import static hu.beni.amusementpark.constants.StringParamConstants.PASSWORD_TOO_SHORT;
+import static hu.beni.amusementpark.constants.StringParamConstants.PASSWORD_WITH_SPECIAL_CHARACTER;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_26_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_59_LENGTH;
+import static hu.beni.amusementpark.constants.StringParamConstants.VALID_PASSWORD;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.EMAIL_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NULL_MESSAGE;
@@ -23,6 +28,8 @@ import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.helper.ValidResourceFactory;
 
 public class VisitorValidationTests extends AbstractValidation {
+
+	private static final String PASSWORD_REGEXP_ERROR_MESSAGE = "must match \"^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,25}$\"";
 
 	private static final String EMAIL = "email";
 	private static final String PASSWORD = "password";
@@ -85,24 +92,56 @@ public class VisitorValidationTests extends AbstractValidation {
 		validateAndAssertViolationsSizeIsOneAndViolationIs(visitor, visitor.getPassword(), PASSWORD,
 				sizeMessage(60, 60));
 
-		visitorResource.setPassword(STRING_WITH_4_LENGTH);
+		visitorResource.setPassword(PASSWORD_TOO_SHORT);
 		validateAndAssertViolationsSizeIsTwoAndFieldViolationIs(visitorResource, visitorResource.getPassword(),
-				PASSWORD, sizeMessage(5, 25));
+				PASSWORD, PASSWORD_REGEXP_ERROR_MESSAGE);
 
-		visitorResource.setPassword(STRING_WITH_26_LENGTH);
+		visitorResource.setPassword(PASSWORD_TOO_LONG);
 		validateAndAssertViolationsSizeIsTwoAndFieldViolationIs(visitorResource, visitorResource.getPassword(),
-				PASSWORD, sizeMessage(5, 25));
+				PASSWORD, PASSWORD_REGEXP_ERROR_MESSAGE);
 
-		visitorResource.setPassword(STRING_WITH_16_LENGTH);
-		visitorResource.setConfirmPassword(STRING_WITH_4_LENGTH);
+		visitorResource.setPassword(PASSWORD_NO_LOWERCASE);
+		validateAndAssertViolationsSizeIsTwoAndFieldViolationIs(visitorResource, visitorResource.getPassword(),
+				PASSWORD, PASSWORD_REGEXP_ERROR_MESSAGE);
+
+		visitorResource.setPassword(PASSWORD_NO_UPPERCASE);
+		validateAndAssertViolationsSizeIsTwoAndFieldViolationIs(visitorResource, visitorResource.getPassword(),
+				PASSWORD, PASSWORD_REGEXP_ERROR_MESSAGE);
+
+		visitorResource.setPassword(PASSWORD_NO_NUMBER);
+		validateAndAssertViolationsSizeIsTwoAndFieldViolationIs(visitorResource, visitorResource.getPassword(),
+				PASSWORD, PASSWORD_REGEXP_ERROR_MESSAGE);
+
+		visitorResource.setPassword(PASSWORD_WITH_SPECIAL_CHARACTER);
+		validateAndAssertViolationsSizeIsTwoAndFieldViolationIs(visitorResource, visitorResource.getPassword(),
+				PASSWORD, PASSWORD_REGEXP_ERROR_MESSAGE);
+
+		visitorResource.setPassword(VALID_PASSWORD);
+		visitorResource.setConfirmPassword(PASSWORD_TOO_SHORT);
 		validateAndAssertViolationsSizeIsTwoAndFieldViolationIs(visitorResource, visitorResource.getConfirmPassword(),
-				CONFIRM_PASSWORD, sizeMessage(5, 25));
+				CONFIRM_PASSWORD, PASSWORD_REGEXP_ERROR_MESSAGE);
 
-		visitorResource.setConfirmPassword(STRING_WITH_26_LENGTH);
+		visitorResource.setConfirmPassword(PASSWORD_TOO_LONG);
 		validateAndAssertViolationsSizeIsTwoAndFieldViolationIs(visitorResource, visitorResource.getConfirmPassword(),
-				CONFIRM_PASSWORD, sizeMessage(5, 25));
+				CONFIRM_PASSWORD, PASSWORD_REGEXP_ERROR_MESSAGE);
 
-		visitorResource.setConfirmPassword(STRING_WITH_21_LENGTH);
+		visitorResource.setConfirmPassword(PASSWORD_NO_LOWERCASE);
+		validateAndAssertViolationsSizeIsTwoAndFieldViolationIs(visitorResource, visitorResource.getConfirmPassword(),
+				CONFIRM_PASSWORD, PASSWORD_REGEXP_ERROR_MESSAGE);
+
+		visitorResource.setConfirmPassword(PASSWORD_NO_UPPERCASE);
+		validateAndAssertViolationsSizeIsTwoAndFieldViolationIs(visitorResource, visitorResource.getConfirmPassword(),
+				CONFIRM_PASSWORD, PASSWORD_REGEXP_ERROR_MESSAGE);
+
+		visitorResource.setConfirmPassword(PASSWORD_NO_NUMBER);
+		validateAndAssertViolationsSizeIsTwoAndFieldViolationIs(visitorResource, visitorResource.getConfirmPassword(),
+				CONFIRM_PASSWORD, PASSWORD_REGEXP_ERROR_MESSAGE);
+
+		visitorResource.setConfirmPassword(PASSWORD_WITH_SPECIAL_CHARACTER);
+		validateAndAssertViolationsSizeIsTwoAndFieldViolationIs(visitorResource, visitorResource.getConfirmPassword(),
+				CONFIRM_PASSWORD, PASSWORD_REGEXP_ERROR_MESSAGE);
+
+		visitorResource.setConfirmPassword(VALID_PASSWORD + STRING_WITH_4_LENGTH);
 		validateAndAssertViolationsSizeIsOneAndViolationIs(visitorResource, visitorResource, "",
 				"password and confirmPassword must be equals");
 	}
