@@ -62,39 +62,10 @@ Total area min"
         </v-col>
       </v-row>
     </v-container>
-
-    <v-dialog v-model="dialog.show" persistent max-width="600px" eager>
-      <v-card>
-        <div class="text-right" style="width: 100%">
-          <v-btn icon @click="dialog.show = false">
-            <v-icon>close</v-icon>
-          </v-btn>
-        </div>
-        <v-card-title>
-          <h2>Upload money</h2>
-        </v-card-title>
-        <v-card-text>
-          <v-form ref="form" v-model="dialog.form">
-            <v-col cols="12" md="9" class="pl-0">
-              <v-text-field label="Money:" outlined required></v-text-field>
-            </v-col>
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" dark> Upload </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 <script>
 export default {
-  data: () => ({
-    dialog: {
-      form: true,
-      show: false,
-    },
-  }),
+  data: () => ({}),
 };
 </script>

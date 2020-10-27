@@ -13,14 +13,14 @@
             :rules="[
               (v) =>
                 (!!v && emailRegexp.test(v)) ||
-                'Email must be a well-formed valaki@pelda.com ',
+                'Email must be well-formed, for example: somebody@example.com',
             ]"
             :counter="50"
           ></v-text-field>
           <!-- :rules="[
               (v) =>
                 (!!v && passwordRegexp.test(v)) ||
-                'Must contain upper and lowercase characters and number and the length must be beetwen 8-25.',
+                'Must contain at least one upper and lowercase characters and number and the length must be between 8-25.',
             ]"-->
           <v-text-field
             v-model="password"

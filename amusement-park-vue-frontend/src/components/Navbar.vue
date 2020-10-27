@@ -45,6 +45,35 @@
           <v-icon class="mr-1">power_settings_new</v-icon>
           Logout
         </v-btn>
+        <v-dialog v-model="dialog.show" persistent max-width="600px" eager>
+          <v-card>
+            <div class="text-right" style="width: 100%">
+              <v-btn icon @click="dialog.show = false">
+                <v-icon>close</v-icon>
+              </v-btn>
+            </div>
+            <v-card-title>
+              <h2>Upload money</h2>
+            </v-card-title>
+            <v-card-text>
+              <v-form ref="form" v-model="dialog.form">
+                <v-row>
+                  <v-text-field
+                    label="Money:"
+                    outlined
+                    required
+                    dense
+                    class="pr-4 pl-3"
+                  ></v-text-field>
+                  <v-btn color="blue darken-1" dark class="mt-1">
+                    Upload
+                  </v-btn>
+                </v-row>
+              </v-form>
+            </v-card-text>
+            <v-card-actions> </v-card-actions>
+          </v-card>
+        </v-dialog>
 
         <v-menu bottom left>
           <template v-slot:activator="{ on, attrs }">
@@ -68,6 +97,10 @@
 export default {
   props: ["visitor"],
   data: () => ({
+    dialog: {
+      form: true,
+      show: false,
+    },
     toolbar: true,
     drawer: false,
     items: [
