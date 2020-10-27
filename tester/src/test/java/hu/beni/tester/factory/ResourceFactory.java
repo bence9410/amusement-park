@@ -1,7 +1,7 @@
 package hu.beni.tester.factory;
 
 import static hu.beni.tester.constants.Constants.DATE_OF_BIRTH;
-import static hu.beni.tester.constants.Constants.PASSWORD;
+import static hu.beni.tester.constants.Constants.VALID_PASSWORD;
 
 import org.springframework.stereotype.Component;
 
@@ -50,8 +50,8 @@ public class ResourceFactory {
 		return VisitorResource
 				.builder() //@formatter:off
 				.email(email)
-				.password(PASSWORD)
-				.confirmPassword(PASSWORD)
+				.password(VALID_PASSWORD)
+				.confirmPassword(VALID_PASSWORD)
 				.dateOfBirth(DATE_OF_BIRTH).build(); //@formatter:on
 	}
 }

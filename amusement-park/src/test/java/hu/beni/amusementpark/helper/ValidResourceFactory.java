@@ -2,6 +2,7 @@ package hu.beni.amusementpark.helper;
 
 import java.time.LocalDate;
 
+import hu.beni.amusementpark.constants.StringParamConstants;
 import hu.beni.amusementpark.dto.resource.AmusementParkResource;
 import hu.beni.amusementpark.dto.resource.MachineResource;
 import hu.beni.amusementpark.dto.resource.VisitorResource;
@@ -24,8 +25,8 @@ public class ValidResourceFactory {
 		return VisitorResource
 				.builder() //@formatter:off
 				.email("resource@gmail.com")
-    			.password("password")
-    			.confirmPassword("password")
+    			.password(StringParamConstants.VALID_PASSWORD)
+    			.confirmPassword(StringParamConstants.VALID_PASSWORD)
     			.dateOfBirth(LocalDate.of(1994, 10, 22)).build(); //@formatter:on
 	}
 

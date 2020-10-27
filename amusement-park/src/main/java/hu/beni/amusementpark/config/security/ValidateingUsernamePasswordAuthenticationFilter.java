@@ -16,16 +16,14 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import hu.beni.amusementpark.constants.Constants;
 import hu.beni.amusementpark.mapper.VisitorMapper;
 import hu.beni.amusementpark.service.VisitorService;
 
 public class ValidateingUsernamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-	private String usernameParameter = "email";
-	private String passwordParameter = "password";
-
-	private int min = 5;
-	private int max = 25;
+	private final String usernameParameter = "email";
+	private final String passwordParameter = "password";
 
 	public ValidateingUsernamePasswordAuthenticationFilter(VisitorService visitorService, ObjectMapper objectMapper,
 			VisitorMapper visitorMapper, AuthenticationManager authenticationManager) {
@@ -53,21 +51,22 @@ public class ValidateingUsernamePasswordAuthenticationFilter extends AbstractAut
 	}
 
 	private String validateEmail(String email) {
-		return Optional.ofNullable(email).filter(this::isValidEmail)
-				.orElseThrow(() -> new BadCredentialsException("Email must be a well-formed email address"));
+		return Optional.ofNullable(email).filter(this::isValidEmail).orElseThrow(
+				() -> new BadCredentialsException("Email must be well-formed, for example: somebody@example.com"));
 	}
 
 	private boolean isValidEmail(String email) {
-		return email.matches(".+@.+\\..+");
+		return email.matches(Constants.EMAIL_REGEXP);
 	}
 
 	private String validatePassword(String credential) {
-		return Optional.ofNullable(credential).map(String::trim).filter(this::isLengthBetweenMinAndMax).orElseThrow(
-				() -> new BadCredentialsException(String.format("Password size must be between %d and %d", min, max)));
+		return Optional.ofNullable(credential).map(String::trim).filter(this::isPasswordValid)
+				.orElseThrow(() -> new BadCredentialsException(
+						"Password must contain at least one upper and lowercase characters and number and the length must be between 8-25."));
 	}
 
-	private boolean isLengthBetweenMinAndMax(String string) {
-		return string.length() >= min && string.length() <= max;
+	private boolean isPasswordValid(String password) {
+		return password.matches(Constants.PASSWORD_REGEXP);
 	}
 
 	@Nullable

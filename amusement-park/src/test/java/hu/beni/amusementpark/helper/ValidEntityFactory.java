@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import hu.beni.amusementpark.constants.StringParamConstants;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
@@ -38,7 +39,7 @@ public class ValidEntityFactory {
 		return Visitor
 				.builder() //@formatter:off
     			.email("entity@gmail.com")
-    			.password(PASSWORD_ENCODER.encode("password"))
+    			.password(PASSWORD_ENCODER.encode(StringParamConstants.VALID_PASSWORD))
     			.authority("ROLE_ADMIN")
         		.dateOfBirth(LocalDate.of(1994, 10, 22))
         		.spendingMoney(1000).build(); //@formatter:on

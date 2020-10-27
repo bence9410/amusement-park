@@ -58,6 +58,7 @@ import org.springframework.web.client.RestTemplate;
 import hu.beni.amusementpark.AmusementParkApplication;
 import hu.beni.amusementpark.config.DataSourceInitializator;
 import hu.beni.amusementpark.config.RestTemplateConfig;
+import hu.beni.amusementpark.constants.StringParamConstants;
 import hu.beni.amusementpark.dto.resource.AmusementParkResource;
 import hu.beni.amusementpark.dto.resource.GuestBookRegistryResource;
 import hu.beni.amusementpark.dto.resource.MachineResource;
@@ -217,7 +218,7 @@ public class AmusementParkApplicationTests {
 
 	private VisitorResource loginAsAdmin() {
 		ResponseEntity<VisitorResource> response = restTemplate.postForEntity(links.get(LOGIN),
-				createMap("nembence1994@gmail.com", "password"), VisitorResource.class);
+				createMap("nembence1994@gmail.com", StringParamConstants.VALID_PASSWORD), VisitorResource.class);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertTrue(response.getHeaders().getFirst("Set-Cookie").contains("SESSION="));
