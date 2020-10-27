@@ -38,7 +38,7 @@ export default {
     setLinks(responseBody) {
       for (let i = 0; i < responseBody.length; i++) {
         let element = responseBody[i];
-        this.links[element.rel] = element.href.substring(21);
+        this.links[element.rel] = element.href;
       }
     },
     getUserData() {
