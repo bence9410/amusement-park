@@ -17,15 +17,15 @@
             ]"
             :counter="50"
           ></v-text-field>
-          <!-- :rules="[
-              (v) =>
-                (!!v && passwordRegexp.test(v)) ||
-                'Must contain at least one upper and lowercase characters and number and the length must be between 8-25.',
-            ]"-->
           <v-text-field
             v-model="password"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             :type="showPassword ? 'text' : 'password'"
+            :rules="[
+              (v) =>
+                (!!v && passwordRegexp.test(v)) ||
+                'Must contain at least one upper and lowercase characters and number and the length must be between 8-25.',
+            ]"
             name="input-10-1"
             label="Password*"
             hint="At least 8 characters"
