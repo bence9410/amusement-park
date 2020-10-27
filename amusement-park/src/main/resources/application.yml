@@ -15,7 +15,7 @@ logging.level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 amusement-park:
   ai: true
-  transaction-logging: true
+  transaction-logging: false
 spring:
   profiles: postgres
   jmx.enabled: false
