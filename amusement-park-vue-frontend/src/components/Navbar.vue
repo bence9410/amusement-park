@@ -39,7 +39,7 @@
           color="green darken-3"
           elevation="7"
           dark
-          to="login"
+          @click="logout"
           class="mt-2 bigScreen"
         >
           <v-icon class="mr-1">power_settings_new</v-icon>
@@ -94,8 +94,9 @@
   </div>
 </template>
 <script>
+import $ from "jquery";
 export default {
-  props: ["visitor"],
+  props: ["visitor", "logoutLink"],
   data: () => ({
     dialog: {
       form: true,
@@ -110,7 +111,21 @@ export default {
     ],
   }),
 
-  methods: {},
+  methods: {
+    logout() {
+      $.ajax({
+        url: this.logoutLink,
+        method: "POST",
+        success: () => {
+          this.$emit("logout");
+        },
+        error: (response) => {
+          alert(response.responseText);
+          //TODO fancy error message
+        },
+      });
+    },
+  },
 };
 </script>
 <style>
