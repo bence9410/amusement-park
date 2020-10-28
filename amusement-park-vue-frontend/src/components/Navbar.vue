@@ -18,7 +18,12 @@
         <p id="spendingMoney">{{ visitor.spendingMoney }}</p>
       </div>
 
-      <v-btn color="green darken-3" elevation="7" dark class="mt-2 bigScreen"
+      <v-btn
+        color="green darken-3"
+        elevation="7"
+        dark
+        class="mt-2 bigScreen"
+        @click="toggleSearch"
         ><v-icon class="mr-1">mdi-magnify</v-icon>
         Search
       </v-btn>
@@ -52,7 +57,7 @@
           </v-btn>
         </template>
         <v-list>
-          <v-list-item>
+          <v-list-item @click="toggleSearch">
             <v-icon class="mr-1">mdi-magnify</v-icon>
             <v-list-item-title>Search</v-list-item-title>
           </v-list-item>
@@ -155,6 +160,9 @@ export default {
     openUploadMoneyDialog() {
       this.$refs.uploadMoneyForm.reset();
       this.uploadMoneyDialogShow = true;
+    },
+    toggleSearch() {
+      this.$emit("toggleSearch");
     },
   },
 };

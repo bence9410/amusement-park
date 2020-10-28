@@ -3,7 +3,7 @@
     <div class="text-center py-5" style="background-color: #e9ecef">
       <h1>Amusement Park</h1>
     </div>
-    <v-container>
+    <v-container v-if="searchInputShow">
       <v-row>
         <v-col cols="12" md="3">
           <v-text-field label="Name" outlined required dense></v-text-field>
@@ -66,6 +66,7 @@ Total area min"
 </template>
 <script>
 export default {
+  props: ["searchInputShow"],
   data: () => ({}),
 };
 </script>

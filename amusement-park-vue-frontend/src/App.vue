@@ -5,9 +5,16 @@
       :logoutLink="links.logout"
       @logout="logout"
       @uploadMoney="uploadMoney"
+      @toggleSearch="searchInputShow = !searchInputShow"
     />
     <v-main>
-      <router-view v-if="loaded" :loginLink="links.login" @login="login" />
+      <router-view
+        v-if="loaded"
+        :loginLink="links.login"
+        @login="login"
+        :searchInputShow="searchInputShow"
+      />
+
       <div v-else class="text-center py-5" style="background-color: #e9ecef">
         <h1>Welcome visitor</h1>
       </div>
@@ -29,6 +36,7 @@ export default {
     links: {},
     loaded: false,
     visitor: null,
+    searchInputShow: false,
   }),
   created() {
     $.ajax({
@@ -66,6 +74,7 @@ export default {
     },
     logout() {
       this.visitor = null;
+      this.searchInputShow = false;
       this.$router.push("/");
     },
     uploadMoney(uploadedMoney) {
