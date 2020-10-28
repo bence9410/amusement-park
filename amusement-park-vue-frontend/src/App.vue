@@ -1,6 +1,11 @@
 <template>
   <v-app>
-    <Navbar :visitor="visitor" :logoutLink="links.logout" @logout="logout" />
+    <Navbar
+      :visitor="visitor"
+      :logoutLink="links.logout"
+      @logout="logout"
+      @uploadMoney="uploadMoney"
+    />
     <v-main>
       <router-view v-if="loaded" :loginLink="links.login" @login="login" />
       <div v-else class="text-center py-5" style="background-color: #e9ecef">
@@ -55,11 +60,16 @@ export default {
     },
     login(responseBody) {
       this.visitor = responseBody;
-      this.$router.push("/amusement-park");
+      if (this.$route.path != "/amusement-park") {
+        this.$router.push("/amusement-park");
+      }
     },
     logout() {
       this.visitor = null;
       this.$router.push("/");
+    },
+    uploadMoney(uploadedMoney) {
+      this.visitor.spendingMoney += Number(uploadedMoney);
     },
   },
 };
