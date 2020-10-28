@@ -11,6 +11,7 @@
       <router-view
         v-if="loaded"
         :loginLink="links.login"
+        :signUpLink="links.signUp"
         @login="login"
         :searchInputShow="searchInputShow"
       />

@@ -4,12 +4,13 @@
       <h1>Welcome visitor</h1>
       <h2>Sign Up</h2>
     </div>
-    <v-form>
+    <v-form ref="signUpForm">
       <v-container>
         <v-col col="12" md="4" offset-md="4">
           <v-text-field
             label="Email*"
             required
+            v-model="signUpData.email"
             :rules="[
               (v) =>
                 (!!v && emailRegexp.test(v)) ||
@@ -18,7 +19,7 @@
             :counter="50"
           ></v-text-field>
           <v-text-field
-            v-model="password"
+            v-model="signUpData.password"
             :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
             :rules="[
               (v) =>
@@ -33,11 +34,11 @@
             required
           ></v-text-field>
           <v-text-field
-            v-model="confirmPassword"
+            v-model="signUpData.confirmPassword"
             :append-icon="confirmPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
             :rules="[
               (v) =>
-                (!!v && passwordRegexp.test(v) && password == v) ||
+                (!!v && passwordRegexp.test(v) && signUpData.password == v) ||
                 'Must be equals with password and contain upper and lowercase characters and number and the length must be beetwen 8-25.',
             ]"
             :type="confirmPasswordShow ? 'text' : 'password'"
@@ -48,8 +49,8 @@
             required
           ></v-text-field>
           <v-menu
-            ref="menu"
-            v-model="menu"
+            ref="signUpBirthdateMenu"
+            v-model="signUpBirthdateMenu"
             :close-on-content-click="false"
             transition="scale-transition"
             offset-y
@@ -57,8 +58,8 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                v-model="date"
-                label="Birthday date*"
+                v-model="signUpData.dateOfBirth"
+                label="Birthdate*"
                 readonly
                 v-bind="attrs"
                 v-on="on"
@@ -66,35 +67,50 @@
               ></v-text-field>
             </template>
             <v-date-picker
-              ref="picker"
-              v-model="date"
+              ref="signUpBirthdatePicker"
+              v-model="signUpData.dateOfBirth"
               :max="new Date().toISOString().substr(0, 10)"
               min="1900-01-01"
-              @change="save"
+              @change="selectBirthdate"
             ></v-date-picker>
           </v-menu>
           <v-file-input
             accept="image/png, image/jpeg,image/bmp"
-            label="Photo (size: 2:3)*"
+            label="Profile photo (size: 1:1)*"
             prepend-icon="mdi-camera"
             v-model="image"
             @change="showImg"
             truncate-length="30"
+            required
             :rules="[
-              (value) =>
-                !value ||
-                value.size < 2000000 ||
+              (v) =>
+                !v ||
+                v.size < 2000000 ||
                 'Avatar size should be less than 2 MB!',
+              (v) => !!v || 'File is required',
             ]"
           ></v-file-input>
-          <v-col align="center" v-if="imgSrc != null"
-            ><v-img :src="imgSrc" width="200" height="300"></v-img
-          ></v-col>
+          <v-col align="center" v-if="signUpData.photo != ''">
+            <v-img
+              :src="signUpData.photo"
+              width="100"
+              height="100"
+              class="rounded-circle"
+            ></v-img>
+          </v-col>
           <div class="text-center mt-2">
-            <v-btn color="blue darken-1" elevation="7" dark class="mr-2 px-5">
+            <v-btn
+              color="blue darken-1"
+              elevation="7"
+              dark
+              class="mr-2 px-5"
+              to="/"
+            >
               Back
             </v-btn>
-            <v-btn color="blue darken-1" elevation="7" dark> Sign up </v-btn>
+            <v-btn color="blue darken-1" elevation="7" dark @click="signUp">
+              Sign up
+            </v-btn>
           </div>
         </v-col>
       </v-container>
@@ -102,34 +118,60 @@
   </div>
 </template>
 <script>
+import $ from "jquery";
 export default {
+  props: ["signUpLink"],
   data: () => ({
     emailRegexp: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
     passwordRegexp: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,25}$/,
     passwordShow: false,
     confirmPasswordShow: false,
-    password: "",
-    confirmPassword: "",
-    date: null,
-    menu: false,
-    imgSrc: null,
+    signUpData: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      dateOfBirth: "",
+      photo: "",
+    },
+
+    signUpBirthdateMenu: false,
     image: null,
   }),
   watch: {
-    menu(val) {
-      val && setTimeout(() => (this.$refs.picker.activePicker = "YEAR"));
+    signUpBirthdateMenu(val) {
+      val &&
+        setTimeout(
+          () => (this.$refs.signUpBirthdatePicker.activePicker = "YEAR")
+        );
     },
   },
   methods: {
-    save(date) {
-      this.$refs.menu.save(date);
+    signUp() {
+      if (this.$refs.signUpForm.validate()) {
+        $.ajax({
+          url: this.signUpLink,
+          method: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(this.signUpData),
+          success: (responseBody) => {
+            this.$emit("login", responseBody);
+          },
+          error: (response) => {
+            alert(response.responseText);
+            //TODO fancy error message
+          },
+        });
+      }
+    },
+    selectBirthdate(date) {
+      this.$refs.signUpBirthdateMenu.save(date);
     },
     showImg() {
       if (this.image == null) {
-        this.imgSrc = null;
+        this.signUpData.photo = "";
       } else if (this.image.size < 2000000) {
         var reader = new FileReader();
-        reader.onload = (e) => (this.imgSrc = e.target.result);
+        reader.onload = (e) => (this.signUpData.photo = e.target.result);
         reader.readAsDataURL(this.image);
       }
     },
