@@ -15,6 +15,9 @@ import javax.persistence.criteria.Subquery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 
 import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
 import hu.beni.amusementpark.dto.response.AmusementParkDetailResponseDto;
@@ -88,7 +91,12 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
 		CriteriaQuery<AmusementParkDetailResponseDto> cq = cb.createQuery(AmusementParkDetailResponseDto.class);
 		Root<AmusementPark> root = cq.from(AmusementPark.class);
 
-		cq.orderBy(cb.asc(root.get(AmusementPark_.id)));
+		Order order = pageable.getSortOr(Sort.by(Direction.DESC, "id")).stream().findFirst().get();
+		if (order.getDirection().isAscending()) {
+			cq.orderBy(cb.asc(root.get(order.getProperty())));
+		} else {
+			cq.orderBy(cb.desc(root.get(order.getProperty())));
+		}
 
 		Subquery<Long> countMachines = cq.subquery(Long.class);
 		Root<Machine> machineRoot = countMachines.from(Machine.class);

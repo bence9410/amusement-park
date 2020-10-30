@@ -14,6 +14,9 @@ import javax.persistence.criteria.Root;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 
 import hu.beni.amusementpark.dto.request.MachineSearchRequestDto;
 import hu.beni.amusementpark.dto.response.MachineSearchResponseDto;
@@ -98,6 +101,13 @@ public class MachineRepositoryCustomImpl implements MachineRepositoryCustom {
 			Pageable pageable) {
 		CriteriaQuery<MachineSearchResponseDto> cq = cb.createQuery(MachineSearchResponseDto.class);
 		Root<Machine> root = cq.from(Machine.class);
+
+		Order order = pageable.getSortOr(Sort.by(Direction.DESC, "id")).stream().findFirst().get();
+		if (order.getDirection().isAscending()) {
+			cq.orderBy(cb.asc(root.get(order.getProperty())));
+		} else {
+			cq.orderBy(cb.desc(root.get(order.getProperty())));
+		}
 
 		cq.multiselect(root.get(Machine_.id), root.get(Machine_.fantasyName), root.get(Machine_.size),
 				root.get(Machine_.price), root.get(Machine_.numberOfSeats), root.get(Machine_.minimumRequiredAge),
