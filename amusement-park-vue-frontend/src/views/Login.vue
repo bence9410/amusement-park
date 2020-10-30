@@ -72,10 +72,16 @@ export default {
           data: "email=" + this.email + "&password=" + this.password,
           success: (responseBody) => {
             this.$emit("login", responseBody);
+            this.$bus.$emit("addMessage", {
+              type: "success",
+              text: "Successfull login.",
+            });
           },
           error: (response) => {
-            alert(response.responseText);
-            //TODO fancy error message
+            this.$bus.$emit("addMessage", {
+              type: "error",
+              text: response.responseText,
+            });
           },
         });
       }

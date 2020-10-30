@@ -7,7 +7,9 @@
       @uploadMoney="uploadMoney"
       @toggleSearch="searchInputShow = !searchInputShow"
     />
+
     <v-main>
+      <Message />
       <router-view
         v-if="loaded"
         :loginLink="links.login"
@@ -15,7 +17,6 @@
         @login="login"
         :searchInputShow="searchInputShow"
       />
-
       <div v-else class="text-center py-5" style="background-color: #e9ecef">
         <h1>Welcome visitor</h1>
       </div>
@@ -25,12 +26,14 @@
 
 <script>
 import Navbar from "@/components/Navbar";
+import Message from "@/components/Message";
 import $ from "jquery";
 export default {
   name: "App",
 
   components: {
     Navbar,
+    Message,
   },
 
   data: () => ({

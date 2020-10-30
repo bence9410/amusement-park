@@ -133,15 +133,22 @@ export default {
         method: "POST",
         success: () => {
           this.$emit("logout");
+          this.$bus.$emit("addMessage", {
+            type: "success",
+            text: "Successfull logout.",
+          });
         },
         error: (response) => {
-          alert(response.responseText);
-          //TODO fancy error message
+          this.$bus.$emit("addMessage", {
+            type: "error",
+            text: response.responseText,
+          });
         },
       });
     },
     uploadMoney() {
       if (this.$refs.uploadMoneyForm.validate()) {
+        this.uploadMoneyDialogShow = false;
         $.ajax({
           url: this.visitor._links.uploadMoney.href,
           method: "POST",
@@ -149,10 +156,17 @@ export default {
           data: this.uploadMoneyValue,
           success: () => {
             this.$emit("uploadMoney", this.uploadMoneyValue);
+            this.$bus.$emit("addMessage", {
+              type: "success",
+              text:
+                "Successfully uploaded " + this.uploadMoneyValue + " money.",
+            });
           },
           error: (response) => {
-            alert(response.responseText);
-            //TODO fancy error message
+            this.$bus.$emit("addMessage", {
+              type: "error",
+              text: response.responseText,
+            });
           },
         });
       }

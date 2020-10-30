@@ -85,8 +85,8 @@
             :rules="[
               (v) =>
                 !v ||
-                v.size < 2000000 ||
-                'Avatar size should be less than 2 MB!',
+                v.size < 1000000 ||
+                'Avatar size should be less than 1 MB!',
               (v) => !!v || 'File is required',
             ]"
           ></v-file-input>
@@ -155,10 +155,16 @@ export default {
           data: JSON.stringify(this.signUpData),
           success: (responseBody) => {
             this.$emit("login", responseBody);
+            this.$bus.$emit("addMessage", {
+              type: "success",
+              text: "Successfull sign up.",
+            });
           },
           error: (response) => {
-            alert(response.responseText);
-            //TODO fancy error message
+            this.$bus.$emit("addMessage", {
+              type: "error",
+              text: response.responseText,
+            });
           },
         });
       }
@@ -169,7 +175,7 @@ export default {
     showImg() {
       if (this.image == null) {
         this.signUpData.photo = "";
-      } else if (this.image.size < 2000000) {
+      } else if (this.image.size < 1000000) {
         var reader = new FileReader();
         reader.onload = (e) => (this.signUpData.photo = e.target.result);
         reader.readAsDataURL(this.image);

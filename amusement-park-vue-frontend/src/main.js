@@ -7,6 +7,9 @@ import "material-design-icons-iconfont/dist/material-design-icons.css";
 
 Vue.config.productionTip = false
 
+const bus = new Vue();
+Vue.prototype.$bus = bus;
+
 new Vue({
   router,
   store,
