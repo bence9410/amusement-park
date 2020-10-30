@@ -6,6 +6,7 @@
       @logout="logout"
       @uploadMoney="uploadMoney"
       @toggleSearch="searchInputShow = !searchInputShow"
+      @toggleCreateDialog="openCreateDialog = !openCreateDialog"
     />
 
     <v-main>
@@ -17,6 +18,8 @@
         @login="login"
         :searchInputShow="searchInputShow"
         :amusementParksLink="links.amusementPark"
+        :openCreateDialog="openCreateDialog"
+        @toggleCreateDialog="openCreateDialog = !openCreateDialog"
       />
       <div v-else class="text-center py-5" style="background-color: #e9ecef">
         <h1>Welcome visitor</h1>
@@ -42,6 +45,7 @@ export default {
     loaded: false,
     visitor: null,
     searchInputShow: false,
+    openCreateDialog: false,
   }),
   created() {
     $.ajax({

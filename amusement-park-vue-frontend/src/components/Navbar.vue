@@ -4,30 +4,38 @@
       <v-img
         max-height="50"
         max-width="150"
-        class="rounded mb-3 bigScreen"
+        class="rounded bigScreen"
         :aspect-ratio="2.9"
         src="../assets/logoAmusementPark.png"
         alt="Logo amusement park."
       />
 
-      <v-avatar class="ml-1">
+      <v-avatar class="mx-4">
         <v-img class="pt-0" :src="visitor.photo" alt="Profile picture" />
       </v-avatar>
-      <div class="ml-1 mr-2">
+      <div>
         <p id="email" class="mb-1">{{ visitor.email }}</p>
         <p id="spendingMoney">{{ visitor.spendingMoney }}</p>
       </div>
-
+      <v-spacer></v-spacer>
       <v-btn
         color="green darken-3"
         elevation="7"
         dark
-        class="mt-2 bigScreen"
+        class="mt-2 bigScreen mr-2"
         @click="toggleSearch"
         ><v-icon class="mr-1">mdi-magnify</v-icon>
         Search
       </v-btn>
-      <v-spacer></v-spacer>
+      <v-btn
+        v-if="isAdmin"
+        color="green darken-3"
+        elevation="7"
+        dark
+        class="mt-2 bigScreen ml-2 mr-2"
+        @click="toggleCreateDialog"
+        ><v-icon class="mr-1">add_circle_outline</v-icon>Create</v-btn
+      >
       <v-btn
         color="green darken-3"
         elevation="7"
@@ -60,6 +68,10 @@
           <v-list-item @click="toggleSearch">
             <v-icon class="mr-1">mdi-magnify</v-icon>
             <v-list-item-title>Search</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="toggleCreateDialog">
+            <v-icon class="mr-1">add_circle_outline</v-icon>
+            <v-list-item-title>Create</v-list-item-title>
           </v-list-item>
           <v-list-item @click="openUploadMoneyDialog">
             <v-icon class="mr-1">attach_money</v-icon>
@@ -125,6 +137,11 @@ export default {
     uploadMoneyDialogShow: false,
     uploadMoneyValue: "",
   }),
+  computed: {
+    isAdmin() {
+      return "ROLE_ADMIN" == this.visitor.authority;
+    },
+  },
 
   methods: {
     logout() {
@@ -177,6 +194,9 @@ export default {
     },
     toggleSearch() {
       this.$emit("toggleSearch");
+    },
+    toggleCreateDialog() {
+      this.$emit("toggleCreateDialog");
     },
   },
 };
