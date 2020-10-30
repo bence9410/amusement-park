@@ -62,11 +62,49 @@ Total area min"
         </v-col>
       </v-row>
     </v-container>
+    <v-container>
+      <v-data-table :headers="headers" :items="amusementParks"> </v-data-table>
+    </v-container>
   </div>
 </template>
 <script>
+import $ from "jquery";
 export default {
-  props: ["searchInputShow"],
-  data: () => ({}),
+  props: ["searchInputShow", "amusementParksLink"],
+  data: () => ({
+    amusementParksResponse: null,
+    headers: [
+      {
+        text: "Name",
+        align: "start",
+        value: "name",
+      },
+      { text: "Capital", value: "capital" },
+      { text: "Total area", value: "totalArea" },
+      { text: "Entrance fee", value: "entranceFee" },
+      { text: "Machines", value: "numberOfMachines" },
+      { text: "Guest Book Registries", value: "numberOfGuestBookRegistries" },
+      { text: "Active Visitors", value: "numberOfActiveVisitors" },
+      { text: "Known Visitors", value: "numberOfKnownVisitors" },
+    ],
+  }),
+  computed: {
+    amusementParks() {
+      if (this.amusementParksResponse == null) {
+        return [];
+      } else {
+        return this.amusementParksResponse._embedded
+          .amusementParkDetailResponseDtoList;
+      }
+    },
+  },
+  created() {
+    $.ajax({
+      url: this.amusementParksLink,
+      success: (responseBody) => {
+        this.amusementParksResponse = responseBody;
+      },
+    });
+  },
 };
 </script>

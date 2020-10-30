@@ -15,9 +15,9 @@ const routes = [
     component: () => import(/* webpackChunkName: "signUp" */ '../views/SignUp.vue')
   },
   {
-    path: '/amusement-park',
-    name: 'amusementPark',
-    component: () => import(/* webpackChunkName: "amusementPark" */ '../views/AmusementPark.vue')
+    path: '/amusement-parks',
+    name: 'amusementParks',
+    component: () => import(/* webpackChunkName: "amusementParks" */ '../views/AmusementParks.vue')
   },
 
 ]

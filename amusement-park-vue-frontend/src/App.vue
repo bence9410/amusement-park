@@ -16,6 +16,7 @@
         :signUpLink="links.signUp"
         @login="login"
         :searchInputShow="searchInputShow"
+        :amusementParksLink="links.amusementPark"
       />
       <div v-else class="text-center py-5" style="background-color: #e9ecef">
         <h1>Welcome visitor</h1>
@@ -72,8 +73,8 @@ export default {
     },
     login(responseBody) {
       this.visitor = responseBody;
-      if (this.$route.path != "/amusement-park") {
-        this.$router.push("/amusement-park");
+      if (this.$route.path != "/amusement-parks") {
+        this.$router.push("/amusement-parks");
       }
     },
     logout() {
