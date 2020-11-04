@@ -14,6 +14,11 @@ If a visitor is in an amusement park or on a machine, then they are connected in
 - Maven 3
 - Docker in Swarm mode runnable without sudo
 
+#### Users:
+
+- Admin: email:'nembence1994@gmail.com', password:'Pass1234'
+- Visitor: email:'fenicser85@gmail.com', password:'Pass1234'
+
 #### Postgresql dev run
 
 - Run 'dockerRunPostgresWithAdmin.sh' to start postgres with tables and data and pgadmin.
