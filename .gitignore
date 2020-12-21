@@ -4,3 +4,5 @@
 target/
 results.csv
 .factorypath
+settings.json
+amusement-park/src/main/resources/public/

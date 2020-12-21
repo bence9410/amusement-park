@@ -10,6 +10,11 @@ public class AmusementParkPageObject extends GuestBookPageObject {
 		driverFacade.visible("#photo").getAttribute("src").equals(photo);
 	}
 
+	public void alertMessage(String text) {
+		driverFacade.text(".v-alert__content", text);
+
+	}
+
 	public void createButtonHidden() {
 		driverFacade.notPresent("#amusementParkShowCreateButton");
 	}

@@ -10,6 +10,7 @@ import java.util.function.Function;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -57,6 +58,7 @@ public class DriverFacade {
 
 	public void write(String selector, String value) {
 		visible(selector);
+		deleteText(selector);
 		wait.until(driver -> {
 			driver.findElement(By.cssSelector(selector)).sendKeys(value);
 			return driver.findElement(By.cssSelector(selector)).getAttribute("value").equals(value);
@@ -88,10 +90,13 @@ public class DriverFacade {
 
 	public void deleteText(String selector) {
 		visible(selector);
-		wait.until(driver -> {
-			driver.findElement(By.cssSelector(selector)).clear();
-			return driver.findElement(By.cssSelector(selector)).getAttribute("value").equals("");
-		});
+		long start = System.currentTimeMillis();
+		while (!webDriver.findElement(By.cssSelector(selector)).getAttribute("value").isEmpty()) {
+			webDriver.findElement(By.cssSelector(selector)).sendKeys(Keys.BACK_SPACE, Keys.BACK_SPACE, Keys.BACK_SPACE);
+			if ((System.currentTimeMillis() - start) > 10000) {
+				throw new RuntimeException("Can't delete text.");
+			}
+		}
 	}
 
 	public void hidden(String selector) {
@@ -102,6 +107,11 @@ public class DriverFacade {
 		wait.until(driver -> {
 			return driver.findElements(By.cssSelector(selector)).size() == 0;
 		});
+	}
+
+	public <T> T waitUntil(Function<WebDriver, T> function) {
+		return wait.until(function);
+
 	}
 
 	public void numberOfRowsInTable(String selector, int number) {
