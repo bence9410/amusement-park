@@ -9,10 +9,9 @@
       @toggleCreateDialog="openCreateDialog = !openCreateDialog"
     />
 
-    <v-main>
+    <v-main class="image">
       <Message />
       <router-view
-        v-if="loaded"
         :loginLink="links.login"
         :signUpLink="links.signUp"
         @login="login"
@@ -21,12 +20,27 @@
         :openCreateDialog="openCreateDialog"
         @toggleCreateDialog="openCreateDialog = !openCreateDialog"
       />
-      <div v-else class="text-center py-5" style="background-color: #e9ecef">
-        <h1>Welcome visitor</h1>
-      </div>
     </v-main>
   </v-app>
 </template>
+<style>
+#app {
+  font-family: " Sans-serif" !important;
+}
+.image {
+  background-repeat: no-repeat;
+  background-image: url("./assets/background.jpg");
+  padding: 0;
+  margin: 0;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  position: static;
+}
+.formButton {
+  background: -moz-linear-gradient(right, #067998, #16363c, #16363c, #067998);
+}
+</style>
 
 <script>
 import Navbar from "@/components/Navbar";
@@ -42,7 +56,6 @@ export default {
 
   data: () => ({
     links: {},
-    loaded: false,
     visitor: null,
     searchInputShow: false,
     openCreateDialog: false,
@@ -58,20 +71,18 @@ export default {
   },
   methods: {
     setLinks(responseBody) {
+      let links = {};
       for (let i = 0; i < responseBody.length; i++) {
         let element = responseBody[i];
-        this.links[element.rel] = element.href;
+        links[element.rel] = element.href;
       }
+      this.links = links;
     },
     getUserData() {
       $.ajax({
         url: this.links.me,
         success: (responseBody) => {
           this.login(responseBody);
-          this.loaded = true;
-        },
-        error: () => {
-          this.loaded = true;
         },
       });
     },
