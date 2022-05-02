@@ -14,6 +14,7 @@
       <router-view
         :loginLink="links.login"
         :signUpLink="links.signUp"
+        :visitor="visitor"
         @login="login"
         :searchInputShow="searchInputShow"
         :amusementParksLink="links.amusementPark"
@@ -39,6 +40,10 @@
 }
 .formButton {
   background: -moz-linear-gradient(right, #067998, #16363c, #16363c, #067998);
+}
+.neonGreen {
+  background-color: #00b712;
+  background-image: linear-gradient(315deg, #00b712 0%, #5aff15 74%);
 }
 </style>
 
