@@ -123,7 +123,19 @@
             <v-icon>close</v-icon>
           </v-btn>
         </div>
-        <v-card-title class="text-h5"> Upload money </v-card-title>
+
+        <v-row class="ml-2">
+          <v-card-title class="text-h5"> Upload money </v-card-title>
+          <v-col md="4" style="max-width: 80px">
+            <v-img
+              class="text-center"
+              src="../assets/coinBag.png"
+              alt="Upload money coin bag."
+              elevation="10"
+            ></v-img
+          ></v-col>
+        </v-row>
+
         <v-card-text
           ><v-form ref="uploadMoneyForm">
             <v-row>
@@ -144,9 +156,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="uploadMoney">
-            Upload
-          </v-btn>
+          <v-btn color="neonGreen" @click="uploadMoney">
+            Upload <v-icon>attach_money</v-icon></v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
