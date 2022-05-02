@@ -114,7 +114,7 @@
     <v-dialog
       v-model="uploadMoneyDialogShow"
       persistent
-      max-width="600px"
+      max-width="500px"
       eager
     >
       <v-card>
@@ -123,11 +123,9 @@
             <v-icon>close</v-icon>
           </v-btn>
         </div>
-        <v-card-title>
-          <h2>Upload money</h2>
-        </v-card-title>
-        <v-card-text>
-          <v-form ref="uploadMoneyForm">
+        <v-card-title class="text-h5"> Upload money </v-card-title>
+        <v-card-text
+          ><v-form ref="uploadMoneyForm">
             <v-row>
               <v-text-field
                 label="Money:"
@@ -141,17 +139,15 @@
                 ]"
                 v-model="uploadMoneyValue"
               ></v-text-field>
-              <v-btn
-                color="blue darken-1"
-                dark
-                class="mt-1"
-                @click="uploadMoney"
-              >
-                Upload
-              </v-btn>
             </v-row>
           </v-form>
         </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="uploadMoney">
+            Upload
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
