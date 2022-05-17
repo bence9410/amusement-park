@@ -89,12 +89,12 @@
           </v-col>
         </v-card>
         <v-list rounded>
-          <v-list-item-group>
+          <v-list-item-group v-model="group">
             <v-list-item @click="toggleSearch">
               <v-icon class="mr-1">mdi-magnify</v-icon>
               <v-list-item-title>Search</v-list-item-title>
             </v-list-item>
-            <v-list-item @click="toggleCreateDialog">
+            <v-list-item v-if="isAdmin" @click="toggleCreateDialog">
               <v-icon class="mr-1">add_circle_outline</v-icon>
               <v-list-item-title>Create</v-list-item-title>
             </v-list-item>
@@ -124,7 +124,7 @@
           </v-btn>
         </div>
 
-        <v-row class="ml-2">
+        <v-row class="ml-2" style="margin-right: 0px !important">
           <v-card-title class="text-h5"> Upload money </v-card-title>
           <v-col md="4" style="max-width: 80px">
             <v-img
@@ -140,7 +140,7 @@
           ><v-form ref="uploadMoneyForm">
             <v-row>
               <v-text-field
-                label="Money:"
+                label="Money"
                 outlined
                 required
                 dense
@@ -228,13 +228,18 @@ export default {
     uploadMoneyValue: "",
     drawer: false,
     drawerWidth: "",
+    group: null,
   }),
   computed: {
     isAdmin() {
       return "ROLE_ADMIN" == this.visitor.authority;
     },
   },
-
+  watch: {
+    group() {
+      this.drawer = false;
+    },
+  },
   methods: {
     logout() {
       $.ajax({
