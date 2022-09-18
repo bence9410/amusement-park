@@ -1,8 +1,7 @@
 # Online amusement park!
 
 This project is an old learning project, if you play long enough, the capital of an amusement park could overflow and please use a small picture, it is not production ready.
-I was mainly playing with Spring Boot, HATEOAS and JPA, this was my thesis for the university degree.
-For development I was using Ubuntu, everything was fine, now tried on Windows 11, the scripts are running with bash, if you find any problem, please notify me at nembence1994@gmail.com.
+I was mainly playing with Spring Boot, HATEOAS and JPA, this was my thesis for the university degree, I showed it on AWS.
 
 ## [Available at: amusement-park.eu-central-1.elasticbeanstalk.com](http://amusement-park.eu-central-1.elasticbeanstalk.com)
 
