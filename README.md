@@ -19,7 +19,7 @@ If a visitor is in an amusement park or on a machine, then they are connected in
 - Docker in Swarm mode runnable without sudo
 
 ### Local run
-You can start it with embedded H2, the application creates data then or with pre populated PostreSQL databases from an image created with the dockerBuildAll.sh.
+You can start it with embedded H2, the application creates data then or with pre populated PostreSQL database from an image created with the dockerBuildAll.sh.
 The app will start on port 8080. Use the users mentioned below. There is an AI using the app too. :)
 - Embedded H2: Simply run in ausement-park folder with 'mvn spring-boot:run'.
 - PostgreSQL: First start PostgreSQL with the script below, then the app in ausement-park folder with javaRunPostgres.sh.
@@ -39,6 +39,6 @@ The app will start on port 8080. Use the users mentioned below. There is an AI u
 Build all images with the dockerBuildAll.sh, then run the dockerRunAppAndDB.sh.
 It starts the app in docker with 2 replicas and the performance-test db with admin users in it.
 Execute the performance tests in the tester folder with 'mvn test'.
-There is a results.csv is created in the tester folder, it would be better to monitor the app with Dynatrace or with similar tool.
+There is a results.csv created in the tester folder, it would be better to monitor the app with Dynatrace or with similar tool.
 In the beginning it was nice to see the memory consumption in JConsole and see how performance changes when changing memory limits.
 This test uses multiple threads, when I started I let JPA do the updates on managed entities, but that was modifying the read values, I modify the value in db with a query now. 
