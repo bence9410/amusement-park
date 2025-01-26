@@ -7,16 +7,16 @@ import lombok.Setter;
 @Setter
 public class NumberOfProperties {
 
-	private Integer runs;
+    private Integer runs;
 
-	private Integer admins;
+    private Integer admins;
 
-	private Integer visitors;
+    private Integer visitors;
 
-	private Integer amusementParksPerAdmin;
+    private Integer amusementParksPerAdmin;
 
-	private Integer machinesPerPark;
+    private Integer machinesPerPark;
 
-	private Integer amusementParks;
+    private Integer amusementParks;
 
 }

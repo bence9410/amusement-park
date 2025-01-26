@@ -1,12 +1,11 @@
 package hu.beni.tester.properties;
 
-import javax.annotation.PostConstruct;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import lombok.Getter;
-import lombok.Setter;
+import javax.annotation.PostConstruct;
 
 @Getter
 @Setter
@@ -14,18 +13,18 @@ import lombok.Setter;
 @ConfigurationProperties("tester")
 public class ApplicationProperties {
 
-	private DataProperties data;
+    private DataProperties data;
 
-	private NumberOfProperties numberOf;
+    private NumberOfProperties numberOf;
 
-	@PostConstruct
-	public void init() {
-		int numberOfAmusementParks = numberOf.getAdmins() * numberOf.getAmusementParksPerAdmin();
-		numberOf.setAmusementParks(numberOfAmusementParks);
-		VisitorDataProperties visitorDataProperties = new VisitorDataProperties();
-		visitorDataProperties.setSpendingMoney(numberOfAmusementParks * data.getAmusementPark().getEntranceFee()
-				+ numberOfAmusementParks * numberOf.getMachinesPerPark() * data.getMachine().getTicketPrice());
-		data.setVisitor(visitorDataProperties);
-	}
+    @PostConstruct
+    public void init() {
+        int numberOfAmusementParks = numberOf.getAdmins() * numberOf.getAmusementParksPerAdmin();
+        numberOf.setAmusementParks(numberOfAmusementParks);
+        VisitorDataProperties visitorDataProperties = new VisitorDataProperties();
+        visitorDataProperties.setSpendingMoney(numberOfAmusementParks * data.getAmusementPark().getEntranceFee()
+                + numberOfAmusementParks * numberOf.getMachinesPerPark() * data.getMachine().getTicketPrice());
+        data.setVisitor(visitorDataProperties);
+    }
 
 }

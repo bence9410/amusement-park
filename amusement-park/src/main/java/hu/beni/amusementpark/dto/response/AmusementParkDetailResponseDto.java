@@ -9,22 +9,22 @@ import lombok.Data;
 @AllArgsConstructor
 public class AmusementParkDetailResponseDto {
 
-	private Long id;
+    private Long id;
 
-	private String name;
+    private String name;
 
-	private Integer capital;
+    private Integer capital;
 
-	private Integer totalArea;
+    private Integer totalArea;
 
-	private Integer entranceFee;
+    private Integer entranceFee;
 
-	private Long numberOfMachines;
+    private Long numberOfMachines;
 
-	private Long numberOfGuestBookRegistries;
+    private Long numberOfGuestBookRegistries;
 
-	private Long numberOfActiveVisitors;
+    private Long numberOfActiveVisitors;
 
-	private Long numberOfKnownVisitors;
+    private Long numberOfKnownVisitors;
 
 }

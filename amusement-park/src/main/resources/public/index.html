@@ -1,73 +1,73 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Amusement Park</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" type="text/css"
-	href="/webjars/bootstrap/css/bootstrap.min.css" />
-<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
-<script type="text/javascript"
-	src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-<style type="text/css">
-.modal-open {
-	overflow: inherit;
-}
-</style>
+    <title>Amusement Park</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet"
+          type="text/css"/>
+    <script src="/webjars/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="/webjars/bootstrap/js/bootstrap.min.js"
+            type="text/javascript"></script>
+    <style type="text/css">
+        .modal-open {
+            overflow: inherit;
+        }
+    </style>
 </head>
 <body onload="init()">
-	<div id="header" class="navbar bg-success sticky-top"
-		style="display: none">
-		<div class="col-md-4 row">
-			<div class="col-md-8 row">
-				<img class="mr-2 rounded" src="/img/logoAmusementPark.png"
-					alt="logo" style="width: 190px; height: 50px"> <img id="photo"
-					class="rounded-circle" alt="photo"
-					style="width: 33px; height: 50px">
-			</div>
-			<div class="col-md-4">
-				<p class="mb-0" id="email"></p>
-				<p id="spendingMoney" class="mb-0"></p>
-			</div>
-		</div>
-		<div id="headerButton" class="col-md-5 row"></div>
-		<div class="col-md-3 row">
-			<input class="btn btn-secondary mr-1" id="uploadMoney" type="button"
-				value="Upload money" data-toggle="modal"
-				data-target="#uploadMoneyModal" onclick="clearUploadMoneyPopup()">
-			<form id="logout" method="post">
-				<input class="btn btn-secondary" type="submit" value="Logout">
-			</form>
-		</div>
-	</div>
-	<div class="modal fade" id="uploadMoneyModal" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">Upload money</h4>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-				</div>
-				<div class="modal-body">
-					<div id="moneyUploadResult"></div>
-					<div class=" row ">
-						<div class="col-md-8">
-							<label for="Money" class="mt-3">Money:</label> <input id="money"
-								class="form-control" type="text">
-						</div>
-						<div class="col-md-2 mt-5">
-							<input class="btn btn-secondary" id="upload" type="button"
-								value="Upload" >
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<input id="closeUpload" class="btn btn-secondary" type="button"
-						data-dismiss="modal" value="Close">
-				</div>
-			</div>
-		</div>
-	</div>
-	<div id="content" style="display: none"></div>
-	<script type="text/javascript" src="/index.js"></script>
+<div class="navbar bg-success sticky-top" id="header"
+     style="display: none">
+    <div class="col-md-4 row">
+        <div class="col-md-8 row">
+            <img alt="logo" class="mr-2 rounded"
+                 src="/img/logoAmusementPark.png" style="width: 190px; height: 50px"> <img alt="photo"
+                                                                     class="rounded-circle" id="photo"
+                                                                     style="width: 33px; height: 50px">
+        </div>
+        <div class="col-md-4">
+            <p class="mb-0" id="email"></p>
+            <p class="mb-0" id="spendingMoney"></p>
+        </div>
+    </div>
+    <div class="col-md-5 row" id="headerButton"></div>
+    <div class="col-md-3 row">
+        <input class="btn btn-secondary mr-1" data-target="#uploadMoneyModal" data-toggle="modal"
+               id="uploadMoney" onclick="clearUploadMoneyPopup()"
+               type="button" value="Upload money">
+        <form id="logout" method="post">
+            <input class="btn btn-secondary" type="submit" value="Logout">
+        </form>
+    </div>
+</div>
+<div class="modal fade" id="uploadMoneyModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Upload money</h4>
+                <button class="close" data-dismiss="modal" type="button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="moneyUploadResult"></div>
+                <div class=" row ">
+                    <div class="col-md-8">
+                        <label class="mt-3" for="Money">Money:</label> <input class="form-control"
+                                                                              id="money" type="text">
+                    </div>
+                    <div class="col-md-2 mt-5">
+                        <input class="btn btn-secondary" id="upload" type="button"
+                               value="Upload">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input class="btn btn-secondary" data-dismiss="modal" id="closeUpload"
+                       type="button" value="Close">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="content" style="display: none"></div>
+<script src="/index.js" type="text/javascript"></script>
 </body>
 </html>

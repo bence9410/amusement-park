@@ -1,19 +1,18 @@
 package hu.beni.amusementpark.entity;
 
-import java.io.Serializable;
+import lombok.Data;
 
 import javax.persistence.Embeddable;
-
-import lombok.Data;
+import java.io.Serializable;
 
 @Data
 @Embeddable
 public class AmusementParkIdVisitorEmail implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Long amusementParkId;
+    private Long amusementParkId;
 
-	private String visitorEmail;
+    private String visitorEmail;
 
 }

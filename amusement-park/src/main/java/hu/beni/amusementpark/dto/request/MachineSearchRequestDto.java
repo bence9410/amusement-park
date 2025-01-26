@@ -6,30 +6,30 @@ import lombok.Data;
 @Data
 public class MachineSearchRequestDto {
 
-	private Long amusementParkId;
+    private Long amusementParkId;
 
-	private String fantasyName;
+    private String fantasyName;
 
-	private Integer sizeMin;
+    private Integer sizeMin;
 
-	private Integer sizeMax;
+    private Integer sizeMax;
 
-	private Integer priceMin;
+    private Integer priceMin;
 
-	private Integer priceMax;
+    private Integer priceMax;
 
-	private Integer numberOfSeatsMin;
+    private Integer numberOfSeatsMin;
 
-	private Integer numberOfSeatsMax;
+    private Integer numberOfSeatsMax;
 
-	private Integer minimumRequiredAgeMin;
+    private Integer minimumRequiredAgeMin;
 
-	private Integer minimumRequiredAgeMax;
+    private Integer minimumRequiredAgeMax;
 
-	private Integer ticketPriceMin;
+    private Integer ticketPriceMin;
 
-	private Integer ticketPriceMax;
+    private Integer ticketPriceMax;
 
-	private MachineType type;
+    private MachineType type;
 
 }

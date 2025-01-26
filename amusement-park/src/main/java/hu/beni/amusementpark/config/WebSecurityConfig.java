@@ -1,5 +1,10 @@
 package hu.beni.amusementpark.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import hu.beni.amusementpark.config.security.ValidateingUsernamePasswordAuthenticationFilter;
+import hu.beni.amusementpark.mapper.VisitorMapper;
+import hu.beni.amusementpark.service.VisitorService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
@@ -14,13 +19,6 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import hu.beni.amusementpark.config.security.ValidateingUsernamePasswordAuthenticationFilter;
-import hu.beni.amusementpark.mapper.VisitorMapper;
-import hu.beni.amusementpark.service.VisitorService;
-import lombok.RequiredArgsConstructor;
-
 @Configuration
 @RequiredArgsConstructor
 @ConditionalOnWebApplication
@@ -28,23 +26,23 @@ import lombok.RequiredArgsConstructor;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private final VisitorService visitorService;
-	private final ObjectMapper objectMapper;
-	private final VisitorMapper visitorMapper;
-	private final PasswordEncoder passwordEncoder;
+    private final VisitorService visitorService;
+    private final ObjectMapper objectMapper;
+    private final VisitorMapper visitorMapper;
+    private final PasswordEncoder passwordEncoder;
 
-	@Override
-	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-		authenticationProvider.setPasswordEncoder(passwordEncoder);
-		authenticationProvider.setUserDetailsService(visitorService);
-		authenticationProvider.setHideUserNotFoundExceptions(false);
-		auth.authenticationProvider(authenticationProvider);
-	}
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+        authenticationProvider.setUserDetailsService(visitorService);
+        authenticationProvider.setHideUserNotFoundExceptions(false);
+        auth.authenticationProvider(authenticationProvider);
+    }
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http //@formatter:off
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http //@formatter:off
             .authorizeRequests()
             	.antMatchers("/", "/webjars/**", "/index.js", "/api/links", "/api/me", "/api/signUp",
             			"/pages/login-and-sign-up.html", "/js/login-and-sign-up.js", "/img/**")
@@ -62,6 +60,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             	.disable()
             .exceptionHandling()
             	.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/")); //@formatter:on
-	}
+    }
 
 }

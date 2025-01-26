@@ -1,11 +1,10 @@
 package hu.beni.amusementpark.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.repository.custom.GuestBookRegistryRepositoryCustom;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface GuestBookRegistryRepository
-		extends JpaRepository<GuestBookRegistry, Long>, GuestBookRegistryRepositoryCustom {
+        extends JpaRepository<GuestBookRegistry, Long>, GuestBookRegistryRepositoryCustom {
 
 }

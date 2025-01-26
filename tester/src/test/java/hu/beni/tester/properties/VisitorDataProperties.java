@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class VisitorDataProperties {
 
-	private Integer spendingMoney;
+    private Integer spendingMoney;
 
 }

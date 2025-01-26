@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class AmusementParkDataProperties {
 
-	private Integer capital;
+    private Integer capital;
 
-	private Integer entranceFee;
+    private Integer entranceFee;
 
 }
