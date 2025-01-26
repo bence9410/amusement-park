@@ -16,6 +16,6 @@ insert into amusement_park_know_visitor(date_of_first_enter, amusement_park_id, 
 
 insert into amusement_park_know_visitor(date_of_first_enter, amusement_park_id, visitor_email) values('2020-05-06 15:33:03.894', (select id from amusement_park where name = 'test park 100'), 'onMachine@gmail.com');
 
-insert into guest_book_registry(date_of_registry, text_of_registry, amusement_park_id, visitor_email) values('2020-05-06 15:33:03.894', 'test Amazeing.', (select id from amusement_park where name = 'test park 100'), 'inPark@gmail.com');
+insert into guest_book_registry(date_of_registry, text_of_registry, amusement_park_id, visitor_email) values('2020-05-06 15:33:03.894', 'test Amazing.', (select id from amusement_park where name = 'test park 100'), 'inPark@gmail.com');
 
 insert into guest_book_registry(date_of_registry, text_of_registry, amusement_park_id, visitor_email) values('2020-05-06 15:33:03.894', 'test Very good.', (select id from amusement_park where name = 'test park 100'), 'inPark@gmail.com');

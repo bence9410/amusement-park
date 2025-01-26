@@ -59,8 +59,8 @@ public class VisitorController {
 	}
 
 	@PostMapping("/visitors/uploadMoney")
-	public ResponseEntity<Void> uploadMoney(@Range(min = 1) @RequestBody Integer ammount, Principal principal) {
-		visitorService.uploadMoney(ammount, principal.getName());
+	public ResponseEntity<Void> uploadMoney(@Range(min = 1) @RequestBody Integer amount, Principal principal) {
+		visitorService.uploadMoney(amount, principal.getName());
 		return ResponseEntity.ok().build();
 	}
 

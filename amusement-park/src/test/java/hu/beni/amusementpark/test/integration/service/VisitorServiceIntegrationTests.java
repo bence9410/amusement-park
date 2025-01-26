@@ -40,12 +40,12 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 
 	@Test
 	public void uploadMoneyTest() {
-		Integer ammountToUpload = 500;
-		visitorService.uploadMoney(ammountToUpload, testVisitorEmail);
+		Integer amountToUpload = 500;
+		visitorService.uploadMoney(amountToUpload, testVisitorEmail);
 		update++;
 		assertStatements();
 
-		assertEquals(visitorSpendingMoney + ammountToUpload,
+		assertEquals(visitorSpendingMoney + amountToUpload,
 				visitorService.findByEmail(testVisitorEmail).getSpendingMoney().intValue());
 		select++;
 		assertStatements();

@@ -12,7 +12,7 @@ public interface VisitorService extends UserDetailsService {
 
 	Visitor signUp(Visitor visitor);
 
-	void uploadMoney(Integer ammount, String visitorEmail);
+	void uploadMoney(Integer amount, String visitorEmail);
 
 	Visitor leavePark(Long amusementParkId, String visitorEmail);
 

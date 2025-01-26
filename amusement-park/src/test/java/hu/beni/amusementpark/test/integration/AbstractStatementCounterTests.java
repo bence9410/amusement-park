@@ -72,7 +72,7 @@ public abstract class AbstractStatementCounterTests {
 		machineTicketPrice = machine.getTicketPrice();
 
 		guestBookId = entityManager
-				.createQuery("select g from GuestBookRegistry g where g.textOfRegistry='test Amazeing.'",
+				.createQuery("select g from GuestBookRegistry g where g.textOfRegistry='test Amazing.'",
 						GuestBookRegistry.class)
 				.getSingleResult().getId();
 	}

@@ -84,8 +84,8 @@ public class VisitorServiceImpl implements VisitorService {
 		return visitorRepository.save(visitor);
 	}
 
-	public void uploadMoney(Integer ammount, String visitorEmail) {
-		visitorRepository.incrementSpendingMoneyByEmail(ammount, visitorEmail);
+	public void uploadMoney(Integer amount, String visitorEmail) {
+		visitorRepository.incrementSpendingMoneyByEmail(amount, visitorEmail);
 	}
 
 	@Override

@@ -13,12 +13,12 @@ import hu.beni.amusementpark.repository.custom.AmusementParkRepositoryCustom;
 public interface AmusementParkRepository extends JpaRepository<AmusementPark, Long>, AmusementParkRepositoryCustom {
 
 	@Modifying
-	@Query("Update AmusementPark a set a.capital = a.capital - :ammount where a.id = :amusementParkId")
-	void decreaseCapitalById(Integer ammount, Long amusementParkId);
+	@Query("Update AmusementPark a set a.capital = a.capital - :amount where a.id = :amusementParkId")
+	void decreaseCapitalById(Integer amount, Long amusementParkId);
 
 	@Modifying
-	@Query("Update AmusementPark a set a.capital = a.capital + :ammount where a.id = :amusementParkId")
-	void incrementCapitalById(Integer ammount, Long amusementParkId);
+	@Query("Update AmusementPark a set a.capital = a.capital + :amount where a.id = :amusementParkId")
+	void incrementCapitalById(Integer amount, Long amusementParkId);
 
 	@Query("Select new hu.beni.amusementpark.entity.AmusementPark(a.id) from AmusementPark a where a.id = :amusementParkId")
 	Optional<AmusementPark> findByIdReadOnlyId(Long amusementParkId);
