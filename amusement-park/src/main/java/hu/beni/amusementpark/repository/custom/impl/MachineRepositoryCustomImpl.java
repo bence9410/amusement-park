@@ -6,6 +6,11 @@ import hu.beni.amusementpark.entity.AmusementPark_;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Machine_;
 import hu.beni.amusementpark.repository.custom.MachineRepositoryCustom;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,11 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,8 +108,9 @@ public class MachineRepositoryCustomImpl implements MachineRepositoryCustom {
         }
 
         cq.multiselect(root.get(Machine_.id), root.get(Machine_.fantasyName), root.get(Machine_.size),
-                root.get(Machine_.price), root.get(Machine_.numberOfSeats), root.get(Machine_.minimumRequiredAge),
-                root.get(Machine_.ticketPrice), root.get(Machine_.type)).where(createPredicates(cb, root, dto));
+                        root.get(Machine_.price), root.get(Machine_.numberOfSeats), root.get(Machine_.minimumRequiredAge),
+                        root.get(Machine_.ticketPrice), root.get(Machine_.type))
+                .where(createPredicates(cb, root, dto));
         return entityManager.createQuery(cq).setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize()).getResultList();
     }

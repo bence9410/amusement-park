@@ -2,6 +2,7 @@ package hu.beni.amusementpark.dto.resource;
 
 import hu.beni.amusementpark.constants.Constants;
 import hu.beni.amusementpark.validation.constraint.PasswordConfirmPasswordSameConstraint;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,7 +10,6 @@ import lombok.ToString;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 
-import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Optional;
 

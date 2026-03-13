@@ -9,16 +9,16 @@ import hu.beni.amusementpark.repository.GuestBookRegistryRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.GuestBookRegistryService;
 import hu.beni.amusementpark.service.impl.GuestBookRegistryServiceImpl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -30,7 +30,7 @@ public class GuestBookServiceUnitTests {
 
     private GuestBookRegistryService guestBookService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         amusementParkRepository = mock(AmusementParkRepository.class);
         visitorRepository = mock(VisitorRepository.class);
@@ -39,7 +39,7 @@ public class GuestBookServiceUnitTests {
                 guestBookRegistryRepository);
     }
 
-    @After
+    @AfterEach
     public void verifyNoMoreInteractionsOnMocks() {
         verifyNoMoreInteractions(amusementParkRepository, visitorRepository, guestBookRegistryRepository);
     }

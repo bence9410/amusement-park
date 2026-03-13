@@ -9,9 +9,9 @@ import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.service.MachineService;
 import hu.beni.amusementpark.service.impl.MachineServiceImpl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class MachineServiceUnitTests {
@@ -32,7 +32,7 @@ public class MachineServiceUnitTests {
 
     private MachineService machineService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         amusementParkRepository = mock(AmusementParkRepository.class);
         machineRepository = mock(MachineRepository.class);
@@ -40,7 +40,7 @@ public class MachineServiceUnitTests {
         machineService = new MachineServiceImpl(amusementParkRepository, machineRepository);
     }
 
-    @After
+    @AfterEach
     public void verifyNoMoreInteractionsOnMocks() {
         verifyNoMoreInteractions(amusementParkRepository, machineRepository);
     }

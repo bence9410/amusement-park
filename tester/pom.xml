@@ -9,19 +9,19 @@
     <packaging>jar</packaging>
 
     <name>tester</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Tester project for Amusement Park</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.0.RELEASE</version>
+        <version>4.0.3</version>
         <relativePath/>
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>11</java.version>
+        <java.version>25</java.version>
     </properties>
 
     <dependencies>
@@ -47,8 +47,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -56,8 +56,19 @@
     <build>
         <plugins>
             <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerArguments>
+                        <processor>
+                            lombok.launch.AnnotationProcessorHider$AnnotationProcessor
+                        </processor>
+                    </compilerArguments>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
+                <version>4.9.10</version>
                 <executions>
                     <execution>
                         <goals>
@@ -67,6 +78,7 @@
                 </executions>
                 <configuration>
                     <dotGitDirectory>${project.basedir}/../.git</dotGitDirectory>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
                 </configuration>
             </plugin>
         </plugins>

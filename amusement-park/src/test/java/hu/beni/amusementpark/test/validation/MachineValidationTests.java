@@ -4,8 +4,8 @@ import hu.beni.amusementpark.dto.resource.MachineResource;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.enums.MachineType;
 import hu.beni.amusementpark.helper.ValidResourceFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.stream.Stream;
 
@@ -29,7 +29,7 @@ public class MachineValidationTests extends AbstractValidation {
 
     private MachineResource machineResource;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         machine = createMachine();
 

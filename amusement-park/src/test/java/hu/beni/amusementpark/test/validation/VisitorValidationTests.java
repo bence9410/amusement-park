@@ -3,8 +3,8 @@ package hu.beni.amusementpark.test.validation;
 import hu.beni.amusementpark.dto.resource.VisitorResource;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.helper.ValidResourceFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
@@ -27,7 +27,7 @@ public class VisitorValidationTests extends AbstractValidation {
 
     private VisitorResource visitorResource;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         visitor = createVisitor();
 

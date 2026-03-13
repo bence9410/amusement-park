@@ -1,13 +1,14 @@
 package hu.beni.amusementpark.test.validation;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+
 import java.util.Locale;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractValidation {
 
@@ -28,7 +29,7 @@ public abstract class AbstractValidation {
     protected void validateAndAssertViolationsSizeIsOneAndViolationIs(Object object, Object invalidValue,
                                                                       String propertyName, String message) {
         Set<ConstraintViolation<Object>> violations = validator.validate(object);
-        assertEquals(violations.toString(), 1, violations.size());
+        assertEquals(1, violations.size());
 
         ConstraintViolation<Object> violation = violations.iterator().next();
         assertEquals(invalidValue, violation.getInvalidValue());
@@ -39,7 +40,7 @@ public abstract class AbstractValidation {
     protected void validateAndAssertViolationsSizeIsTwoAndFieldViolationIs(Object object, Object invalidValue,
                                                                            String propertyName, String message) {
         Set<ConstraintViolation<Object>> violations = validator.validate(object);
-        assertEquals(violations.toString(), 2, violations.size());
+        assertEquals(2, violations.size());
 
         ConstraintViolation<Object> violation = violations.stream()
                 .filter(v -> !v.getPropertyPath().toString().equals("")).findFirst().get();

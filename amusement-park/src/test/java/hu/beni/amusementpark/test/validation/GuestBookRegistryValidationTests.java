@@ -3,8 +3,8 @@ package hu.beni.amusementpark.test.validation;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Visitor;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static hu.beni.amusementpark.constants.StringParamConstants.*;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
@@ -18,7 +18,7 @@ public class GuestBookRegistryValidationTests extends AbstractValidation {
 
     private GuestBookRegistry guestBookRegistry;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         guestBookRegistry = GuestBookRegistry.builder().textOfRegistry(OPINION_ON_THE_PARK)
                 .visitor(Visitor.builder().email("benike@gmail.com").build())

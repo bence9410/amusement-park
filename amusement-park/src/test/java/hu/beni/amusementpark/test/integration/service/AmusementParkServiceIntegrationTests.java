@@ -4,14 +4,14 @@ import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
 import hu.beni.amusementpark.dto.response.AmusementParkDetailResponseDto;
 import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementPark;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class AmusementParkServiceIntegrationTests extends AbstractStatementCounterTests {
 

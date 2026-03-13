@@ -6,13 +6,13 @@ import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.helper.ValidEntityFactory;
 import hu.beni.amusementpark.service.MachineService;
 import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MachineServiceIntegrationTests extends AbstractStatementCounterTests {
 

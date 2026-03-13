@@ -9,9 +9,9 @@ import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.*;
 import hu.beni.amusementpark.service.VisitorService;
 import hu.beni.amusementpark.service.impl.VisitorServiceImpl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -34,7 +34,7 @@ public class VisitorServiceUnitTests {
 
     private VisitorService visitorService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         amusementParkRepository = mock(AmusementParkRepository.class);
         machineRepository = mock(MachineRepository.class);
@@ -45,7 +45,7 @@ public class VisitorServiceUnitTests {
                 amusementParkKnowVisitorRepository, visitorEventRepository);
     }
 
-    @After
+    @AfterEach
     public void verifyNoMoreInteractionsOnMocks() {
         verifyNoMoreInteractions(amusementParkRepository, machineRepository, visitorRepository,
                 amusementParkKnowVisitorRepository);

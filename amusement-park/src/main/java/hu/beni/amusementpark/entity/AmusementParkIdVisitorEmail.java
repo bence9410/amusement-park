@@ -1,8 +1,8 @@
 package hu.beni.amusementpark.entity;
 
+import jakarta.persistence.Embeddable;
 import lombok.Data;
 
-import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 @Data

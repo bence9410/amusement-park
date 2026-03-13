@@ -8,9 +8,9 @@ import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.service.impl.AmusementParkServiceImpl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +22,7 @@ import java.util.Optional;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITORS_IN_PARK;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class AmusementParkServiceUnitTests {
@@ -32,14 +32,14 @@ public class AmusementParkServiceUnitTests {
 
     private AmusementParkService amusementParkService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         amusementParkRepository = mock(AmusementParkRepository.class);
         visitorRepository = mock(VisitorRepository.class);
         amusementParkService = new AmusementParkServiceImpl(amusementParkRepository, visitorRepository);
     }
 
-    @After
+    @AfterEach
     public void verifyNoMoreInteractionsOnMocks() {
         verifyNoMoreInteractions(amusementParkRepository, visitorRepository);
     }

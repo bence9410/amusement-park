@@ -7,6 +7,7 @@ import hu.beni.amusementpark.dto.response.GuestBookRegistrySearchResponseDto;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.mapper.GuestBookRegistryMapper;
 import hu.beni.amusementpark.service.GuestBookRegistryService;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +19,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Size;
 import java.beans.PropertyEditorSupport;
 import java.io.IOException;
 import java.net.URLDecoder;

@@ -8,6 +8,7 @@ import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.factory.LinkFactory;
 import hu.beni.amusementpark.mapper.AmusementParkMapper;
 import hu.beni.amusementpark.service.AmusementParkService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.beans.PropertyEditorSupport;
 import java.io.IOException;
 import java.net.URLDecoder;

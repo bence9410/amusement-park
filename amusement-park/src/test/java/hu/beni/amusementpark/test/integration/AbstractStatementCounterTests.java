@@ -8,20 +8,16 @@ import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.data.domain.Example;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-
 @Transactional
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE, classes = {AmusementParkApplication.class,
         DataSourceConfig.class, DataSourceInitializator.class})
 public abstract class AbstractStatementCounterTests {
@@ -68,7 +64,7 @@ public abstract class AbstractStatementCounterTests {
                 .getSingleResult().getId();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         reset();
     }

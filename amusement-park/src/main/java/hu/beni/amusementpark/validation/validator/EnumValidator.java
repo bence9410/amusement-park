@@ -1,9 +1,9 @@
 package hu.beni.amusementpark.validation.validator;
 
 import hu.beni.amusementpark.validation.constraint.EnumConstraint;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

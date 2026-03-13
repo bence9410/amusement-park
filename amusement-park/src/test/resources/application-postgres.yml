@@ -1,0 +1,23 @@
+amusement-park:
+  ai: false
+  transaction-logging: true
+spring:
+  config:
+    activate:
+      on-profile: postgres
+  jmx.enabled: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/amusement_park
+    username: postgres
+    password: admin
+    platform: postgresql
+  sql:
+    init:
+      data-locations: 
+  jpa:
+    open-in-view: false
+    show-sql: true
+    properties.hibernate.format_sql: true
+    hibernate.ddl-auto: create
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+logging.level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE

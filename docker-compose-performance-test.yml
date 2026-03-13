@@ -8,3 +8,10 @@ services:
       replicas: 2
   postgres:
     image: bence/postgres-performance-test
+  db-admin:
+    image: dpage/pgadmin4
+    ports:
+      - 8079:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=nembence1994@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=admin

@@ -1,6 +1,7 @@
 package hu.beni.amusementpark.helper;
 
-import static org.junit.Assert.fail;
+
+import static org.assertj.core.api.Fail.fail;
 
 public class MyAssert {
 

@@ -5,14 +5,14 @@ import hu.beni.amusementpark.dto.response.GuestBookRegistrySearchResponseDto;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.service.GuestBookRegistryService;
 import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class GuestBookServiceIntegrationTests extends AbstractStatementCounterTests {
 

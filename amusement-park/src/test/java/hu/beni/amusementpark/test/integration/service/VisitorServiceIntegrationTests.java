@@ -5,12 +5,12 @@ import hu.beni.amusementpark.enums.VisitorEventType;
 import hu.beni.amusementpark.helper.ValidEntityFactory;
 import hu.beni.amusementpark.service.VisitorService;
 import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class VisitorServiceIntegrationTests extends AbstractStatementCounterTests {
 

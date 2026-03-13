@@ -4,6 +4,8 @@ import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
 import hu.beni.amusementpark.dto.response.AmusementParkDetailResponseDto;
 import hu.beni.amusementpark.entity.*;
 import hu.beni.amusementpark.repository.custom.AmusementParkRepositoryCustom;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -12,8 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,28 +84,28 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
         }
 
         Subquery<Long> countMachines = cq.subquery(Long.class);
-        Root<Machine> machineRoot = countMachines.from(Machine.class);
-        countMachines.where(cb.equal(root, machineRoot.get(Machine_.amusementPark)));
-        countMachines.select(cb.count(machineRoot));
+        Root<AmusementPark> correlatedRoot = countMachines.correlate(root);
+        SetJoin<Root<AmusementPark>, Machine> machineSetJoin = correlatedRoot.joinSet(AmusementPark_.machines.getName());
+        countMachines.select(cb.count(machineSetJoin));
 
         Subquery<Long> countGuestBooks = cq.subquery(Long.class);
-        Root<GuestBookRegistry> guestBookRoot = countGuestBooks.from(GuestBookRegistry.class);
-        countGuestBooks.where(cb.equal(root, guestBookRoot.get(GuestBookRegistry_.amusementPark)));
-        countGuestBooks.select(cb.count(guestBookRoot));
+        correlatedRoot = countGuestBooks.correlate(root);
+        SetJoin<Root<AmusementPark>, GuestBookRegistry> guestBookRegistrySetJoin = correlatedRoot.joinSet(AmusementPark_.guestBookRegistries.getName());
+        countGuestBooks.select(cb.count(guestBookRegistrySetJoin));
 
         Subquery<Long> countActiveVisitors = cq.subquery(Long.class);
-        Root<Visitor> activeRoot = countActiveVisitors.from(Visitor.class);
-        countActiveVisitors.where(cb.equal(root, activeRoot.get(Visitor_.amusementPark)));
-        countActiveVisitors.select(cb.count(activeRoot));
+        correlatedRoot = countActiveVisitors.correlate(root);
+        SetJoin<Root<AmusementPark>, Visitor> activeVisitorSetJoin = correlatedRoot.joinSet(AmusementPark_.activeVisitors.getName());
+        countActiveVisitors.select(cb.count(activeVisitorSetJoin));
 
         Subquery<Long> countKnownVisitors = cq.subquery(Long.class);
-        Root<AmusementParkKnowVisitor> knownRoot = countKnownVisitors.from(AmusementParkKnowVisitor.class);
-        countKnownVisitors.where(cb.equal(root, knownRoot.get(AmusementParkKnowVisitor_.amusementPark)));
-        countKnownVisitors.select(cb.count(knownRoot));
+        correlatedRoot = countKnownVisitors.correlate(root);
+        SetJoin<Root<AmusementPark>, Visitor> knownVisitorSetJoin = correlatedRoot.joinSet(AmusementPark_.knownVisitors.getName());
+        countKnownVisitors.select(cb.count(knownVisitorSetJoin));
 
-        cq.multiselect(root.get(AmusementPark_.id), root.get(AmusementPark_.name), root.get(AmusementPark_.capital),
-                        root.get(AmusementPark_.totalArea), root.get(AmusementPark_.entranceFee), countMachines.getSelection(),
-                        countGuestBooks.getSelection(), countActiveVisitors.getSelection(), countKnownVisitors.getSelection())
+        cq.select(cb.construct(AmusementParkDetailResponseDto.class, root.get(AmusementPark_.id), root.get(AmusementPark_.name), root.get(AmusementPark_.capital),
+                        root.get(AmusementPark_.totalArea), root.get(AmusementPark_.entranceFee), countMachines,
+                        countGuestBooks, countActiveVisitors, countKnownVisitors))
                 .where(createPredicates(cb, root, dto));
         return entityManager.createQuery(cq).setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize()).getResultList();

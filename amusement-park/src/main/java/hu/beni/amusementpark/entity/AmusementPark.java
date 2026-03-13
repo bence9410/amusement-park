@@ -1,21 +1,21 @@
 package hu.beni.amusementpark.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Tolerate;
 import org.hibernate.validator.constraints.Range;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Set;
 
-import static javax.persistence.CascadeType.REMOVE;
-import static javax.persistence.GenerationType.IDENTITY;
+import static jakarta.persistence.CascadeType.REMOVE;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Data
 @Entity

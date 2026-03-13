@@ -11,10 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.core.TypeReferences.PagedModelType;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.hateoas.server.core.TypeReferences;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -33,10 +31,13 @@ import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.*;
 @RequiredArgsConstructor
 public class Aladin {
 
-    public static final PagedModelType<EntityModel<AmusementParkDetailResponseDto>> PAGED_AMUSEMENT_PARK = new PagedModelType<EntityModel<AmusementParkDetailResponseDto>>() {
+    public static final TypeReferences.PagedModelType<EntityModel<AmusementParkDetailResponseDto>> PAGED_AMUSEMENT_PARK = new TypeReferences.PagedModelType<>() {
     };
-
-    public static final PagedModelType<EntityModel<MachineSearchResponseDto>> PAGED_MACHINE = new PagedModelType<EntityModel<MachineSearchResponseDto>>() {
+    public static final TypeReferences.PagedModelType<EntityModel<MachineSearchResponseDto>> PAGED_MACHINE = new TypeReferences.PagedModelType<>() {
+    };
+    private static final TypeReferences.EntityModelType<VisitorResource> SINGLE_VISITOR = new TypeReferences.EntityModelType<>() {
+    };
+    private static final TypeReferences.EntityModelType<GuestBookRegistryResource> SINGLE_GUEST_BOOK_REGISTRY = new TypeReferences.EntityModelType<>() {
     };
 
     private final RestTemplate restTemplate;
@@ -55,37 +56,39 @@ public class Aladin {
                 Collectors.toMap(link -> link.getRel().value(), Link::getHref))
                 : links;
 
-        VisitorResource visitorResource = loginAsAladin();
+        EntityModel<VisitorResource> visitorResourceEntityModel = loginAsAladin();
 
-        upload1000MoneyIfSpendingMoneyLessThan1000(visitorResource);
+        upload1000MoneyIfSpendingMoneyLessThan1000(visitorResourceEntityModel);
 
-        EntityModel<AmusementParkDetailResponseDto> amusementParkResource = findBencesPark();
+        EntityModel<AmusementParkDetailResponseDto> amusementParkResourceEntityModel = findBencesPark();
 
-        visitorResource = enterPark(amusementParkResource);
+        visitorResourceEntityModel = enterPark(amusementParkResourceEntityModel);
 
         List<EntityModel<MachineSearchResponseDto>> machineResources = new ArrayList<>(
-                findMachines(amusementParkResource));
+                findMachines(amusementParkResourceEntityModel));
 
         IntStream.range(0, 7).map(i -> machineResources.size()).map(random::nextInt).mapToObj(machineResources::get)
                 .forEach(this::getOnMachineWaitAndGetOffSkipIfNoFreeSeat);
 
-        addGuestBookRegistry(visitorResource);
+        addGuestBookRegistry(visitorResourceEntityModel);
 
-        leavePark(visitorResource);
+        leavePark(visitorResourceEntityModel);
 
         logout();
     }
 
-    private VisitorResource loginAsAladin() {
+    private EntityModel<VisitorResource> loginAsAladin() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("email", "aladin@gmail.com");
         map.add("password", "Pass1234");
-        return restTemplate.postForObject(links.get(LOGIN), map, VisitorResource.class);
+        return restTemplate.exchange(links.get(LOGIN), HttpMethod.POST, new HttpEntity<>(map, headers), SINGLE_VISITOR).getBody();
     }
 
-    private void upload1000MoneyIfSpendingMoneyLessThan1000(VisitorResource visitorResource) {
-        if (visitorResource.getSpendingMoney() < 1000) {
-            restTemplate.postForObject(visitorResource.getLink(HATEOASLinkRelConstants.UPLOAD_MONEY).get().getHref(),
+    private void upload1000MoneyIfSpendingMoneyLessThan1000(EntityModel<VisitorResource> visitorResourceEntityModel) {
+        if (visitorResourceEntityModel.getContent().getSpendingMoney() < 1000) {
+            restTemplate.postForObject(visitorResourceEntityModel.getLink(HATEOASLinkRelConstants.UPLOAD_MONEY).get().getHref(),
                     1000, Void.class);
         }
     }
@@ -98,41 +101,41 @@ public class Aladin {
                 .get();
     }
 
-    private VisitorResource enterPark(EntityModel<AmusementParkDetailResponseDto> amusementParkResource) {
+    private EntityModel<VisitorResource> enterPark(EntityModel<AmusementParkDetailResponseDto> amusementParkResourceEntityModel) {
         return restTemplate
-                .exchange(amusementParkResource.getLink(HATEOASLinkRelConstants.VISITOR_ENTER_PARK).get().getHref(),
-                        HttpMethod.PUT, HttpEntity.EMPTY, VisitorResource.class)
+                .exchange(amusementParkResourceEntityModel.getLink(HATEOASLinkRelConstants.VISITOR_ENTER_PARK).get().getHref(),
+                        HttpMethod.PUT, HttpEntity.EMPTY, SINGLE_VISITOR)
                 .getBody();
     }
 
     private Collection<EntityModel<MachineSearchResponseDto>> findMachines(
-            EntityModel<AmusementParkDetailResponseDto> amusementParkResource) {
-        return restTemplate.exchange(amusementParkResource.getLink(HATEOASLinkRelConstants.MACHINE).get().getHref(),
+            EntityModel<AmusementParkDetailResponseDto> amusementParkResourceEntityModel) {
+        return restTemplate.exchange(amusementParkResourceEntityModel.getLink(HATEOASLinkRelConstants.MACHINE).get().getHref(),
                 HttpMethod.GET, HttpEntity.EMPTY, PAGED_MACHINE).getBody().getContent();
     }
 
     private void getOnMachineWaitAndGetOffSkipIfNoFreeSeat(EntityModel<MachineSearchResponseDto> machineResource) {
         try {
-            ResponseEntity<VisitorResource> response = restTemplate.exchange(
+            ResponseEntity<EntityModel<VisitorResource>> response = restTemplate.exchange(
                     machineResource.getLink(HATEOASLinkRelConstants.GET_ON_MACHINE).get().getHref(), HttpMethod.PUT,
-                    HttpEntity.EMPTY, VisitorResource.class);
+                    HttpEntity.EMPTY, SINGLE_VISITOR);
 
             Thread.sleep(60000 + random.nextInt(120000));
 
             restTemplate.exchange(response.getBody().getLink(HATEOASLinkRelConstants.GET_OFF_MACHINE).get().getHref(),
-                    HttpMethod.PUT, HttpEntity.EMPTY, VisitorResource.class);
+                    HttpMethod.PUT, HttpEntity.EMPTY, SINGLE_VISITOR);
         } catch (Throwable t) {
             log.error(ErrorMessageConstants.ERROR, t);
         }
     }
 
-    private void addGuestBookRegistry(VisitorResource visitorResource) {
-        restTemplate.postForEntity(visitorResource.getLink(HATEOASLinkRelConstants.ADD_REGISTRY).get().getHref(),
-                "Amazing", GuestBookRegistryResource.class);
+    private void addGuestBookRegistry(EntityModel<VisitorResource> visitorResourceEntityModel) {
+        restTemplate.exchange(visitorResourceEntityModel.getLink(HATEOASLinkRelConstants.ADD_REGISTRY).get().getHref(),
+                HttpMethod.POST, new HttpEntity<>("Amazing"), SINGLE_GUEST_BOOK_REGISTRY);
     }
 
-    private void leavePark(VisitorResource visitorResource) {
-        restTemplate.put(visitorResource.getLink(HATEOASLinkRelConstants.VISITOR_LEAVE_PARK).get().getHref(), null);
+    private void leavePark(EntityModel<VisitorResource> visitorResourceEntityModel) {
+        restTemplate.put(visitorResourceEntityModel.getLink(HATEOASLinkRelConstants.VISITOR_LEAVE_PARK).get().getHref(), null);
     }
 
     private void logout() {

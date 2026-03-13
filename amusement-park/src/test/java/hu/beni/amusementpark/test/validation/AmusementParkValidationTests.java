@@ -3,8 +3,8 @@ package hu.beni.amusementpark.test.validation;
 import hu.beni.amusementpark.dto.resource.AmusementParkResource;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.helper.ValidResourceFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_21_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
@@ -22,7 +22,7 @@ public class AmusementParkValidationTests extends AbstractValidation {
 
     private AmusementParkResource amusementParkResource;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         amusementPark = createAmusementPark();
 

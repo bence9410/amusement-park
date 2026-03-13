@@ -4,10 +4,9 @@ import hu.beni.tester.dto.SumAndTime;
 import hu.beni.tester.properties.ApplicationProperties;
 import hu.beni.tester.properties.DataProperties;
 import hu.beni.tester.properties.NumberOfProperties;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
 
 @Component
 @RequiredArgsConstructor

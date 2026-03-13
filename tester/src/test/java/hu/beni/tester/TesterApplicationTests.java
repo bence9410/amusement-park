@@ -5,17 +5,15 @@ import hu.beni.tester.output.ResultLogger;
 import hu.beni.tester.properties.ApplicationProperties;
 import hu.beni.tester.service.AsyncService;
 import hu.beni.tester.validator.CapitalAndSpendingMoneySumValidator;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.PostConstruct;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -27,7 +25,6 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @SpringBootApplication
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 public class TesterApplicationTests {
 

@@ -1,15 +1,13 @@
 package hu.beni.amusementpark.entity;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-
-import static javax.persistence.GenerationType.IDENTITY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Data
 @Entity
@@ -21,7 +19,6 @@ public class Photo {
     private Long id;
 
     @Lob
-    @Type(type = "org.hibernate.type.TextType")
     private String photo;
 
     public Photo(String photo) {
