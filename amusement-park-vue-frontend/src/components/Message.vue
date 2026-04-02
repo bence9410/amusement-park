@@ -1,17 +1,7 @@
 <template>
-  <div
-    class="pt-3"
-    style="position: absolute; width: 100%; z-index: 1"
-    align="center"
-  >
-    <v-alert
-      v-for="message in messages"
-      :key="message.id"
-      style="width: 60%"
-      :type="message.type"
-      transition="slide-y-transition"
-      @click="removeMessage(message)"
-      >{{ message.text }}
+  <div class="pt-3" style="position: absolute; width: 100%; z-index: 1" align="center">
+    <v-alert v-for="message in messages" :key="message.id" style="width: 60%" :type="message.type"
+      transition="slide-y-transition" @click="removeMessage(message)">{{ message.text }}
     </v-alert>
   </div>
 </template>

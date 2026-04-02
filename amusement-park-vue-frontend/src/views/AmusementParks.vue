@@ -9,53 +9,23 @@
           <v-text-field label="Name" outlined required dense></v-text-field>
         </v-col>
         <v-col cols="12" md="3">
-          <v-text-field
-            label="Capital min"
-            outlined
-            required
-            dense
-          ></v-text-field>
+          <v-text-field label="Capital min" outlined required dense></v-text-field>
         </v-col>
         <v-col cols="12" md="3">
-          <v-text-field
-            label="Capital max"
-            outlined
-            required
-            dense
-          ></v-text-field>
+          <v-text-field label="Capital max" outlined required dense></v-text-field>
         </v-col>
         <v-col cols="12" md="3">
-          <v-text-field
-            label="
-Total area min"
-            outlined
-            required
-            dense
-          ></v-text-field>
+          <v-text-field label="
+Total area min" outlined required dense></v-text-field>
         </v-col>
         <v-col cols="12" md="3">
-          <v-text-field
-            label="Total area max"
-            outlined
-            required
-            dense
-          ></v-text-field>
+          <v-text-field label="Total area max" outlined required dense></v-text-field>
         </v-col>
         <v-col cols="12" md="3">
-          <v-text-field
-            label="Entrance fee min"
-            outlined
-            required
-            dense
-          ></v-text-field>
+          <v-text-field label="Entrance fee min" outlined required dense></v-text-field>
         </v-col>
         <v-col cols="12" md="3">
-          <v-text-field
-            label="Entrance fee max"
-            outlined
-            required
-            dense
-          ></v-text-field>
+          <v-text-field label="Entrance fee max" outlined required dense></v-text-field>
         </v-col>
         <v-col cols="12" md="3">
           <v-btn color="blue darken-1" dark block class="mt-1"> Search </v-btn>
@@ -80,67 +50,34 @@ Total area min"
             <v-form ref="amusementParkCreateForm">
               <v-row>
                 <v-col cols="12">
-                  <v-text-field
-                    label="Name"
-                    outlined
-                    required
-                    dense
-                    v-model="amusementParkCreate.name"
-                    :rules="[
-                      (v) =>
-                        (!!v && v.length > 5 && v.length < 20) ||
-                        'Name size must be between 5 and 20.',
-                    ]"
-                    :counter="20"
-                  >
+                  <v-text-field label="Name" outlined required dense v-model="amusementParkCreate.name" :rules="[
+                    (v) =>
+                      (!!v && v.length > 5 && v.length < 20) ||
+                      'Name size must be between 5 and 20.',
+                  ]" :counter="20">
                   </v-text-field>
-                  <v-text-field
-                    label="Capital"
-                    outlined
-                    required
-                    dense
-                    v-model="amusementParkCreate.capital"
-                    :rules="[
-                      (v) =>
-                        (!!v && Number(v) > 500 && Number(v) < 50000) ||
-                        'Capital must be between 500 and 50000.',
-                    ]"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Total area"
-                    outlined
-                    required
-                    dense
-                    v-model="amusementParkCreate.totalArea"
+                  <v-text-field label="Capital" outlined required dense v-model="amusementParkCreate.capital" :rules="[
+                    (v) =>
+                      (!!v && Number(v) > 500 && Number(v) < 50000) ||
+                      'Capital must be between 500 and 50000.',
+                  ]"></v-text-field>
+                  <v-text-field label="Total area" outlined required dense v-model="amusementParkCreate.totalArea"
                     :rules="[
                       (v) =>
                         (!!v && Number(v) > 50 && Number(v) < 5000) ||
                         'TotalArea must be between 50 and 5000. ',
-                    ]"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Entrance fee"
-                    outlined
-                    required
-                    dense
-                    v-model="amusementParkCreate.entranceFee"
+                    ]"></v-text-field>
+                  <v-text-field label="Entrance fee" outlined required dense v-model="amusementParkCreate.entranceFee"
                     :rules="[
                       (v) =>
                         (!!v && Number(v) > 5 && Number(v) < 200) ||
                         'EntranceFee must be between 5 and 200.',
-                    ]"
-                  ></v-text-field>
+                    ]"></v-text-field>
                 </v-col>
-              </v-row> </v-form
-          ></v-card-text>
+              </v-row> </v-form></v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              color="blue darken-1"
-              class="px-4"
-              dark
-              @click="createAmusementPark"
-            >
+            <v-btn color="blue darken-1" class="px-4" dark @click="createAmusementPark">
               Create
             </v-btn>
           </v-card-actions>
