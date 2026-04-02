@@ -1,54 +1,50 @@
 package hu.beni.tester.config;
 
-import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
-
-import java.util.concurrent.Executor;
-
-import javax.annotation.PostConstruct;
-
+import hu.beni.tester.properties.ApplicationProperties;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport.HypermediaType;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.client.*;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.DefaultUriBuilderFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.util.concurrent.Executor;
 
-import hu.beni.tester.properties.ApplicationProperties;
-import lombok.RequiredArgsConstructor;
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
+@Slf4j
 @EnableAsync
 @Configuration
 @RequiredArgsConstructor
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 public class ExecutorAndRestTemplateConfig {
 
-	private final ObjectMapper objectMapper;
-	private final ApplicationProperties applicationProperties;
+    private final ApplicationProperties applicationProperties;
 
-	@PostConstruct
-	public void init() {
-		objectMapper.registerModule(new JavaTimeModule());
-	}
+    @Bean
+    public Executor asyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(applicationProperties.getNumberOf().getVisitors());
+        executor.initialize();
+        return executor;
+    }
 
-	@Bean
-	public Executor asyncExecutor() {
-		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(applicationProperties.getNumberOf().getVisitors());
-		executor.initialize();
-		return executor;
-	}
-
-	@Bean
-	@Scope(SCOPE_PROTOTYPE)
-	public RestTemplate restTemplate() {
-		RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
-		return restTemplate;
-	}
+    @Bean
+    @Scope(SCOPE_PROTOTYPE)
+    public RestTemplate restTemplate() {
+        DefaultUriBuilderFactory defaultUriBuilderFactory = new DefaultUriBuilderFactory();
+        defaultUriBuilderFactory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
+        RestTemplate restTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+        restTemplate.setUriTemplateHandler(defaultUriBuilderFactory);
+        return restTemplate;
+    }
 
 }

@@ -1,22 +1,25 @@
 package hu.beni.tester.resource;
 
-import org.springframework.hateoas.RepresentationModel;
-
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AmusementParkResource extends RepresentationModel<AmusementParkResource> {
 
-	private Long identifier;
+    private Long identifier;
 
-	private String name;
+    private String name;
 
-	private Integer capital;
+    private Integer capital;
 
-	private Integer totalArea;
+    private Integer totalArea;
 
-	private Integer entranceFee;
+    private Integer entranceFee;
 
 }

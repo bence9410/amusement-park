@@ -7,10 +7,10 @@ import lombok.Setter;
 @Setter
 public class DataProperties {
 
-	private AmusementParkDataProperties amusementPark;
+    private AmusementParkDataProperties amusementPark;
 
-	private MachineDataProperties machine;
+    private MachineDataProperties machine;
 
-	private VisitorDataProperties visitor;
+    private VisitorDataProperties visitor;
 
 }

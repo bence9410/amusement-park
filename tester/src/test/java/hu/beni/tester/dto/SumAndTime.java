@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SumAndTime {
 
-	private final long sum;
+    private final long sum;
 
-	private final long time;
+    private final long time;
 
 }

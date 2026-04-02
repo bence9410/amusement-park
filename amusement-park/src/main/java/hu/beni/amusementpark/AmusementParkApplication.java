@@ -10,9 +10,9 @@ import hu.beni.amusementpark.filter.AmusementParkFilter;
 @SpringBootApplication
 public class AmusementParkApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AmusementParkApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AmusementParkApplication.class, args);
+    }
 
 	@Bean
 	public FilterRegistrationBean<AmusementParkFilter> loggingFilter() {

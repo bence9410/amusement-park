@@ -1,60 +1,5 @@
 package hu.beni.amusementpark.test.integration;
 
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_TOO_EXPENSIVE;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.validationError;
-import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.ADD_REGISTRY;
-import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.AMUSEMENT_PARK;
-import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.GET_OFF_MACHINE;
-import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.GET_ON_MACHINE;
-import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.LOGIN;
-import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.LOGOUT;
-import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.MACHINE;
-import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.ME;
-import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.SELF;
-import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.SIGN_UP;
-import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.UPLOAD_MONEY;
-import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
-import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
-import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.oneOfMessage;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.rangeMessage;
-import static hu.beni.amusementpark.helper.MyAssert.assertThrows;
-import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Collectors.toSet;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Locale;
-import java.util.Map;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import javax.annotation.PostConstruct;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.PagedModel;
-import org.springframework.hateoas.server.core.TypeReferences.PagedModelType;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-
 import hu.beni.amusementpark.AmusementParkApplication;
 import hu.beni.amusementpark.config.DataSourceInitializator;
 import hu.beni.amusementpark.config.RestTemplateConfig;
@@ -67,385 +12,426 @@ import hu.beni.amusementpark.enums.MachineType;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.helper.MyAssert.ExceptionAsserter;
 import hu.beni.amusementpark.helper.ValidResourceFactory;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.core.TypeReferences;
+import org.springframework.http.*;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_TOO_EXPENSIVE;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.validationError;
+import static hu.beni.amusementpark.constants.HATEOASLinkRelConstants.*;
+import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.oneOfMessage;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.rangeMessage;
+import static hu.beni.amusementpark.helper.MyAssert.assertThrows;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { AmusementParkApplication.class,
-		RestTemplateConfig.class, DataSourceInitializator.class })
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = {AmusementParkApplication.class,
+        RestTemplateConfig.class, DataSourceInitializator.class})
 public class AmusementParkApplicationTests {
 
-	public static final PagedModelType<AmusementParkResource> PAGED_AMUSEMENT_PARK = new PagedModelType<AmusementParkResource>() {
-	};
-
-	static {
-		Locale.setDefault(Locale.ENGLISH);
-	}
+    private static final TypeReferences.PagedModelType<EntityModel<AmusementParkResource>> PAGED_AMUSEMENT_PARK = new TypeReferences.PagedModelType<>() {
+    };
+    private static final TypeReferences.EntityModelType<AmusementParkResource> SINGLE_AMUSEMENT_PARK = new TypeReferences.EntityModelType<>() {
+    };
+    private static final TypeReferences.EntityModelType<VisitorResource> SINGLE_VISITOR = new TypeReferences.EntityModelType<>() {
+    };
+    private static final TypeReferences.EntityModelType<MachineResource> SINGLE_MACHINE = new TypeReferences.EntityModelType<>() {
+    };
+    private static final TypeReferences.EntityModelType<GuestBookRegistryResource> SINGLE_GUEST_BOOK_REGISTRY = new TypeReferences.EntityModelType<>() {
+    };
+
+    private static Map<String, String> links;
+
+    static {
+        Locale.setDefault(Locale.ENGLISH);
+    }
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @LocalServerPort
+    private int port;
+
+    @PostConstruct
+    public void init() {
+        links = links == null ? getBaseLinks() : links;
+    }
+
+    private Map<String, String> getBaseLinks() {
+        return Stream.of(restTemplate.getForObject("http://localhost:" + port + "/api/links", Link[].class))
+                .collect(toMap(link -> link.getRel().value(), Link::getHref));
+    }
+
+    @Test
+    public void signUpAndUploadMoneyAndVisitorCanNotCreateParkAndLogoutTest() {
+        VisitorResource inputVisitorResource = ValidResourceFactory.createVisitor();
+
+        EntityModel<VisitorResource> responseVisitorResource = signUp(inputVisitorResource);
+
+        assertSignedUpVisitor(inputVisitorResource, responseVisitorResource, 250);
+
+        uploadMoney500(responseVisitorResource.getLink(UPLOAD_MONEY).get().getHref());
+
+        assertSignedUpVisitor(inputVisitorResource,
+                restTemplate.exchange(responseVisitorResource.getLink(SELF).get().getHref(), HttpMethod.GET, HttpEntity.EMPTY, SINGLE_VISITOR).getBody(),
+                750);
+
+        getAmusementParksWorks();
+
+        postAmusementParksAccessIsDenied();
+
+        logout();
+    }
+
+    private EntityModel<VisitorResource> signUp(VisitorResource visitorResource) {
+        return restTemplate.exchange(links.get(SIGN_UP), HttpMethod.POST, new HttpEntity<>(visitorResource), SINGLE_VISITOR).getBody();
+    }
+
+    private void assertSignedUpVisitor(VisitorResource inputVisitorResource, EntityModel<VisitorResource> actualVisitorResource,
+                                       Integer spendingMoney) {
+        assertEquals(inputVisitorResource.getEmail(), actualVisitorResource.getContent().getEmail());
+        assertEquals(inputVisitorResource.getDateOfBirth(), actualVisitorResource.getContent().getDateOfBirth());
+        assertEquals(spendingMoney.intValue(), actualVisitorResource.getContent().getSpendingMoney().intValue());
+        assertEquals("ROLE_VISITOR", actualVisitorResource.getContent().getAuthority());
+        assertNull(actualVisitorResource.getContent().getPassword());
+        assertNull(actualVisitorResource.getContent().getConfirmPassword());
+        assertEquals(3, actualVisitorResource.getLinks().stream().count());
+        assertTrue(actualVisitorResource.getLink(SELF).get().getHref().endsWith("/me"));
+        assertTrue(actualVisitorResource.getLink(UPLOAD_MONEY).isPresent());
+        assertTrue(actualVisitorResource.getLink(AMUSEMENT_PARK).isPresent());
+    }
+
+    private void uploadMoney500(String uploadMoneyHref) {
+        restTemplate.postForObject(uploadMoneyHref, 500, Void.class);
+    }
+
+    private void getAmusementParksWorks() {
+        ResponseEntity<PagedModel<EntityModel<AmusementParkResource>>> response = getAmusementParks();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(3, response.getBody().getContent().size());
+    }
+
+    private ResponseEntity<PagedModel<EntityModel<AmusementParkResource>>> getAmusementParks() {
+        return restTemplate.exchange(links.get(AMUSEMENT_PARK), HttpMethod.GET, HttpEntity.EMPTY, PAGED_AMUSEMENT_PARK);
+    }
+
+    private void postAmusementParksAccessIsDenied() {
+        assertThrows(() -> restTemplate.postForEntity(links.get(AMUSEMENT_PARK),
+                ValidResourceFactory.createAmusementPark(), Void.class), HttpClientErrorException.class, exception -> {
+            assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
+            assertEquals("Access Denied", exception.getResponseBodyAsString());
+        });
+    }
+
+    private void logout() {
+        ResponseEntity<String> response = restTemplate.postForEntity(links.get(LOGOUT), null, String.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody().contains("<title>Amusement Park</title>"));
+    }
+
+    @Test
+    public void pageTest() {
+        loginAsAdmin();
+
+        ResponseEntity<PagedModel<EntityModel<AmusementParkResource>>> response = getAmusementParks();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        PagedModel<EntityModel<AmusementParkResource>> page = response.getBody();
+        assertEquals(1, page.getLinks().stream().count());
+        assertTrue(page.getLink(SELF).isPresent());
+
+        IntStream.range(0, 11).forEach(i -> postAmusementPark());
+
+        response = getAmusementParks();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        page = response.getBody();
+        assertEquals(4, page.getLinks().stream().count());
+        assertTrue(page.getLink("first").isPresent());
+        assertTrue(page.getLink("next").isPresent());
+        assertTrue(page.getLink("last").isPresent());
+
+        response = restTemplate.exchange(page.getLink("last").get().getHref(), HttpMethod.GET, HttpEntity.EMPTY,
+                PAGED_AMUSEMENT_PARK);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        page = response.getBody();
+        assertEquals(4, page.getLinks().stream().count());
+        assertTrue(page.getLink("first").isPresent());
+        assertTrue(page.getLink("prev").isPresent());
+        assertTrue(page.getLink("last").isPresent());
+
+        response = restTemplate.exchange(links.get(AMUSEMENT_PARK) + "?input=" + encode("{\"name\":\"a\"}"),
+                HttpMethod.GET, HttpEntity.EMPTY, PAGED_AMUSEMENT_PARK);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        page = response.getBody();
+        assertEquals(4, page.getLinks().stream().count());
+        assertTrue(page.getLink("last").isPresent());
+
+        response = restTemplate.exchange(links.get(AMUSEMENT_PARK) + "?input=" + encode("{\"name\":\"x\"}"),
+                HttpMethod.GET, HttpEntity.EMPTY, PAGED_AMUSEMENT_PARK);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        page = response.getBody();
+        assertEquals(1, page.getLinks().stream().count());
+    }
+
+    private EntityModel<VisitorResource> loginAsAdmin() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        ResponseEntity<EntityModel<VisitorResource>> response = restTemplate.exchange(links.get(LOGIN), HttpMethod.POST,
+                new HttpEntity<>(createMap("nembence1994@gmail.com", StringParamConstants.VALID_PASSWORD), headers), SINGLE_VISITOR);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        log.info(response.getHeaders().toString());
+        assertTrue(response.getHeaders().getFirst("Set-Cookie").contains("SESSION="));
 
-	private static Map<String, String> links;
+        EntityModel<VisitorResource> visitorResourceEntityModel = response.getBody();
+        VisitorResource visitorResource = visitorResourceEntityModel.getContent();
 
-	@Autowired
-	private RestTemplate restTemplate;
+        assertNotNull(visitorResource);
+        log.info(visitorResource.toString());
+        assertEquals(3, visitorResourceEntityModel.getLinks().stream().count());
+        assertTrue(visitorResourceEntityModel.getLink(SELF).isPresent());
+        assertTrue(visitorResourceEntityModel.getLink(AMUSEMENT_PARK).isPresent());
+        assertTrue(visitorResourceEntityModel.getLink(UPLOAD_MONEY).isPresent());
 
-	@LocalServerPort
-	private int port;
-
-	@PostConstruct
-	public void init() {
-		links = links == null ? getBaseLinks() : links;
-	}
+        assertEquals("nembence1994@gmail.com", visitorResource.getEmail());
+        assertEquals("ROLE_ADMIN", visitorResource.getAuthority());
 
-	private Map<String, String> getBaseLinks() {
-		return Stream.of(restTemplate.getForObject("http://localhost:" + port + "/api/links", Link[].class))
-				.collect(toMap(link -> link.getRel().value(), Link::getHref));
-	}
-
-	@Test
-	public void signUpAndUploadMoneyAndVisitorCanNotCreateParkAndLogoutTest() {
-		VisitorResource inputVisitorResource = ValidResourceFactory.createVisitor();
-
-		VisitorResource responseVisitorResource = signUp(inputVisitorResource);
-
-		assertSignedUpVisitor(inputVisitorResource, responseVisitorResource, 250);
-
-		uploadMoney500(responseVisitorResource.getLink(UPLOAD_MONEY).get().getHref());
-
-		assertSignedUpVisitor(inputVisitorResource,
-				restTemplate.getForObject(responseVisitorResource.getLink(SELF).get().getHref(), VisitorResource.class),
-				750);
-
-		getAmusementParksWorks();
-
-		postAmusementParksAccessIsDenied();
-
-		logout();
-	}
-
-	private VisitorResource signUp(VisitorResource visitorResource) {
-		return restTemplate.postForObject(links.get(SIGN_UP), visitorResource, VisitorResource.class);
-	}
-
-	private void assertSignedUpVisitor(VisitorResource inputVisitorResource, VisitorResource actualVisitorResource,
-			Integer spendingMoney) {
-		assertEquals(inputVisitorResource.getEmail(), actualVisitorResource.getEmail());
-		assertEquals(inputVisitorResource.getDateOfBirth(), actualVisitorResource.getDateOfBirth());
-		assertEquals(spendingMoney.intValue(), actualVisitorResource.getSpendingMoney().intValue());
-		assertEquals("ROLE_VISITOR", actualVisitorResource.getAuthority());
-		assertNull(actualVisitorResource.getPassword());
-		assertNull(actualVisitorResource.getConfirmPassword());
-		assertEquals(3, actualVisitorResource.getLinks().stream().count());
-		assertTrue(actualVisitorResource.getLink(SELF).get().getHref().endsWith("/me"));
-		assertTrue(actualVisitorResource.getLink(UPLOAD_MONEY).isPresent());
-		assertTrue(actualVisitorResource.getLink(AMUSEMENT_PARK).isPresent());
-	}
+        return visitorResourceEntityModel;
+    }
 
-	private void uploadMoney500(String uploadMoneyHref) {
-		restTemplate.postForObject(uploadMoneyHref, 500, Void.class);
-	}
-
-	private void getAmusementParksWorks() {
-		ResponseEntity<PagedModel<AmusementParkResource>> response = getAmusementParks();
-
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertEquals(3, response.getBody().getContent().size());
-	}
-
-	private ResponseEntity<PagedModel<AmusementParkResource>> getAmusementParks() {
-		return restTemplate.exchange(links.get(AMUSEMENT_PARK), HttpMethod.GET, HttpEntity.EMPTY, PAGED_AMUSEMENT_PARK);
-	}
+    private MultiValueMap<String, String> createMap(String username, String password) {
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("email", username);
+        map.add("password", password);
+        return map;
+    }
 
-	private void postAmusementParksAccessIsDenied() {
-		assertThrows(() -> restTemplate.postForEntity(links.get(AMUSEMENT_PARK),
-				ValidResourceFactory.createAmusementPark(), Void.class), HttpClientErrorException.class, exception -> {
-					assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
-					assertEquals("Access is denied", exception.getResponseBodyAsString());
-				});
-	}
-
-	private void logout() {
-		ResponseEntity<Void> response = restTemplate.postForEntity(links.get(LOGOUT), null, Void.class);
-
-		assertEquals(HttpStatus.FOUND, response.getStatusCode());
-		assertTrue(response.getHeaders().getLocation().toString().endsWith(Integer.toString(port) + "/"));
-	}
-
-	@Test
-	public void pageTest() {
-		loginAsAdmin();
-
-		ResponseEntity<PagedModel<AmusementParkResource>> response = getAmusementParks();
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-		PagedModel<AmusementParkResource> page = response.getBody();
-		assertEquals(1, page.getLinks().stream().count());
-		assertTrue(page.getLink(SELF).isPresent());
-
-		IntStream.range(0, 11).forEach(i -> postAmusementPark());
-
-		response = getAmusementParks();
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-
-		page = response.getBody();
-		assertEquals(4, page.getLinks().stream().count());
-		assertTrue(page.getLink("first").isPresent());
-		assertTrue(page.getLink("next").isPresent());
-		assertTrue(page.getLink("last").isPresent());
-
-		response = restTemplate.exchange(page.getLink("last").get().getHref(), HttpMethod.GET, HttpEntity.EMPTY,
-				PAGED_AMUSEMENT_PARK);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-
-		page = response.getBody();
-		assertEquals(4, page.getLinks().stream().count());
-		assertTrue(page.getLink("first").isPresent());
-		assertTrue(page.getLink("prev").isPresent());
-		assertTrue(page.getLink("last").isPresent());
-
-		response = restTemplate.exchange(links.get(AMUSEMENT_PARK) + "?input=" + encode("{\"name\":\"a\"}"),
-				HttpMethod.GET, HttpEntity.EMPTY, PAGED_AMUSEMENT_PARK);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-
-		page = response.getBody();
-		assertEquals(4, page.getLinks().stream().count());
-		assertTrue(page.getLink("last").isPresent());
-
-		response = restTemplate.exchange(links.get(AMUSEMENT_PARK) + "?input=" + encode("{\"name\":\"x\"}"),
-				HttpMethod.GET, HttpEntity.EMPTY, PAGED_AMUSEMENT_PARK);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-
-		page = response.getBody();
-		assertEquals(1, page.getLinks().stream().count());
-	}
-
-	private VisitorResource loginAsAdmin() {
-		ResponseEntity<VisitorResource> response = restTemplate.postForEntity(links.get(LOGIN),
-				createMap("nembence1994@gmail.com", StringParamConstants.VALID_PASSWORD), VisitorResource.class);
+    private EntityModel<AmusementParkResource> postAmusementPark() {
+        AmusementParkResource amusementParkResource = ValidResourceFactory.createAmusementPark();
 
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-		assertTrue(response.getHeaders().getFirst("Set-Cookie").contains("SESSION="));
+        ResponseEntity<EntityModel<AmusementParkResource>> response =
+                restTemplate.exchange(links.get(AMUSEMENT_PARK), HttpMethod.POST,
+                        new HttpEntity<>(amusementParkResource), SINGLE_AMUSEMENT_PARK);
 
-		VisitorResource visitorResource = response.getBody();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		assertNotNull(visitorResource);
-		log.info(visitorResource.toString());
-		assertEquals(3, visitorResource.getLinks().stream().count());
-		assertTrue(visitorResource.getLink(SELF).isPresent());
-		assertTrue(visitorResource.getLink(AMUSEMENT_PARK).isPresent());
-		assertTrue(visitorResource.getLink(UPLOAD_MONEY).isPresent());
+        EntityModel<AmusementParkResource> responseAmusementParkResource = response.getBody();
 
-		assertEquals("nembence1994@gmail.com", visitorResource.getEmail());
-		assertEquals("ROLE_ADMIN", visitorResource.getAuthority());
+        assertNotNull(responseAmusementParkResource);
+        assertEquals(4, responseAmusementParkResource.getLinks().stream().count());
+        assertTrue(responseAmusementParkResource.getLink(SELF).get().getHref()
+                .endsWith(responseAmusementParkResource.getContent().getIdentifier().toString()));
+        assertTrue(responseAmusementParkResource.getLink(MACHINE).isPresent());
+        assertTrue(responseAmusementParkResource.getLink(SIGN_UP).isPresent());
+        assertTrue(responseAmusementParkResource.getLink(VISITOR_ENTER_PARK).isPresent());
 
-		return visitorResource;
-	}
+        amusementParkResource.setIdentifier(responseAmusementParkResource.getContent().getIdentifier());
+        assertEquals(amusementParkResource, responseAmusementParkResource.getContent());
 
-	private MultiValueMap<String, String> createMap(String username, String password) {
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-		map.add("email", username);
-		map.add("password", password);
-		return map;
-	}
+        return responseAmusementParkResource;
+    }
 
-	private AmusementParkResource postAmusementPark() {
-		AmusementParkResource amusementParkResource = ValidResourceFactory.createAmusementPark();
+    private String encode(String input) {
+        try {
+            return URLEncoder.encode(input, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            throw new AmusementParkException("Wrong input!", e);
+        }
+    }
 
-		ResponseEntity<AmusementParkResource> response = restTemplate.postForEntity(links.get(AMUSEMENT_PARK),
-				amusementParkResource, AmusementParkResource.class);
+    @Test
+    public void negativeTest() {
+        loginAsAdmin();
 
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+        AmusementParkResource invalidAmusementParkResource = ValidResourceFactory.createAmusementPark();
+        invalidAmusementParkResource.setEntranceFee(0);
 
-		AmusementParkResource responseAmusementParkResource = response.getBody();
+        assertThrows(
+                () -> restTemplate.postForObject(links.get(AMUSEMENT_PARK), invalidAmusementParkResource, Void.class),
+                HttpClientErrorException.class, teaPotStatusAndEntranceFeeInvalidMessage());
 
-		assertNotNull(responseAmusementParkResource);
-		assertEquals(4, responseAmusementParkResource.getLinks().stream().count());
-		assertTrue(responseAmusementParkResource.getLink(SELF).get().getHref()
-				.endsWith(responseAmusementParkResource.getIdentifier().toString()));
-		assertTrue(responseAmusementParkResource.getLink(MACHINE).isPresent());
-		assertTrue(responseAmusementParkResource.getLink(SIGN_UP).isPresent());
-		assertTrue(responseAmusementParkResource.getLink(VISITOR_ENTER_PARK).isPresent());
+        AmusementParkResource amusementParkResource = invalidAmusementParkResource;
+        amusementParkResource.setEntranceFee(50);
+        amusementParkResource.setCapital(500);
+        ResponseEntity<EntityModel<AmusementParkResource>> response = restTemplate.exchange(links.get(AMUSEMENT_PARK), HttpMethod.POST,
+                new HttpEntity<>(amusementParkResource), SINGLE_AMUSEMENT_PARK);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		amusementParkResource.setIdentifier(responseAmusementParkResource.getIdentifier());
-		amusementParkResource.add(responseAmusementParkResource.getLinks());
-		assertEquals(amusementParkResource, responseAmusementParkResource);
+        String machineLinkHref = response.getBody().getLink(MACHINE).get().getHref();
 
-		return responseAmusementParkResource;
-	}
+        MachineResource machineResource = ValidResourceFactory.createMachine();
+        machineResource.setType("asd");
 
-	private String encode(String input) {
-		try {
-			return URLEncoder.encode(input, StandardCharsets.UTF_8.toString());
-		} catch (UnsupportedEncodingException e) {
-			throw new AmusementParkException("Wrong input!", e);
-		}
-	}
+        assertThrows(() -> restTemplate.postForObject(machineLinkHref, machineResource, Void.class),
+                HttpClientErrorException.class, teaPotStatusAndMachineTypeMustMatch());
 
-	@Test
-	public void negativeTest() {
-		loginAsAdmin();
+        machineResource.setType(MachineType.CAROUSEL.toString());
+        machineResource.setPrice(2000);
 
-		AmusementParkResource invalidAmusementParkResource = ValidResourceFactory.createAmusementPark();
-		invalidAmusementParkResource.setEntranceFee(0);
+        assertThrows(() -> restTemplate.postForObject(machineLinkHref, machineResource, Void.class),
+                HttpClientErrorException.class, teaPotStatusAndMachineTooExpensiveMessage());
+    }
 
-		assertThrows(
-				() -> restTemplate.postForObject(links.get(AMUSEMENT_PARK), invalidAmusementParkResource, Void.class),
-				HttpClientErrorException.class, teaPotStatusAndEntranceFeeInvalidMessage());
+    @Test
+    public void positiveTest() {
+        EntityModel<VisitorResource> visitorResource = loginAsAdmin();
 
-		AmusementParkResource amusementParkResource = invalidAmusementParkResource;
-		amusementParkResource.setEntranceFee(50);
-		amusementParkResource.setCapital(500);
-		ResponseEntity<AmusementParkResource> response = restTemplate.postForEntity(links.get(AMUSEMENT_PARK),
-				amusementParkResource, AmusementParkResource.class);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+        EntityModel<AmusementParkResource> amusementParkResourceEntityModel = postAmusementPark();
 
-		amusementParkResource = response.getBody();
-		String machineLinkHref = amusementParkResource.getLink(MACHINE).get().getHref();
+        EntityModel<MachineResource> machineResourceEntityModel = addMachine(amusementParkResourceEntityModel.getLink(MACHINE).get().getHref());
 
-		MachineResource machineResource = ValidResourceFactory.createMachine();
-		machineResource.setType("asd");
+        visitorResource = enterPark(amusementParkResourceEntityModel.getLink(VISITOR_ENTER_PARK).get().getHref());
 
-		assertThrows(() -> restTemplate.postForObject(machineLinkHref, machineResource, Void.class),
-				HttpClientErrorException.class, teaPotStatusAndMachineTypeMustMatch());
+        visitorResource = getOnMachine(machineResourceEntityModel.getLink(GET_ON_MACHINE).get().getHref());
 
-		machineResource.setType(MachineType.CAROUSEL.toString());
-		machineResource.setPrice(2000);
+        visitorResource = getOffMachine(visitorResource.getLink(GET_OFF_MACHINE).get().getHref());
 
-		assertThrows(() -> restTemplate.postForObject(machineLinkHref, machineResource, Void.class),
-				HttpClientErrorException.class, teaPotStatusAndMachineTooExpensiveMessage());
-	}
+        addRegistry(visitorResource.getLink(ADD_REGISTRY).get().getHref());
 
-	@Test
-	public void positiveTest() {
-		VisitorResource visitorResource = loginAsAdmin();
+        leavePark(visitorResource.getLink(VISITOR_LEAVE_PARK).get().getHref());
 
-		AmusementParkResource amusementParkResource = postAmusementPark();
+        deletePark(amusementParkResourceEntityModel.getLink(SELF).get().getHref());
+    }
 
-		MachineResource machineResource = addMachine(amusementParkResource.getLink(MACHINE).get().getHref());
+    private EntityModel<MachineResource> addMachine(String url) {
+        ResponseEntity<EntityModel<MachineResource>> response = restTemplate.exchange(url, HttpMethod.POST,
+                new HttpEntity<>(ValidResourceFactory.createMachine()), SINGLE_MACHINE);
 
-		visitorResource = enterPark(amusementParkResource.getLink(VISITOR_ENTER_PARK).get().getHref());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		visitorResource = getOnMachine(machineResource.getLink(GET_ON_MACHINE).get().getHref());
+        EntityModel<MachineResource> machineResourceEntityModel = response.getBody();
 
-		visitorResource = getOffMachine(visitorResource.getLink(GET_OFF_MACHINE).get().getHref());
+        assertNotNull(machineResourceEntityModel);
+        assertEquals(2, machineResourceEntityModel.getLinks().stream().count());
+        String id = machineResourceEntityModel.getContent().getIdentifier().toString();
+        assertTrue(machineResourceEntityModel.getLink(SELF).get().getHref().endsWith(id));
+        assertTrue(machineResourceEntityModel.getLink(GET_ON_MACHINE).isPresent());
 
-		addRegistry(visitorResource.getLink(ADD_REGISTRY).get().getHref());
+        return machineResourceEntityModel;
+    }
 
-		leavePark(visitorResource.getLink(VISITOR_LEAVE_PARK).get().getHref());
+    private EntityModel<VisitorResource> enterPark(String enterParkUrl) {
+        ResponseEntity<EntityModel<VisitorResource>> response = restTemplate.exchange(enterParkUrl, HttpMethod.PUT, HttpEntity.EMPTY,
+                SINGLE_VISITOR);
 
-		deletePark(amusementParkResource.getLink(SELF).get().getHref());
-	}
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-	private MachineResource addMachine(String url) {
-		ResponseEntity<MachineResource> response = restTemplate.postForEntity(url, ValidResourceFactory.createMachine(),
-				MachineResource.class);
+        assert6LinkInParkVisitor(response.getBody());
 
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+        return response.getBody();
+    }
 
-		MachineResource machineResource = response.getBody();
+    private void assert6LinkInParkVisitor(EntityModel<VisitorResource> visitorResourceEntityModel) {
+        assertNotNull(visitorResourceEntityModel);
+        assertEquals(6, visitorResourceEntityModel.getLinks().stream().count());
+        assertTrue(visitorResourceEntityModel.getLink(SELF).get().getHref().endsWith(ME));
+        assertTrue(visitorResourceEntityModel.getLink(VISITOR_LEAVE_PARK).isPresent());
+        assertTrue(visitorResourceEntityModel.getLink(GET_ON_MACHINE).isPresent());
+        assertTrue(visitorResourceEntityModel.getLink(ADD_REGISTRY).isPresent());
+        assertTrue(visitorResourceEntityModel.getLink(MACHINE).isPresent());
+        assertTrue(visitorResourceEntityModel.getLink(UPLOAD_MONEY).isPresent());
+    }
 
-		assertNotNull(machineResource);
-		assertEquals(2, machineResource.getLinks().stream().count());
-		assertTrue(machineResource.getLink(SELF).get().getHref().endsWith(machineResource.getIdentifier().toString()));
-		assertTrue(machineResource.getLink(GET_ON_MACHINE).isPresent());
+    private EntityModel<VisitorResource> getOnMachine(String getOnMachineUrl) {
+        ResponseEntity<EntityModel<VisitorResource>> response = restTemplate.exchange(getOnMachineUrl, HttpMethod.PUT,
+                HttpEntity.EMPTY, SINGLE_VISITOR);
 
-		return machineResource;
-	}
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-	private VisitorResource enterPark(String enterParkUrl) {
-		ResponseEntity<VisitorResource> response = restTemplate.exchange(enterParkUrl, HttpMethod.PUT, HttpEntity.EMPTY,
-				VisitorResource.class);
+        EntityModel<VisitorResource> visitorResourceEntityModel = response.getBody();
 
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(visitorResourceEntityModel);
+        assertEquals(3, visitorResourceEntityModel.getLinks().stream().count());
+        assertTrue(visitorResourceEntityModel.getLink(SELF).get().getHref().endsWith(ME));
+        assertTrue(visitorResourceEntityModel.getLink(GET_OFF_MACHINE).isPresent());
+        assertTrue(visitorResourceEntityModel.getLink(UPLOAD_MONEY).isPresent());
 
-		VisitorResource visitorResource = response.getBody();
+        return visitorResourceEntityModel;
+    }
 
-		assert6LinkInParkVisitor(visitorResource);
+    private EntityModel<VisitorResource> getOffMachine(String getOffMachineUrl) {
+        ResponseEntity<EntityModel<VisitorResource>> response = restTemplate.exchange(getOffMachineUrl, HttpMethod.PUT,
+                HttpEntity.EMPTY, SINGLE_VISITOR);
 
-		return visitorResource;
-	}
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-	private void assert6LinkInParkVisitor(VisitorResource visitorResource) {
-		assertNotNull(visitorResource);
-		assertEquals(6, visitorResource.getLinks().stream().count());
-		assertTrue(visitorResource.getLink(SELF).get().getHref().endsWith(ME));
-		assertTrue(visitorResource.getLink(VISITOR_LEAVE_PARK).isPresent());
-		assertTrue(visitorResource.getLink(GET_ON_MACHINE).isPresent());
-		assertTrue(visitorResource.getLink(ADD_REGISTRY).isPresent());
-		assertTrue(visitorResource.getLink(MACHINE).isPresent());
-		assertTrue(visitorResource.getLink(UPLOAD_MONEY).isPresent());
-	}
+        assert6LinkInParkVisitor(response.getBody());
 
-	private VisitorResource getOnMachine(String getOnMachineUrl) {
-		ResponseEntity<VisitorResource> response = restTemplate.exchange(getOnMachineUrl, HttpMethod.PUT,
-				HttpEntity.EMPTY, VisitorResource.class);
+        return response.getBody();
+    }
 
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+    private void addRegistry(String addRegistryUrl) {
+        ResponseEntity<EntityModel<GuestBookRegistryResource>> response = restTemplate.exchange(addRegistryUrl, HttpMethod.POST,
+                new HttpEntity<>(OPINION_ON_THE_PARK), SINGLE_GUEST_BOOK_REGISTRY);
 
-		VisitorResource visitorResource = response.getBody();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		assertNotNull(visitorResource);
-		assertEquals(3, visitorResource.getLinks().stream().count());
-		assertTrue(visitorResource.getLink(SELF).get().getHref().endsWith(ME));
-		assertTrue(visitorResource.getLink(GET_OFF_MACHINE).isPresent());
-		assertTrue(visitorResource.getLink(UPLOAD_MONEY).isPresent());
+        EntityModel<GuestBookRegistryResource> guestBookRegistryResource = response.getBody();
 
-		return visitorResource;
-	}
+        assertNotNull(guestBookRegistryResource);
+        assertEquals(2, guestBookRegistryResource.getLinks().stream().count());
+        assertTrue(guestBookRegistryResource.getLink(SELF).isPresent());
+        assertTrue(guestBookRegistryResource.getLink(ADD_REGISTRY).isPresent());
+    }
 
-	private VisitorResource getOffMachine(String getOffMachineUrl) {
-		ResponseEntity<VisitorResource> response = restTemplate.exchange(getOffMachineUrl, HttpMethod.PUT,
-				HttpEntity.EMPTY, VisitorResource.class);
+    private void leavePark(String leaveParkUrl) {
+        restTemplate.put(leaveParkUrl, null);
+    }
 
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+    private void deletePark(String amusementParkUrlWithId) {
+        restTemplate.delete(amusementParkUrlWithId);
+    }
 
-		VisitorResource visitorResource = response.getBody();
+    private ExceptionAsserter<HttpClientErrorException> teaPotStatusAndEntranceFeeInvalidMessage() {
+        return exception -> {
+            assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
+            assertEquals(validationError("entranceFee", rangeMessage(5, 200)), exception.getResponseBodyAsString());
+        };
+    }
 
-		assert6LinkInParkVisitor(visitorResource);
+    private ExceptionAsserter<HttpClientErrorException> teaPotStatusAndMachineTypeMustMatch() {
+        return exception -> {
+            assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
+            assertEquals(
+                    validationError("type", oneOfMessage(
+                            Stream.of(MachineType.values()).map(MachineType::toString).collect(toSet()).toString())),
+                    exception.getResponseBodyAsString());
+        };
+    }
 
-		return visitorResource;
-	}
-
-	private void addRegistry(String addRegistryUrl) {
-		ResponseEntity<GuestBookRegistryResource> response = restTemplate.postForEntity(addRegistryUrl,
-				OPINION_ON_THE_PARK, GuestBookRegistryResource.class);
-
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-
-		GuestBookRegistryResource guestBookRegistryResource = response.getBody();
-
-		assertNotNull(guestBookRegistryResource);
-		assertEquals(2, guestBookRegistryResource.getLinks().stream().count());
-		assertTrue(guestBookRegistryResource.getLink(SELF).isPresent());
-		assertTrue(guestBookRegistryResource.getLink(ADD_REGISTRY).isPresent());
-	}
-
-	private void leavePark(String leaveParkUrl) {
-		restTemplate.put(leaveParkUrl, null);
-	}
-
-	private void deletePark(String amusementParkUrlWithId) {
-		restTemplate.delete(amusementParkUrlWithId);
-	}
-
-	private ExceptionAsserter<HttpClientErrorException> teaPotStatusAndEntranceFeeInvalidMessage() {
-		return exception -> {
-			assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
-			assertEquals(validationError("entranceFee", rangeMessage(5, 200)), exception.getResponseBodyAsString());
-		};
-	}
-
-	private ExceptionAsserter<HttpClientErrorException> teaPotStatusAndMachineTypeMustMatch() {
-		return exception -> {
-			assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
-			assertEquals(
-					validationError("type", oneOfMessage(
-							Stream.of(MachineType.values()).map(MachineType::toString).collect(toSet()).toString())),
-					exception.getResponseBodyAsString());
-		};
-	}
-
-	private ExceptionAsserter<HttpClientErrorException> teaPotStatusAndMachineTooExpensiveMessage() {
-		return exception -> {
-			assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
-			assertEquals(MACHINE_IS_TOO_EXPENSIVE, exception.getResponseBodyAsString());
-		};
-	}
+    private ExceptionAsserter<HttpClientErrorException> teaPotStatusAndMachineTooExpensiveMessage() {
+        return exception -> {
+            assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
+            assertEquals(MACHINE_IS_TOO_EXPENSIVE, exception.getResponseBodyAsString());
+        };
+    }
 }

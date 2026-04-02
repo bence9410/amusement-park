@@ -1,30 +1,29 @@
 package hu.beni.amusementpark.mapper;
 
-import static hu.beni.amusementpark.factory.LinkFactory.createGetOnMachineLink;
-import static hu.beni.amusementpark.factory.LinkFactory.createMachineSelfLink;
-
+import hu.beni.amusementpark.controller.MachineController;
+import hu.beni.amusementpark.dto.resource.MachineResource;
+import hu.beni.amusementpark.entity.Machine;
+import hu.beni.amusementpark.enums.MachineType;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
-import hu.beni.amusementpark.controller.MachineController;
-import hu.beni.amusementpark.dto.resource.MachineResource;
-import hu.beni.amusementpark.entity.Machine;
-import hu.beni.amusementpark.enums.MachineType;
+import static hu.beni.amusementpark.factory.LinkFactory.createGetOnMachineLink;
+import static hu.beni.amusementpark.factory.LinkFactory.createMachineSelfLink;
 
 @Component
 @ConditionalOnWebApplication
 public class MachineMapper extends EntityMapper<Machine, MachineResource> {
 
-	public MachineMapper(PagedResourcesAssembler<Machine> pagedResourcesAssembler) {
-		super(MachineController.class, MachineResource.class, pagedResourcesAssembler);
-	}
+    public MachineMapper(PagedResourcesAssembler<Machine> pagedResourcesAssembler) {
+        super(MachineController.class, MachineResource.class, pagedResourcesAssembler);
+    }
 
-	@Override
-	public MachineResource toModel(Machine entity) {
-		return MachineResource
-				.builder() //@formatter:off
+    @Override
+    public MachineResource toModel(Machine entity) {
+        return MachineResource
+                .builder() //@formatter:off
 				.identifier(entity.getId())
 				.fantasyName(entity.getFantasyName())
 				.size(entity.getSize())
@@ -34,12 +33,12 @@ public class MachineMapper extends EntityMapper<Machine, MachineResource> {
 				.ticketPrice(entity.getTicketPrice())
 				.type(entity.getType().toString())
 				.links(createLinks(entity)).build(); //@formatter:on
-	}
+    }
 
-	@Override
-	public Machine toEntity(MachineResource resource) {
-		return Machine
-				.builder() //@formatter:off
+    @Override
+    public Machine toEntity(MachineResource resource) {
+        return Machine
+                .builder() //@formatter:off
 				.id(resource.getIdentifier())
 				.fantasyName(resource.getFantasyName())
 				.size(resource.getSize())
@@ -48,12 +47,12 @@ public class MachineMapper extends EntityMapper<Machine, MachineResource> {
 				.minimumRequiredAge(resource.getMinimumRequiredAge())
 				.ticketPrice(resource.getTicketPrice())
 				.type(MachineType.valueOf(resource.getType())).build(); //@formatter:on
-	}
+    }
 
-	private Link[] createLinks(Machine machine) {
-		Long amusementParkId = machine.getAmusementPark().getId();
-		Long machineId = machine.getId();
-		return new Link[] { //@formatter:off
+    private Link[] createLinks(Machine machine) {
+        Long amusementParkId = machine.getAmusementPark().getId();
+        Long machineId = machine.getId();
+        return new Link[] { //@formatter:off
 				createMachineSelfLink(amusementParkId, machineId),
 				createGetOnMachineLink(amusementParkId, machineId) }; //@formatter:off
 	}

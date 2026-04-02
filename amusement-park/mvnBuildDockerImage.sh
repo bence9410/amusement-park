@@ -1,1 +1,2 @@
-mvn clean package -DskipTests dockerfile:build
+mvn clean package -DskipTests;
+docker build -t bence/amusement-park .
