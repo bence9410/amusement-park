@@ -3,6 +3,8 @@ package hu.beni.amusementpark.config;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -24,11 +26,16 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) {
         return http
                 .authorizeHttpRequests(auth -> {
                     auth
-                            .requestMatchers("/", "/api/links", "/api/me", "/api/signUp", "/img/**","/css/**","/js/**")
+                            .requestMatchers("/", "/api/links", "/api/me", "/api/login", "/api/signUp", "/img/**","/css/**","/js/**")
                             .permitAll()
                             .anyRequest()
                             .authenticated();
@@ -36,9 +43,6 @@ public class WebSecurityConfig {
                 .logout(logout -> {
                     logout.logoutUrl("/api/logout")
                             .logoutSuccessUrl("/");
-                })
-                .exceptionHandling(exception -> {
-                    exception.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/"));
                 })
                 .csrf(AbstractHttpConfigurer::disable)
                 .build();
