@@ -41,6 +41,8 @@ public class VisitorResource extends RepresentationModel<VisitorResource> {
     @Null
     private Integer spendingMoney;
 
+    @NotNull
+    @Size(min = 5, max = 1400000)
     private String photo;
 
     public VisitorResource() {

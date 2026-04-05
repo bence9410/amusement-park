@@ -11,7 +11,6 @@ export default {
     messages: [],
     messageIdGenerator: 0,
   }),
-
   methods: {
     removeMessage(message) {
       this.messages.splice(this.messages.indexOf(message), 1);

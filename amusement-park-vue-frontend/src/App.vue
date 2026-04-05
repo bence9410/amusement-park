@@ -11,31 +11,6 @@
     </v-main>
   </v-app>
 </template>
-<style>
-#app {
-  font-family: " Sans-serif" !important;
-}
-
-.image {
-  background-repeat: no-repeat;
-  background-image: url("./assets/background.jpg");
-  padding: 0;
-  margin: 0;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-size: cover;
-  position: static;
-}
-
-.formButton {
-  background: -moz-linear-gradient(right, #067998, #16363c, #16363c, #067998);
-}
-
-.neonGreen {
-  background-color: #00b712;
-  background-image: linear-gradient(315deg, #00b712 0%, #5aff15 74%);
-}
-</style>
 
 <script>
 import Navbar from "@/components/Navbar";
