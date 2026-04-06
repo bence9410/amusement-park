@@ -39,7 +39,6 @@
   </div>
 </template>
 <script>
-import $ from "jquery";
 export default {
   props: ["loginLink"],
   data: () => ({
@@ -53,23 +52,25 @@ export default {
   methods: {
     login() {
       if (this.$refs.loginForm.validate()) {
-        $.ajax({
-          url: this.loginLink,
+        fetch(this.loginLink, {
           method: "POST",
-          data: "email=" + this.email + "&password=" + this.password,
-          success: (responseBody) => {
-            this.$emit("login", responseBody);
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: "email=" + this.email + "&password=" + this.password
+        }).then(async response => {
+          if (response.ok) {
+            this.$emit("login", await response.json());
             this.$bus.$emit("addMessage", {
               type: "success",
               text: "Successfull login.",
             });
-          },
-          error: (response) => {
+          } else {
             this.$bus.$emit("addMessage", {
               type: "error",
-              text: response.responseText,
+              text: await response.text(),
             });
-          },
+          }
         });
       }
     },

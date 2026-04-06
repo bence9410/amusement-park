@@ -47,7 +47,6 @@
   </div>
 </template>
 <script>
-import $ from "jquery";
 export default {
   props: ["visitor", "logoutLink"],
   data: () => ({
@@ -61,46 +60,46 @@ export default {
   },
   methods: {
     logout() {
-      $.ajax({
-        url: this.logoutLink,
-        method: "POST",
-        success: () => {
+      fetch(this.logoutLink, {
+        method: 'POST'
+      }).then(async response => {
+        if (response.ok) {
           this.$emit("logout");
           this.$bus.$emit("addMessage", {
             type: "success",
             text: "Successfull logout.",
           });
-        },
-        error: (response) => {
+        } else {
           this.$bus.$emit("addMessage", {
             type: "error",
-            text: response.responseText,
+            text: await response.text(),
           });
-        },
+        }
       });
     },
     uploadMoney() {
       if (this.$refs.uploadMoneyForm.validate()) {
         this.uploadMoneyDialogShow = false;
-        $.ajax({
-          url: this.visitor._links.uploadMoney.href,
-          method: "POST",
-          contentType: "application/json",
-          data: this.uploadMoneyValue,
-          success: () => {
+        fetch(this.visitor._links.uploadMoney.href, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: this.uploadMoneyValue
+        }).then(async response => {
+          if (response.ok) {
             this.$emit("uploadMoney", this.uploadMoneyValue);
             this.$bus.$emit("addMessage", {
               type: "success",
               text:
                 "Successfully uploaded " + this.uploadMoneyValue + " money.",
             });
-          },
-          error: (response) => {
+          } else {
             this.$bus.$emit("addMessage", {
               type: "error",
-              text: response.responseText,
+              text: await response.text(),
             });
-          },
+          }
         });
       }
     },

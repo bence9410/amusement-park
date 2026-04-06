@@ -15,7 +15,6 @@
 <script>
 import Navbar from "@/components/Navbar";
 import Message from "@/components/Message";
-import $ from "jquery";
 export default {
   name: "App",
 
@@ -31,12 +30,11 @@ export default {
     openCreateDialog: false,
   }),
   created() {
-    $.ajax({
-      url: "/api/links",
-      success: (responseBody) => {
-        this.setLinks(responseBody);
+    fetch("/api/links").then(async response => {
+      if (response.ok) {
+        this.setLinks(await response.json());
         this.getUserData();
-      },
+      }
     });
   },
   methods: {
@@ -49,11 +47,10 @@ export default {
       this.links = links;
     },
     getUserData() {
-      $.ajax({
-        url: this.links.me,
-        success: (responseBody) => {
-          this.login(responseBody);
-        },
+      fetch(this.links.me).then(async response => {
+        if (response.ok) {
+          this.login(await response.json());
+        }
       });
     },
     login(responseBody) {

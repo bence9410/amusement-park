@@ -87,11 +87,10 @@ Total area min" outlined required dense></v-text-field>
   </div>
 </template>
 <script>
-import $ from "jquery";
 export default {
   props: ["searchInputShow", "amusementParksLink", "openCreateDialog"],
   data: () => ({
-    amusementParksResponse: null,
+    amusementParks: [],
     headers: [
       { text: "Name", value: "name" },
       { text: "Capital", value: "capital" },
@@ -109,20 +108,13 @@ export default {
       entranceFee: "",
     },
   }),
-  computed: {
-    amusementParks() {
-      if (this.amusementParksResponse == null) {
-        return [];
-      } else {
-        return this.amusementParksResponse._embedded
-          .amusementParkDetailResponseDtoList;
-      }
-    },
-  },
   created() {
-    this.amusementParkResponseBody();
+    this.getAmusementParksIfLoaded();
   },
   watch: {
+    amusementParksLink() {
+      this.getAmusementParksIfLoaded();
+    },
     openCreateDialog(to) {
       if (to) {
         this.$refs.amusementParkCreateForm.reset();
@@ -130,22 +122,26 @@ export default {
     },
   },
   methods: {
-    amusementParkResponseBody() {
-      $.ajax({
-        url: this.amusementParksLink,
-        success: (responseBody) => {
-          this.amusementParksResponse = responseBody;
-        },
-      });
+    getAmusementParksIfLoaded() {
+      if (this.amusementParksLink != null) {
+        fetch(this.amusementParksLink).then(async response => {
+          if (response.ok) {
+            let amusementParksResponse = await response.json();
+            this.amusementParks = amusementParksResponse._embedded.amusementParkDetailResponseDtoList;
+          }
+        });
+      }
     },
     createAmusementPark() {
       if (this.$refs.amusementParkCreateForm.validate()) {
-        $.ajax({
-          url: this.amusementParksLink,
-          method: "POST",
-          contentType: "application/json",
-          data: JSON.stringify(this.amusementParkCreate),
-          success: () => {
+        fetch(this.amusementParksLink, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: this.amusementParkCreate
+        }).then(async response => {
+          if (response.ok) {
             this.amusementParkResponseBody();
             this.$emit("toggleCreateDialog");
             this.$bus.$emit("addMessage", {
@@ -155,13 +151,12 @@ export default {
                 this.amusementParkCreate.name +
                 ".",
             });
-          },
-          error: (response) => {
+          } else {
             this.$bus.$emit("addMessage", {
               type: "error",
-              text: response.responseText,
+              text: await response.text(),
             });
-          },
+          }
         });
       }
     },
