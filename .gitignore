@@ -5,5 +5,5 @@ target/
 results.csv
 .factorypath
 settings.json
-amusement-park/src/main/resources/public/
+amusement-park-backend/src/main/resources/public/
 .idea
