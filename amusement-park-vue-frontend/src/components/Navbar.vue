@@ -1,118 +1,133 @@
 <template>
-  <div v-if="visitor">
+  <div v-if="store.getVisitor">
     <v-app-bar color="green">
       <v-avatar class="mr-4 ml-5">
-        <v-img :src="visitor.photo" alt="Profile picture" />
+        <v-img alt="Profile picture" :src="store.getVisitor.photo" />
       </v-avatar>
       <span>
-        {{ visitor.email }}
+        {{ store.getVisitor.email }}
       </span>
       <span class="ml-3">
-        {{ visitor.spendingMoney }}
+        {{ store.getVisitor.spendingMoney }}
       </span>
-      <v-icon icon="mdi-currency-eur">mdi-currency-eur</v-icon>
-
-      <v-spacer></v-spacer>
-
-      <v-btn class="ma-1" @click="toggleSearch">Search</v-btn>
-      <v-btn class="ma-1" v-if="isAdmin" @click="toggleCreateDialog">Create</v-btn>
-      <v-btn class="ma-1" @click="openUploadMoneyDialog">Upload money</v-btn>
-      <v-btn class="ma-1" @click="logout">Logout</v-btn>
+      <v-icon icon="mdi-currency-eur" />
+      <v-spacer />
+      <v-btn
+        class="ma-1"
+        color="black"
+        text="Search"
+        variant="flat"
+        @click="store.setSearchShow(!store.getSearchShow)"
+      />
+      <v-btn
+        v-if="isAdmin"
+        class="ma-1"
+        color="black"
+        text="Create"
+        variant="flat"
+        @click="store.setCreateShow(true)"
+      />
+      <v-btn
+        class="ma-1"
+        color="black"
+        text="Upload money"
+        variant="flat"
+        @click="uploadMoneyForm.reset(), uploadMoneyDialogShow = true"
+      />
+      <v-btn
+        class="ma-1 mr-3"
+        color="black"
+        :loading="logoutIsLoading"
+        text="Logout"
+        variant="flat"
+        @click="logout"
+      />
     </v-app-bar>
 
-    <v-dialog v-model="uploadMoneyDialogShow" persistent width="50%" eager>
+    <v-dialog v-model="uploadMoneyDialogShow" eager persistent width="50%">
       <v-card>
         <div class="text-right" style="width: 100%">
-          <v-btn icon @click="uploadMoneyDialogShow = false">
-            <v-icon>close</v-icon>
-          </v-btn>
+          <v-btn class="ma-2" icon="mdi-close" @click="uploadMoneyDialogShow = false" />
         </div>
-
-        <v-card-title class="text-h5"> Upload money </v-card-title>
-
-        <v-card-text>
-          <v-form ref="uploadMoneyForm">
-            <v-text-field label="Money" required outlined dense v-model="uploadMoneyValue" :rules="[
-              (v) =>
-                (!!v && Number(v) > 0) || 'Value must be greater than 0.',
-            ]"></v-text-field>
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="green" @click="uploadMoney">Upload</v-btn>
-        </v-card-actions>
+        <v-card-title class="text-h5">Upload money</v-card-title>
+        <v-form ref="uploadMoneyForm" v-model="uploadMoneyFormIsInvalid" @submit.prevent="uploadMoney">
+          <v-card-text>
+            <v-text-field
+              v-model="uploadMoneyValue"
+              label="Money"
+              :readonly="uploadMoneyFormIsLoading"
+              required
+              :rules="[
+                (v) =>
+                  (!!v && Number(v) > 0) || 'Value must be greater than 0.',
+              ]"
+            />
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              color="green"
+              :disabled="!uploadMoneyFormIsInvalid"
+              :loading="uploadMoneyFormIsLoading"
+              text="Upload"
+              type="submit"
+              variant="flat"
+            />
+          </v-card-actions>
+        </v-form>
       </v-card>
     </v-dialog>
   </div>
 </template>
-<script>
-export default {
-  props: ["visitor", "logoutLink"],
-  data: () => ({
-    uploadMoneyDialogShow: false,
-    uploadMoneyValue: "",
-  }),
-  computed: {
-    isAdmin() {
-      return "ROLE_ADMIN" == this.visitor.authority;
-    },
-  },
-  methods: {
-    logout() {
-      fetch(this.logoutLink, {
-        method: 'POST'
-      }).then(async response => {
-        if (response.ok) {
-          this.$emit("logout");
-          this.$bus.$emit("addMessage", {
-            type: "success",
-            text: "Successfull logout.",
-          });
-        } else {
-          this.$bus.$emit("addMessage", {
-            type: "error",
-            text: await response.text(),
-          });
-        }
-      });
-    },
-    uploadMoney() {
-      if (this.$refs.uploadMoneyForm.validate()) {
-        this.uploadMoneyDialogShow = false;
-        fetch(this.visitor._links.uploadMoney.href, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: this.uploadMoneyValue
-        }).then(async response => {
-          if (response.ok) {
-            this.$emit("uploadMoney", this.uploadMoneyValue);
-            this.$bus.$emit("addMessage", {
-              type: "success",
-              text:
-                "Successfully uploaded " + this.uploadMoneyValue + " money.",
-            });
-          } else {
-            this.$bus.$emit("addMessage", {
-              type: "error",
-              text: await response.text(),
-            });
-          }
-        });
+<script setup lang="ts">
+  import { computed, ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  import { useAppStore } from '@/stores/app'
+
+  const store = useAppStore()
+  const router = useRouter()
+  const uploadMoneyForm = ref()
+  const uploadMoneyFormIsInvalid = ref(false)
+  const uploadMoneyFormIsLoading = ref(false)
+  const logoutIsLoading = ref(false)
+  const uploadMoneyDialogShow = ref(false)
+  const uploadMoneyValue = ref('')
+
+  const isAdmin = computed(() => 'ROLE_ADMIN' == store.getVisitor.authority)
+
+  function logout () {
+    logoutIsLoading.value = true
+    fetch(store.getLinks.logout, {
+      method: 'POST',
+    }).then(async response => {
+      logoutIsLoading.value = false
+      if (response.ok) {
+        router.push('/')
+        store.setVisitor(null)
+        store.setSearchShow(false)
+        store.addMessage('success', 'Successfull logout.')
+      } else {
+        store.addMessage('error', await response.text())
       }
-    },
-    openUploadMoneyDialog() {
-      this.$refs.uploadMoneyForm.reset();
-      this.uploadMoneyDialogShow = true;
-    },
-    toggleSearch() {
-      this.$emit("toggleSearch");
-    },
-    toggleCreateDialog() {
-      this.$emit("toggleCreateDialog");
-    }
-  },
-};
+    })
+  }
+  async function uploadMoney () {
+    uploadMoneyFormIsLoading.value = true
+    fetch(store.getVisitor._links.uploadMoney.href, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: uploadMoneyValue.value,
+    }).then(async response => {
+      uploadMoneyFormIsLoading.value = false
+      if (response.ok) {
+        store.getVisitor.spendingMoney = store.getVisitor.spendingMoney + Number(uploadMoneyValue.value)
+        store.addMessage('success', 'Successfully uploaded ' + uploadMoneyValue.value + ' money.')
+        uploadMoneyDialogShow.value = false
+      } else {
+        store.addMessage('error', await response.text())
+      }
+    })
+  }
 </script>
