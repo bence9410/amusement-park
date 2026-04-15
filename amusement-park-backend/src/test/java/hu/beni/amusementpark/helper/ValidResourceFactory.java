@@ -31,7 +31,8 @@ public class ValidResourceFactory {
 				.email("resource@gmail.com")
     			.password(StringParamConstants.VALID_PASSWORD)
     			.confirmPassword(StringParamConstants.VALID_PASSWORD)
-    			.dateOfBirth(LocalDate.of(1994, 10, 22)).build(); //@formatter:on
+    			.dateOfBirth(LocalDate.of(1994, 10, 22))
+				.photo("asdfghjkl").build(); //@formatter:on
     }
 
     public static AmusementParkResource createAmusementPark() {

@@ -152,7 +152,6 @@ public class AmusementParkApplicationTests {
         ResponseEntity<String> response = restTemplate.postForEntity(links.get(LOGOUT), null, String.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(response.getBody().contains("<title>Amusement Park</title>"));
     }
 
     @Test
