@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession;
@@ -35,7 +34,8 @@ public class WebSecurityConfig {
         return http
                 .authorizeHttpRequests(auth -> {
                     auth
-                            .requestMatchers("/", "/api/links", "/api/me", "/api/login", "/api/signUp", "/img/**","/css/**","/js/**")
+                            .requestMatchers("/", "/index.html", "/favicon.ico", "/assets/*", "/api/links",
+                                    "/api/me", "/api/login", "/api/signUp")
                             .permitAll()
                             .anyRequest()
                             .authenticated();
