@@ -13,13 +13,6 @@
       <v-icon icon="mdi-currency-eur" />
       <v-spacer />
       <v-btn
-        class="ma-1"
-        color="black"
-        text="Search"
-        variant="flat"
-        @click="store.setSearchShow(!store.getSearchShow)"
-      />
-      <v-btn
         v-if="isAdmin"
         class="ma-1"
         color="black"
@@ -104,7 +97,6 @@
       if (response.ok) {
         router.push('/')
         store.setVisitor(null)
-        store.setSearchShow(false)
         store.addMessage('success', 'Successfull logout.')
       } else {
         store.addMessage('error', await response.text())

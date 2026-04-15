@@ -70,7 +70,7 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
     public void findAllTest() {
         AmusementParkSearchRequestDto dto = new AmusementParkSearchRequestDto();
         dto.setName("park");
-        dto.setEntranceFeeMin(200);
+        dto.setMinEntranceFee(200);
 
         Page<AmusementParkDetailResponseDto> page = amusementParkService.findAll(dto, PageRequest.of(0, 10));
 

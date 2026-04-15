@@ -3,36 +3,143 @@
     <div class="text-center py-5" style="background-color: #e9ecef">
       <h1>Amusement park</h1>
     </div>
-    <v-container v-if="store.getSearchShow">
-      <v-row>
-        <v-col cols="12" md="3">
-          <v-text-field label="Name" />
-        </v-col>
-        <v-col cols="12" md="3">
-          <v-text-field label="Capital min" />
-        </v-col>
-        <v-col cols="12" md="3">
-          <v-text-field label="Capital max" />
-        </v-col>
-        <v-col cols="12" md="3">
-          <v-text-field label="Total area min" />
-        </v-col>
-        <v-col cols="12" md="3">
-          <v-text-field label="Total area max" />
-        </v-col>
-        <v-col cols="12" md="3">
-          <v-text-field label="Entrance fee min" />
-        </v-col>
-        <v-col cols="12" md="3">
-          <v-text-field label="Entrance fee max" />
-        </v-col>
-        <v-col cols="12" md="3">
-          <v-btn block class="mt-1" color="green" text="Search" />
-        </v-col>
-      </v-row>
-    </v-container>
     <v-container>
-      <v-data-table class="custom-table" :headers="headers" :items="amusementParks" />
+      <v-data-table-server
+        v-model:items-per-page="itemsPerPage"
+        v-model:page="page"
+        v-model:sort-by="sortBy"
+        class="custom-table"
+        :headers="headers"
+        :items="amusementParks"
+        :items-length="totalItems"
+        :loading="tableIsLoading"
+        loading-text="Loading... Please wait"
+        :search="search"
+        @update:options="loadItems"
+      >
+        <template #tfoot>
+          <tr>
+            <td>
+              <v-text-field v-model="amusementParkSearch.name" class="ma-1" density="compact" placeholder="Like name" />
+            </td>
+            <td>
+              <v-text-field
+                v-model="amusementParkSearch.minCapital"
+                class="ma-1"
+                density="compact"
+                placeholder="Min capital"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="amusementParkSearch.minTotalArea"
+                class="ma-1"
+                density="compact"
+                placeholder="Min total area"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="amusementParkSearch.minEntranceFee"
+                class="ma-1"
+                density="compact"
+                placeholder="Min entrance fee"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="amusementParkSearch.minMachines"
+                class="ma-1"
+                density="compact"
+                placeholder="Min machines"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="amusementParkSearch.minGuestBookRegistries"
+                class="ma-1"
+                density="compact"
+                placeholder="Min guest book registries"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="amusementParkSearch.minActiveVisitors"
+                class="ma-1"
+                density="compact"
+                placeholder="Min active visitors"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="amusementParkSearch.minKnownVisitors"
+                class="ma-1"
+                density="compact"
+                placeholder="Min known visitors"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td />
+            <td>
+              <v-text-field
+                v-model="amusementParkSearch.maxCapital"
+                class="ma-1"
+                density="compact"
+                placeholder="Max capital"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="amusementParkSearch.maxTotalArea"
+                class="ma-1"
+                density="compact"
+                placeholder="Max total area"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="amusementParkSearch.maxEntranceFee"
+                class="ma-1"
+                density="compact"
+                placeholder="Max entrance fee"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="amusementParkSearch.maxMachines"
+                class="ma-1"
+                density="compact"
+                placeholder="Max machines"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="amusementParkSearch.maxGuestBookRegistries"
+                class="ma-1"
+                density="compact"
+                placeholder="Max guest book registries"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="amusementParkSearch.maxActiveVisitors"
+                class="ma-1"
+                density="compact"
+                placeholder="Max active visitors"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="amusementParkSearch.maxKnownVisitors"
+                class="ma-1"
+                density="compact"
+                placeholder="Max known visitors"
+              />
+            </td>
+          </tr>
+        </template>
+      </v-data-table-server>
     </v-container>
     <v-dialog v-model="store.getCreateShow" eager persistent width="50%">
       <v-card>
@@ -118,6 +225,29 @@
   import { useAppStore } from '@/stores/app'
 
   const store = useAppStore()
+  const itemsPerPage = ref(5)
+  const sortBy = ref([])
+  const page = ref(1)
+  const tableIsLoading = ref(false)
+  const totalItems = ref(0)
+  const search = ref('')
+  const amusementParkSearch = ref({
+    name: '',
+    minCapital: '',
+    maxCapital: '',
+    minTotalArea: '',
+    maxTotalArea: '',
+    minEntranceFee: '',
+    maxEntranceFee: '',
+    minMachines: '',
+    maxMachines: '',
+    minGuestBookRegistries: '',
+    maxGuestBookRegistries: '',
+    minActiveVisitors: '',
+    maxActiveVisitors: '',
+    minKnownVisitors: '',
+    maxKnownVisitors: '',
+  })
   const amusementParks = ref([])
   const headers = [
     { title: 'Name', key: 'name' },
@@ -138,14 +268,39 @@
     totalArea: '',
     entranceFee: '',
   })
+  let timer: any = null
 
-  function getAmusementParks () {
-    fetch(store.getLinks.amusementPark).then(async response => {
-      if (response.ok) {
-        const amusementParksResponse = await response.json()
-        amusementParks.value = amusementParksResponse._embedded.amusementParkDetailResponseDtoList
+  function loadItems (params: any) {
+    tableIsLoading.value = true
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      let url = store.getLinks.amusementPark
+      const input: { [key: string]: number | string } = {}
+      if (amusementParkSearch.value.name != '') {
+        input.name = amusementParkSearch.value.name
       }
-    })
+      const entries = Object.entries(amusementParkSearch.value)
+      for (let i = 1; i < entries.length; i++) {
+        const e = entries[i]
+        if (e[1] != '' && !Number.isNaN(Number(e[1]))) {
+          input[e[0]] = Number(e[1])
+        }
+      }
+      url += '?input=' + encodeURI(JSON.stringify(input))
+      url += '&page=' + (params.page - 1)
+      url += '&size=' + params.itemsPerPage
+      if (params.sortBy.length === 1) {
+        url += '&sort=' + params.sortBy[0].key + ',' + params.sortBy[0].order
+      }
+      fetch(url).then(async response => {
+        tableIsLoading.value = false
+        if (response.ok) {
+          const amusementParksResponse = await response.json()
+          totalItems.value = amusementParksResponse.page.totalElements
+          amusementParks.value = amusementParksResponse._embedded ? amusementParksResponse._embedded.amusementParkDetailResponseDtoList : []
+        }
+      })
+    }, 2000)
   }
   async function createAmusementPark () {
     amusementParkCreateFormIsLoading.value = true
@@ -158,7 +313,7 @@
     }).then(async response => {
       amusementParkCreateFormIsLoading.value = false
       if (response.ok) {
-        getAmusementParks()
+        loadItems({ page: page.value, itemsPerPage: itemsPerPage.value, sortBy: sortBy.value })
         store.setCreateShow(false)
         store.addMessage('success', 'Successfully created new amusement park ' + amusementParkCreate.value.name + '.')
       } else {
@@ -166,10 +321,13 @@
       }
     })
   }
-  getAmusementParks()
 
   watch(computed(() => store.getCreateShow), () => {
     amusementParkCreateForm.value.reset()
+  })
+
+  watch(amusementParkSearch.value, () => {
+    search.value = String(Date.now())
   })
 </script>
 <style scoped>

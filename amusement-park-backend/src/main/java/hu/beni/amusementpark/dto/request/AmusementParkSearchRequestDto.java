@@ -7,16 +7,32 @@ public class AmusementParkSearchRequestDto {
 
     private String name;
 
-    private Integer capitalMin;
+    private Integer minCapital;
 
-    private Integer capitalMax;
+    private Integer maxCapital;
 
-    private Integer totalAreaMin;
+    private Integer minTotalArea;
 
-    private Integer totalAreaMax;
+    private Integer maxTotalArea;
 
-    private Integer entranceFeeMin;
+    private Integer minEntranceFee;
 
-    private Integer entranceFeeMax;
+    private Integer maxEntranceFee;
+
+    private Integer minMachines;
+
+    private Integer maxMachines;
+
+    private Integer minGuestBookRegistries;
+
+    private Integer maxGuestBookRegistries;
+
+    private Integer minActiveVisitors;
+
+    private Integer maxActiveVisitors;
+
+    private Integer minKnownVisitors;
+
+    private Integer maxKnownVisitors;
 
 }

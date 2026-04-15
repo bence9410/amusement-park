@@ -28,16 +28,12 @@ export const useAppStore = defineStore('app', () => {
     messages.value.splice(messages.value.indexOf(m), 1)
   }
 
-  const searchShow = ref(false)
-  const getSearchShow = computed(() => searchShow.value)
-  const setSearchShow = (v: boolean) => searchShow.value = v
-
   const createShow = ref(false)
   const getCreateShow = computed(() => createShow.value)
   const setCreateShow = (v: boolean) => createShow.value = v
 
   return {
     getLinks, setLinks, getVisitor, setVisitor, getMessages, addMessage, removeMessage,
-    getSearchShow, setSearchShow, getCreateShow, setCreateShow,
+    getCreateShow, setCreateShow,
   }
 })
