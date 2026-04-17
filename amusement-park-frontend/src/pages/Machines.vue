@@ -3,6 +3,128 @@
     <div class="text-center py-5" style="background-color: #e9ecef">
       <h1>Machines</h1>
     </div>
+    <v-container>
+      <v-data-table-server
+        v-model:items-per-page="machineTableItemsPerPage"
+        v-model:page="machineTablePage"
+        v-model:sort-by="machineTableSortBy"
+        class="custom-table"
+        :headers="machineTableHeaders"
+        :items="machineTableItems"
+        :items-length="machineTableTotalItems"
+        :loading="machineTableIsLoading"
+        loading-text="Loading... Please wait"
+        :search="machineTableSearch"
+        @update:options="machineTableLoadItems"
+      >
+        <template #tfoot>
+          <tr>
+            <td>
+              <v-text-field
+                v-model="machineSearch.fantasyName"
+                class="ma-1"
+                density="compact"
+                placeholder="Like fantasy name"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="machineSearch.minSize"
+                class="ma-1"
+                density="compact"
+                placeholder="Min size"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="machineSearch.minPrice"
+                class="ma-1"
+                density="compact"
+                placeholder="Min price"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="machineSearch.minNumberOfSeats"
+                class="ma-1"
+                density="compact"
+                placeholder="Min number of seats"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="machineSearch.minMinimumRequiredAge"
+                class="ma-1"
+                density="compact"
+                placeholder="Min minimum required age"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="machineSearch.minTicketPrice"
+                class="ma-1"
+                density="compact"
+                placeholder="Min ticket price"
+              />
+            </td>
+            <td>
+              <v-select
+                v-model="machineSearch.type"
+                class="ma-1"
+                clearable
+                density="compact"
+                :items="types"
+                placeholder="Type"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td />
+            <td>
+              <v-text-field
+                v-model="machineSearch.maxSize"
+                class="ma-1"
+                density="compact"
+                placeholder="Max size"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="machineSearch.maxPrice"
+                class="ma-1"
+                density="compact"
+                placeholder="Max price"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="machineSearch.maxNumberOfSeats"
+                class="ma-1"
+                density="compact"
+                placeholder="Max number of seats"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="machineSearch.maxMinimumRequiredAge"
+                class="ma-1"
+                density="compact"
+                placeholder="Max minimum required age"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="machineSearch.maxTicketPrice"
+                class="ma-1"
+                density="compact"
+                placeholder="Max ticket price"
+              />
+            </td>
+            <td />
+          </tr>
+        </template>
+      </v-data-table-server>
+    </v-container>
     <v-dialog v-model="store.getCreateShow" eager persistent width="50%">
       <v-card>
         <v-container>
@@ -122,6 +244,37 @@
 
   const store = useAppStore()
 
+  const machineTableItemsPerPage = ref(5)
+  const machineTablePage = ref(1)
+  const machineTableSortBy: any = ref([])
+  const machineTableIsLoading = ref(false)
+  const machineTableTotalItems = ref(0)
+  const machineTableSearch = ref('')
+  const machineSearch = ref({
+    fantasyName: '',
+    minSize: '',
+    maxSize: '',
+    minPrice: '',
+    maxPrice: '',
+    minNumberOfSeats: '',
+    maxNumberOfSeats: '',
+    minMinimumRequiredAge: '',
+    maxMinimumRequiredAge: '',
+    minTicketPrice: '',
+    maxTicketPrice: '',
+    type: '',
+  })
+  const machineTableItems = ref([])
+  const machineTableHeaders = [
+    { title: 'Fantasy name', key: 'fantasyName' },
+    { title: 'Size', key: 'size' },
+    { title: 'Price', key: 'price' },
+    { title: 'Number of seats', key: 'numberOfSeats' },
+    { title: 'Minimum required age', key: 'minimumRequiredAge' },
+    { title: 'Ticket price', key: 'ticketPrice' },
+    { title: 'Type', key: 'type' },
+  ]
+
   const types = [
     { title: 'Carousel', value: 'CAROUSEL' },
     { title: 'Roller coaster', value: 'ROLLER_COASTER' },
@@ -142,6 +295,44 @@
     type: '',
   })
 
+  let machineTimer = 0
+
+  function machineTableLoadItems () {
+    machineTableIsLoading.value = true
+    clearTimeout(machineTimer)
+    machineTimer = setTimeout(() => {
+      let url = store.getLinks.machine
+      const input: { [key: string]: number | string } = {}
+      if (machineSearch.value.fantasyName != '') {
+        input.fantasyName = machineSearch.value.fantasyName
+      }
+      const entries = Object.entries(machineSearch.value)
+      for (let i = 1; i < entries.length - 1; i++) {
+        const e = entries[i]
+        if (e[1] != '' && !Number.isNaN(Number(e[1]))) {
+          input[e[0]] = Number(e[1])
+        }
+      }
+      if (machineSearch.value.type != '') {
+        input.type = machineSearch.value.type
+      }
+      url += '?input=' + encodeURI(JSON.stringify(input))
+      url += '&page=' + (machineTablePage.value - 1)
+      url += '&size=' + machineTableItemsPerPage.value
+      if (machineTableSortBy.value.length === 1) {
+        url += '&sort=' + machineTableSortBy.value[0].key + ',' + machineTableSortBy.value[0].order
+      }
+      fetch(url).then(async response => {
+        machineTableIsLoading.value = false
+        if (response.ok) {
+          const machineResponse = await response.json()
+          machineTableTotalItems.value = machineResponse.page.totalElements
+          machineTableItems.value = machineResponse._embedded ? machineResponse._embedded.machineSearchResponseDtoList : []
+        }
+      })
+    }, machineTimer === 0 ? 0 : 2000)
+  }
+
   function createMachine () {
     machineCreateFormIsLoading.value = true
     fetch(store.getLinks.machine, {
@@ -153,6 +344,7 @@
     }).then(async response => {
       machineCreateFormIsLoading.value = false
       if (response.ok) {
+        machineTableLoadItems()
         store.setCreateShow(false)
         store.addMessage('success', 'Successfully created new machine ' + machineCreate.value.fantasyName + '.')
       } else {
@@ -163,5 +355,9 @@
 
   watch(computed(() => store.getCreateShow), () => {
     machineCreateForm.value.reset()
+  })
+
+  watch(machineSearch.value, () => {
+    machineTableSearch.value = String(Date.now())
   })
 </script>

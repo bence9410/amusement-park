@@ -323,7 +323,7 @@
   const router = useRouter()
   const amusementParkTableItemsPerPage = ref(5)
   const amusementParkTablePage = ref(1)
-  const amusementParkTableSortBy = ref([])
+  const amusementParkTableSortBy: any = ref([])
   const amusementParkTableIsLoading = ref(false)
   const amusementParkTableTotalItems = ref(0)
   const amusementParkTableSearch = ref('')
@@ -386,7 +386,7 @@
   let amusementParkTimer = 0
   let guestBookRegistryTimer = 0
 
-  function amusementParkTableLoadItems (params: any) {
+  function amusementParkTableLoadItems () {
     amusementParkTableIsLoading.value = true
     clearTimeout(amusementParkTimer)
     amusementParkTimer = setTimeout(() => {
@@ -403,10 +403,10 @@
         }
       }
       url += '?input=' + encodeURI(JSON.stringify(input))
-      url += '&page=' + (params.page - 1)
-      url += '&size=' + params.itemsPerPage
-      if (params.sortBy.length === 1) {
-        url += '&sort=' + params.sortBy[0].key + ',' + params.sortBy[0].order
+      url += '&page=' + (amusementParkTablePage.value - 1)
+      url += '&size=' + amusementParkTableItemsPerPage.value
+      if (amusementParkTableSortBy.value.length === 1) {
+        url += '&sort=' + amusementParkTableSortBy.value[0].key + ',' + amusementParkTableSortBy.value[0].order
       }
       fetch(url).then(async response => {
         amusementParkTableIsLoading.value = false
@@ -432,7 +432,6 @@
       let url = p._links.addRegistry.href
       const input: { [key: string]: string } = {}
       const entries = Object.entries(guestBookRegistrySearch.value)
-      console.log(guestBookRegistrySearch.value)
       for (const e of entries) {
         if (e[1] != '') {
           input[e[0]] = e[1]
@@ -466,7 +465,7 @@
     }).then(async response => {
       amusementParkCreateFormIsLoading.value = false
       if (response.ok) {
-        amusementParkTableLoadItems({ page: amusementParkTablePage.value, itemsPerPage: amusementParkTableItemsPerPage.value, sortBy: amusementParkTableSortBy.value })
+        amusementParkTableLoadItems()
         store.setCreateShow(false)
         store.addMessage('success', 'Successfully created new amusement park ' + amusementParkCreate.value.name + '.')
       } else {
@@ -505,7 +504,7 @@
     guestBookRegistryTableSearch.value = String(Date.now())
   })
 </script>
-<style scoped>
+<style>
 .custom-table {
   background-color: lightgreen;
 }

@@ -10,25 +10,25 @@ public class MachineSearchRequestDto {
 
     private String fantasyName;
 
-    private Integer sizeMin;
+    private Integer minSize;
 
-    private Integer sizeMax;
+    private Integer maxSize;
 
-    private Integer priceMin;
+    private Integer minPrice;
 
-    private Integer priceMax;
+    private Integer maxPrice;
 
-    private Integer numberOfSeatsMin;
+    private Integer minNumberOfSeats;
 
-    private Integer numberOfSeatsMax;
+    private Integer maxNumberOfSeats;
 
-    private Integer minimumRequiredAgeMin;
+    private Integer minMinimumRequiredAge;
 
-    private Integer minimumRequiredAgeMax;
+    private Integer maxMinimumRequiredAge;
 
-    private Integer ticketPriceMin;
+    private Integer minTicketPrice;
 
-    private Integer ticketPriceMax;
+    private Integer maxTicketPrice;
 
     private MachineType type;
 

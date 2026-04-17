@@ -49,36 +49,36 @@ public class MachineRepositoryCustomImpl implements MachineRepositoryCustom {
                 .map(fantasyName -> cb.like(root.get(Machine_.fantasyName), "%" + fantasyName + "%"))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getSizeMin()).map(sizeMin -> cb.ge(root.get(Machine_.size), sizeMin)).ifPresent(predicates::add);
+        ofNullable(dto.getMinSize()).map(minSize -> cb.ge(root.get(Machine_.size), minSize)).ifPresent(predicates::add);
 
-        ofNullable(dto.getSizeMax()).map(sizeMax -> cb.le(root.get(Machine_.size), sizeMax)).ifPresent(predicates::add);
+        ofNullable(dto.getMaxSize()).map(maxSize -> cb.le(root.get(Machine_.size), maxSize)).ifPresent(predicates::add);
 
-        ofNullable(dto.getPriceMin()).map(priceMin -> cb.ge(root.get(Machine_.price), priceMin))
+        ofNullable(dto.getMinPrice()).map(minPrice -> cb.ge(root.get(Machine_.price), minPrice))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getPriceMax()).map(priceMax -> cb.le(root.get(Machine_.price), priceMax))
+        ofNullable(dto.getMaxPrice()).map(maxPrice -> cb.le(root.get(Machine_.price), maxPrice))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getNumberOfSeatsMin())
-                .map(numberOfSeatsMin -> cb.ge(root.get(Machine_.numberOfSeats), numberOfSeatsMin))
+        ofNullable(dto.getMinNumberOfSeats())
+                .map(minNumberOfSeats -> cb.ge(root.get(Machine_.numberOfSeats), minNumberOfSeats))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getNumberOfSeatsMax())
-                .map(numberOfSeatsMax -> cb.le(root.get(Machine_.numberOfSeats), numberOfSeatsMax))
+        ofNullable(dto.getMaxNumberOfSeats())
+                .map(maxNumberOfSeats -> cb.le(root.get(Machine_.numberOfSeats), maxNumberOfSeats))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getMinimumRequiredAgeMin())
-                .map(minimumRequiredAgeMin -> cb.ge(root.get(Machine_.minimumRequiredAge), minimumRequiredAgeMin))
+        ofNullable(dto.getMinMinimumRequiredAge())
+                .map(minMinimumRequiredAge -> cb.ge(root.get(Machine_.minimumRequiredAge), minMinimumRequiredAge))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getMinimumRequiredAgeMax())
-                .map(minimumRequiredAgeMax -> cb.le(root.get(Machine_.minimumRequiredAge), minimumRequiredAgeMax))
+        ofNullable(dto.getMaxMinimumRequiredAge())
+                .map(maxMinimumRequiredAge -> cb.le(root.get(Machine_.minimumRequiredAge), maxMinimumRequiredAge))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getTicketPriceMin()).map(ticketPriceMin -> cb.ge(root.get(Machine_.ticketPrice), ticketPriceMin))
+        ofNullable(dto.getMinTicketPrice()).map(minTicketPrice -> cb.ge(root.get(Machine_.ticketPrice), minTicketPrice))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getTicketPriceMax()).map(ticketPriceMax -> cb.le(root.get(Machine_.ticketPrice), ticketPriceMax))
+        ofNullable(dto.getMaxTicketPrice()).map(maxTicketPrice -> cb.le(root.get(Machine_.ticketPrice), maxTicketPrice))
                 .ifPresent(predicates::add);
 
         ofNullable(dto.getType()).map(type -> cb.equal(root.get(Machine_.type), type)).ifPresent(predicates::add);
