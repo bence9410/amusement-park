@@ -13,7 +13,7 @@ spring:
     platform: postgresql
   sql:
     init:
-      data-locations: 
+      data-locations:
   jpa:
     open-in-view: false
     show-sql: true

@@ -43,55 +43,65 @@
                 <h1>Guest book registries</h1>
               </div>
               <v-data-table-server
-              class="inner-table"
-              v-model:items-per-page="guestBookRegistryTableItemsPerPage"
-        v-model:page="guestBookRegistryTablePage"
-        v-model:sort-by="guestBookRegistryTableSortBy"
-        theme="dark"
-        :headers="guestBookRegistryTableHeaders"
-        :items="guestBookRegistryTableItems"
-        :items-length="guestBookRegistryTableTotalItems"
-        :loading="guestBookRegistryTableIsLoading"
-        loading-text="Loading... Please wait"
-        :search="guestBookRegistryTableSearch"
-        @update:options="guestBookRegistryTableLoadItems(item)"
-      >
-      <template #tfoot>
-          <tr>
-            <td>
-              <v-text-field type="datetime-local"
-              v-model="guestBookRegistrySearch.minDateOfRegistry" 
-              placeholder="Min date"/>
-            </td>
-            <td>
-              <v-text-field
-                v-model="guestBookRegistrySearch.textOfRegistry"
-                class="ma-1"
-                density="compact"
-                placeholder="Like content"
-              />
-            </td>
-            <td>
-              <v-text-field
-                v-model="guestBookRegistrySearch.visitorEmail"
-                class="ma-1"
-                density="compact"
-                placeholder="Like email"
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <v-text-field type="datetime-local"
-              v-model="guestBookRegistrySearch.maxDateOfRegistry" 
-              placeholder="Max date"/>
-            </td>
-          </tr>
-        </template>
-    </v-data-table-server>
+                v-model:items-per-page="guestBookRegistryTableItemsPerPage"
+                v-model:page="guestBookRegistryTablePage"
+                v-model:sort-by="guestBookRegistryTableSortBy"
+                class="inner-table"
+                :headers="guestBookRegistryTableHeaders"
+                :items="guestBookRegistryTableItems"
+                :items-length="guestBookRegistryTableTotalItems"
+                :loading="guestBookRegistryTableIsLoading"
+                loading-text="Loading... Please wait"
+                :search="guestBookRegistryTableSearch"
+                theme="dark"
+                @update:options="guestBookRegistryTableLoadItems(item)"
+              >
+                <template #tfoot>
+                  <tr>
+                    <td>
+                      <v-text-field
+                        v-model="guestBookRegistrySearch.minDateOfRegistry"
+                        placeholder="Min date"
+                        type="datetime-local"
+                      />
+                    </td>
+                    <td>
+                      <v-text-field
+                        v-model="guestBookRegistrySearch.textOfRegistry"
+                        class="ma-1"
+                        density="compact"
+                        placeholder="Like content"
+                      />
+                    </td>
+                    <td>
+                      <v-text-field
+                        v-model="guestBookRegistrySearch.visitorEmail"
+                        class="ma-1"
+                        density="compact"
+                        placeholder="Like email"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <v-text-field
+                        v-model="guestBookRegistrySearch.maxDateOfRegistry"
+                        placeholder="Max date"
+                        type="datetime-local"
+                      />
+                    </td>
+                  </tr>
+                </template>
+              </v-data-table-server>
             </td>
             <td :colspan="2">
-              <v-btn block class="ma-1" color="black" @click="enterPark(item)" text="Enter park" />
+              <v-btn
+                block
+                class="ma-1"
+                color="black"
+                text="Enter park"
+                @click="enterPark(item)"
+              />
             </td>
           </tr>
         </template>
@@ -99,11 +109,12 @@
         <template #tfoot>
           <tr>
             <td>
-              <v-text-field 
-              v-model="amusementParkSearch.name" 
-              class="ma-1" 
-              density="compact"
-              placeholder="Like name" />
+              <v-text-field
+                v-model="amusementParkSearch.name"
+                class="ma-1"
+                density="compact"
+                placeholder="Like name"
+              />
             </td>
             <td>
               <v-text-field
@@ -347,19 +358,19 @@
   const guestBookRegistryTablePage = ref(1)
   const guestBookRegistryTableSortBy: any = ref([])
   const guestBookRegistryTableHeaders = [
-    {title: 'Date', key: 'dateOfRegistry'},
-    {title: 'Content', key: 'textOfRegistry'},
-    {title: 'Visitor email', key: 'visitorEmail'}
+    { title: 'Date', key: 'dateOfRegistry' },
+    { title: 'Content', key: 'textOfRegistry' },
+    { title: 'Visitor email', key: 'visitorEmail' },
   ]
   const guestBookRegistryTableItems = ref([])
   const guestBookRegistryTableTotalItems = ref(0)
   const guestBookRegistryTableIsLoading = ref(false)
   const guestBookRegistryTableSearch = ref('')
   const guestBookRegistrySearch = ref({
-    minDateOfRegistry:'',
-    maxDateOfRegistry:'',
-    textOfRegistry:'',
-    visitorEmail:''
+    minDateOfRegistry: '',
+    maxDateOfRegistry: '',
+    textOfRegistry: '',
+    visitorEmail: '',
   })
   const amusementParkCreateForm = ref()
   const amusementParkCreateFormIsInvalid = ref(false)
@@ -412,7 +423,7 @@
     guestBookRegistryTableItems.value = []
   }
 
-  function guestBookRegistryTableLoadItems(p: any){
+  function guestBookRegistryTableLoadItems (p: any) {
     guestBookRegistryTableIsLoading.value = true
     clearTimeout(guestBookRegistryTimer)
     guestBookRegistryTimer = setTimeout(() => {
@@ -420,8 +431,7 @@
       const input: { [key: string]: string } = {}
       const entries = Object.entries(guestBookRegistrySearch.value)
       console.log(guestBookRegistrySearch.value)
-      for (let i = 0; i < entries.length; i++) {
-        const e = entries[i]
+      for (const e of entries) {
         if (e[1] != '') {
           input[e[0]] = e[1]
         }
@@ -433,13 +443,13 @@
         url += '&sort=' + guestBookRegistryTableSortBy.value[0].key + ',' + guestBookRegistryTableSortBy.value[0].order
       }
       fetch(url).then(async response => {
-      guestBookRegistryTableIsLoading.value = false
-      if (response.ok) {
-        const guestBookRegistrysResponse = await response.json()
-        guestBookRegistryTableTotalItems.value = guestBookRegistrysResponse.page.totalElements
-        guestBookRegistryTableItems.value = guestBookRegistrysResponse._embedded ? guestBookRegistrysResponse._embedded.guestBookRegistrySearchResponseDtoList : []
-      }
-    })
+        guestBookRegistryTableIsLoading.value = false
+        if (response.ok) {
+          const guestBookRegistrysResponse = await response.json()
+          guestBookRegistryTableTotalItems.value = guestBookRegistrysResponse.page.totalElements
+          guestBookRegistryTableItems.value = guestBookRegistrysResponse._embedded ? guestBookRegistrysResponse._embedded.guestBookRegistrySearchResponseDtoList : []
+        }
+      })
     }, guestBookRegistryTimer === 0 ? 0 : 2000)
   }
 
@@ -463,16 +473,16 @@
     })
   }
 
-  function enterPark(amusementPark:any) {
+  function enterPark (amusementPark: any) {
     fetch(amusementPark._links.visitorEnterPark.href, {
-      method: 'PUT'
+      method: 'PUT',
     }).then(async response => {
-      if (response.ok){
-        let visitor = store.getVisitor
-        let newVisitor = await response.json()
+      if (response.ok) {
+        const visitor = store.getVisitor
+        const newVisitor = await response.json()
         visitor.spendingMoney = newVisitor.spendingMoney
         store.addMessage('success', 'Successfully entered park ' + amusementPark.name)
-      }else {
+      } else {
         store.addMessage('error', await response.text())
       }
     })
