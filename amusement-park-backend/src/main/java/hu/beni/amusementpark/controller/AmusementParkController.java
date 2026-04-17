@@ -71,7 +71,8 @@ public class AmusementParkController {
         result.getContent()
                 .forEach(r -> r.add(new Link[]{LinkFactory.createAmusementParkSelfLink(r.getContent().getId()),
                         LinkFactory.createMachineLink(r.getContent().getId()), LinkFactory.createVisitorSignUpLink(),
-                        LinkFactory.createVisitorEnterParkLink(r.getContent().getId())}));
+                        LinkFactory.createVisitorEnterParkLink(r.getContent().getId()),
+                        LinkFactory.createAddGuestBookRegistryLink(r.getContent().getId())}));
 
         return result;
     }

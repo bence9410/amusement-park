@@ -53,16 +53,16 @@ public class GuestBookRegistryRepositoryCustomImpl implements GuestBookRegistryR
                         .like(root.get(GuestBookRegistry_.visitor).get(Visitor_.email), "%" + visitorEmail + "%"))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getTextOfRegistry())
-                .map(textOfRegistry -> cb.like(root.get(GuestBookRegistry_.textOfRegistry), "%" + textOfRegistry + "%"))
+        ofNullable(dto.getTextOfRegistry()).map(textOfRegistry -> cb
+                        .like(root.get(GuestBookRegistry_.textOfRegistry), "%" + textOfRegistry + "%"))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getDateOfRegistryMin()).map(dateOfRegistryMin -> cb
-                        .greaterThanOrEqualTo(root.get(GuestBookRegistry_.dateOfRegistry), dateOfRegistryMin))
+        ofNullable(dto.getMinDateOfRegistry()).map(minDateOfRegistry -> cb
+                        .greaterThanOrEqualTo(root.get(GuestBookRegistry_.dateOfRegistry), minDateOfRegistry))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getDateOfRegistryMax()).map(dateOfRegistryMax -> cb
-                        .lessThanOrEqualTo(root.get(GuestBookRegistry_.dateOfRegistry), dateOfRegistryMax))
+        ofNullable(dto.getMaxDateOfRegistry()).map(maxDateOfRegistry -> cb
+                        .lessThanOrEqualTo(root.get(GuestBookRegistry_.dateOfRegistry), maxDateOfRegistry))
                 .ifPresent(predicates::add);
 
         return predicates.toArray(new Predicate[predicates.size()]);

@@ -15,8 +15,8 @@ public class GuestBookRegistrySearchRequestDto {
 
     private String textOfRegistry;
 
-    private LocalDateTime dateOfRegistryMin;
+    private LocalDateTime minDateOfRegistry;
 
-    private LocalDateTime dateOfRegistryMax;
+    private LocalDateTime maxDateOfRegistry;
 
 }

@@ -5,22 +5,105 @@
     </div>
     <v-container>
       <v-data-table-server
-        v-model:items-per-page="itemsPerPage"
-        v-model:page="page"
-        v-model:sort-by="sortBy"
+        v-model:items-per-page="amusementParkTableItemsPerPage"
+        v-model:page="amusementParkTablePage"
+        v-model:sort-by="amusementParkTableSortBy"
         class="custom-table"
-        :headers="headers"
-        :items="amusementParks"
-        :items-length="totalItems"
-        :loading="tableIsLoading"
+        :expanded="amusementParkTableExpandedRows"
+        :headers="amusementParkTableHeaders"
+        :items="amusementParkTableItems"
+        :items-length="amusementParkTableTotalItems"
+        :loading="amusementParkTableIsLoading"
         loading-text="Loading... Please wait"
-        :search="search"
-        @update:options="loadItems"
+        :search="amusementParkTableSearch"
+        show-expand
+        @update:expanded="amusementParkTableExpanded"
+        @update:options="amusementParkTableLoadItems"
       >
+
+        <template #item.data-table-expand="{ internalItem, isExpanded, toggleExpand }">
+          <v-btn
+            :append-icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+            border
+            class="text-none"
+            color="medium-emphasis"
+            size="small"
+            slim
+            :text="isExpanded(internalItem) ? 'Collapse' : 'More info'"
+            variant="text"
+            width="105"
+            @click="toggleExpand(internalItem)"
+          />
+        </template>
+
+        <template #expanded-row="{ columns, item }">
+          <tr>
+            <td class="py-2" :colspan="columns.length - 2">
+              <div class="text-center py-5" style="background-color: #e9ecef">
+                <h1>Guest book registries</h1>
+              </div>
+              <v-data-table-server
+              class="inner-table"
+              v-model:items-per-page="guestBookRegistryTableItemsPerPage"
+        v-model:page="guestBookRegistryTablePage"
+        v-model:sort-by="guestBookRegistryTableSortBy"
+        theme="dark"
+        :headers="guestBookRegistryTableHeaders"
+        :items="guestBookRegistryTableItems"
+        :items-length="guestBookRegistryTableTotalItems"
+        :loading="guestBookRegistryTableIsLoading"
+        loading-text="Loading... Please wait"
+        :search="guestBookRegistryTableSearch"
+        @update:options="guestBookRegistryTableLoadItems(item)"
+      >
+      <template #tfoot>
+          <tr>
+            <td>
+              <v-text-field type="datetime-local"
+              v-model="guestBookRegistrySearch.minDateOfRegistry" 
+              placeholder="Min date"/>
+            </td>
+            <td>
+              <v-text-field
+                v-model="guestBookRegistrySearch.textOfRegistry"
+                class="ma-1"
+                density="compact"
+                placeholder="Like content"
+              />
+            </td>
+            <td>
+              <v-text-field
+                v-model="guestBookRegistrySearch.visitorEmail"
+                class="ma-1"
+                density="compact"
+                placeholder="Like email"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <v-text-field type="datetime-local"
+              v-model="guestBookRegistrySearch.maxDateOfRegistry" 
+              placeholder="Max date"/>
+            </td>
+          </tr>
+        </template>
+    </v-data-table-server>
+            </td>
+            <td :colspan="2">
+              <v-btn block class="ma-1" color="black" @click="enterPark(item)" text="Enter park" />
+            </td>
+          </tr>
+        </template>
+
         <template #tfoot>
           <tr>
             <td>
-              <v-text-field v-model="amusementParkSearch.name" class="ma-1" density="compact" placeholder="Like name" />
+              <v-text-field 
+              v-model="amusementParkSearch.name" 
+              class="ma-1" 
+              density="compact"
+              placeholder="Like name" />
             </td>
             <td>
               <v-text-field
@@ -225,12 +308,13 @@
   import { useAppStore } from '@/stores/app'
 
   const store = useAppStore()
-  const itemsPerPage = ref(5)
-  const sortBy = ref([])
-  const page = ref(1)
-  const tableIsLoading = ref(false)
-  const totalItems = ref(0)
-  const search = ref('')
+  const amusementParkTableItemsPerPage = ref(5)
+  const amusementParkTablePage = ref(1)
+  const amusementParkTableSortBy = ref([])
+  const amusementParkTableIsLoading = ref(false)
+  const amusementParkTableTotalItems = ref(0)
+  const amusementParkTableSearch = ref('')
+  const amusementParkTableExpandedRows: any = ref([])
   const amusementParkSearch = ref({
     name: '',
     minCapital: '',
@@ -248,8 +332,8 @@
     minKnownVisitors: '',
     maxKnownVisitors: '',
   })
-  const amusementParks = ref([])
-  const headers = [
+  const amusementParkTableItems = ref([])
+  const amusementParkTableHeaders = [
     { title: 'Name', key: 'name' },
     { title: 'Capital', key: 'capital' },
     { title: 'Total area', key: 'totalArea' },
@@ -259,6 +343,24 @@
     { title: 'Active Visitors', key: 'numberOfActiveVisitors' },
     { title: 'Known Visitors', key: 'numberOfKnownVisitors' },
   ]
+  const guestBookRegistryTableItemsPerPage = ref(5)
+  const guestBookRegistryTablePage = ref(1)
+  const guestBookRegistryTableSortBy: any = ref([])
+  const guestBookRegistryTableHeaders = [
+    {title: 'Date', key: 'dateOfRegistry'},
+    {title: 'Content', key: 'textOfRegistry'},
+    {title: 'Visitor email', key: 'visitorEmail'}
+  ]
+  const guestBookRegistryTableItems = ref([])
+  const guestBookRegistryTableTotalItems = ref(0)
+  const guestBookRegistryTableIsLoading = ref(false)
+  const guestBookRegistryTableSearch = ref('')
+  const guestBookRegistrySearch = ref({
+    minDateOfRegistry:'',
+    maxDateOfRegistry:'',
+    textOfRegistry:'',
+    visitorEmail:''
+  })
   const amusementParkCreateForm = ref()
   const amusementParkCreateFormIsInvalid = ref(false)
   const amusementParkCreateFormIsLoading = ref(false)
@@ -268,12 +370,13 @@
     totalArea: '',
     entranceFee: '',
   })
-  let timer: any = null
+  let amusementParkTimer = 0
+  let guestBookRegistryTimer = 0
 
-  function loadItems (params: any) {
-    tableIsLoading.value = true
-    clearTimeout(timer)
-    timer = setTimeout(() => {
+  function amusementParkTableLoadItems (params: any) {
+    amusementParkTableIsLoading.value = true
+    clearTimeout(amusementParkTimer)
+    amusementParkTimer = setTimeout(() => {
       let url = store.getLinks.amusementPark
       const input: { [key: string]: number | string } = {}
       if (amusementParkSearch.value.name != '') {
@@ -293,15 +396,53 @@
         url += '&sort=' + params.sortBy[0].key + ',' + params.sortBy[0].order
       }
       fetch(url).then(async response => {
-        tableIsLoading.value = false
+        amusementParkTableIsLoading.value = false
         if (response.ok) {
-          const amusementParksResponse = await response.json()
-          totalItems.value = amusementParksResponse.page.totalElements
-          amusementParks.value = amusementParksResponse._embedded ? amusementParksResponse._embedded.amusementParkDetailResponseDtoList : []
+          const amusementParkResponse = await response.json()
+          amusementParkTableTotalItems.value = amusementParkResponse.page.totalElements
+          amusementParkTableItems.value = amusementParkResponse._embedded ? amusementParkResponse._embedded.amusementParkDetailResponseDtoList : []
         }
       })
-    }, 2000)
+    }, amusementParkTimer === 0 ? 0 : 2000)
   }
+
+  function amusementParkTableExpanded (ids: any) {
+    amusementParkTableExpandedRows.value = ids.length > 1 ? [ids.at(-1)] : ids
+    guestBookRegistryTimer = 0
+    guestBookRegistryTableItems.value = []
+  }
+
+  function guestBookRegistryTableLoadItems(p: any){
+    guestBookRegistryTableIsLoading.value = true
+    clearTimeout(guestBookRegistryTimer)
+    guestBookRegistryTimer = setTimeout(() => {
+      let url = p._links.addRegistry.href
+      const input: { [key: string]: string } = {}
+      const entries = Object.entries(guestBookRegistrySearch.value)
+      console.log(guestBookRegistrySearch.value)
+      for (let i = 0; i < entries.length; i++) {
+        const e = entries[i]
+        if (e[1] != '') {
+          input[e[0]] = e[1]
+        }
+      }
+      url += '?input=' + encodeURI(JSON.stringify(input))
+      url += '&page=' + (guestBookRegistryTablePage.value - 1)
+      url += '&size=' + guestBookRegistryTableItemsPerPage.value
+      if (guestBookRegistryTableSortBy.value.length === 1) {
+        url += '&sort=' + guestBookRegistryTableSortBy.value[0].key + ',' + guestBookRegistryTableSortBy.value[0].order
+      }
+      fetch(url).then(async response => {
+      guestBookRegistryTableIsLoading.value = false
+      if (response.ok) {
+        const guestBookRegistrysResponse = await response.json()
+        guestBookRegistryTableTotalItems.value = guestBookRegistrysResponse.page.totalElements
+        guestBookRegistryTableItems.value = guestBookRegistrysResponse._embedded ? guestBookRegistrysResponse._embedded.guestBookRegistrySearchResponseDtoList : []
+      }
+    })
+    }, guestBookRegistryTimer === 0 ? 0 : 2000)
+  }
+
   async function createAmusementPark () {
     amusementParkCreateFormIsLoading.value = true
     fetch(store.getLinks.amusementPark, {
@@ -313,10 +454,25 @@
     }).then(async response => {
       amusementParkCreateFormIsLoading.value = false
       if (response.ok) {
-        loadItems({ page: page.value, itemsPerPage: itemsPerPage.value, sortBy: sortBy.value })
+        amusementParkTableLoadItems({ page: amusementParkTablePage.value, itemsPerPage: amusementParkTableItemsPerPage.value, sortBy: amusementParkTableSortBy.value })
         store.setCreateShow(false)
         store.addMessage('success', 'Successfully created new amusement park ' + amusementParkCreate.value.name + '.')
       } else {
+        store.addMessage('error', await response.text())
+      }
+    })
+  }
+
+  function enterPark(amusementPark:any) {
+    fetch(amusementPark._links.visitorEnterPark.href, {
+      method: 'PUT'
+    }).then(async response => {
+      if (response.ok){
+        let visitor = store.getVisitor
+        let newVisitor = await response.json()
+        visitor.spendingMoney = newVisitor.spendingMoney
+        store.addMessage('success', 'Successfully entered park ' + amusementPark.name)
+      }else {
         store.addMessage('error', await response.text())
       }
     })
@@ -327,7 +483,11 @@
   })
 
   watch(amusementParkSearch.value, () => {
-    search.value = String(Date.now())
+    amusementParkTableSearch.value = String(Date.now())
+  })
+
+  watch(guestBookRegistrySearch.value, () => {
+    guestBookRegistryTableSearch.value = String(Date.now())
   })
 </script>
 <style scoped>
@@ -337,5 +497,21 @@
 
 .custom-table :deep(tbody tr:hover) {
   background-color: #e3f2fd !important;
+}
+
+.inner-table {
+  background-color: black;
+}
+
+.inner-table :deep(tbody tr:hover) {
+  background-color: black !important;
+}
+
+.inner-table :deep(thead tr:hover) {
+  background-color: black !important;
+}
+
+.inner-table :deep(table tr:hover) {
+  background-color: black !important;
 }
 </style>
