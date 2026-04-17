@@ -26,7 +26,10 @@
       store.setLinks(links)
       fetch(store.getLinks.me).then(async response => {
         if (response.ok) {
-          store.setVisitor(await response.json())
+          const visitor = await response.json()
+          visitor._links.addRegistry = null
+          visitor._links.leavePark = null
+          store.setVisitor(visitor)
           router.push('/amusement-parks')
         } else {
           router.push('/')

@@ -280,9 +280,55 @@
       />
     </v-card>
   </v-dialog>
+  <v-dialog v-model="store.getGuestBookWritingShow" eager persistent width="50%">
+    <v-card>
+      <v-container>
+        <div class="text-right" style="width: 100%">
+          <v-btn class="ma-2" icon="mdi-close" @click="store.setGuestBookWritingShow(false)" />
+        </div>
+        <v-card-title>
+          <h2 style="background-color: #e9ecef">Guest book registry</h2>
+        </v-card-title>
+        <v-form
+          ref="guestBookRegistryCreateForm"
+          v-model="guestBookRegistryCreateFormIsInvalid"
+          @submit.prevent="createGuestBookRegistry"
+        >
+          <v-card-text>
+            <v-text-field
+              v-model="guestBookRegistryContent"
+              :counter="100"
+              label="Content"
+              :readonly="guestBookRegistryCreateFormIsLoading"
+              required
+              :rules="[
+                (v) =>
+                  (!!v && v.length >= 2 && v.length <= 100) ||
+                  'Length must be between 2 and 100.',
+              ]"
+            />
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              class="px-4"
+              color="green"
+              :disabled="!guestBookRegistryCreateFormIsInvalid"
+              :loading="guestBookRegistryCreateFormIsLoading"
+              text="Submit"
+              type="submit"
+              variant="flat"
+            />
+          </v-card-actions>
+        </v-form>
+        <guest-book-registry-table :link="store.getVisitor._links.addRegistry.href" />
+      </v-container>
+    </v-card>
+  </v-dialog>
 </template>
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
+  import GuestBookRegistryTable from '@/components/GuestBookRegistryTable.vue'
   import { useAppStore } from '@/stores/app'
 
   const store = useAppStore()
@@ -338,6 +384,11 @@
     ticketPrice: '',
     type: '',
   })
+
+  const guestBookRegistryCreateForm = ref()
+  const guestBookRegistryCreateFormIsInvalid = ref(false)
+  const guestBookRegistryCreateFormIsLoading = ref(false)
+  const guestBookRegistryContent = ref('')
 
   const onMachineDialog = ref(false)
   const onMachineFantasyName = ref('')
@@ -451,6 +502,22 @@
     })
   }
 
+  function createGuestBookRegistry () {
+    guestBookRegistryCreateFormIsLoading.value = true
+    fetch(store.getVisitor._links.addRegistry.href, {
+      method: 'POST',
+      body: guestBookRegistryContent.value,
+    }).then(async response => {
+      guestBookRegistryCreateFormIsLoading.value = false
+      store.setGuestBookWritingShow(false)
+      if (response.ok) {
+        store.addMessage('success', 'Successfully writed to the guest book registry.')
+      } else {
+        store.addMessage('error', await response.text())
+      }
+    })
+  }
+
   watch(computed(() => store.getCreateShow), () => {
     machineCreateForm.value.reset()
   })
@@ -472,5 +539,9 @@
         }
       })
     }
+  })
+
+  watch(computed(() => store.getGuestBookWritingShow), () => {
+    guestBookRegistryCreateForm.value.reset()
   })
 </script>

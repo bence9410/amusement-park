@@ -32,8 +32,12 @@ export const useAppStore = defineStore('app', () => {
   const getCreateShow = computed(() => createShow.value)
   const setCreateShow = (v: boolean) => createShow.value = v
 
+  const guestBookWritingShow = ref(false)
+  const getGuestBookWritingShow = computed(() => guestBookWritingShow.value)
+  const setGuestBookWritingShow = (v: boolean) => guestBookWritingShow.value = v
+
   return {
     getLinks, setLinks, getVisitor, setVisitor, getMessages, addMessage, removeMessage,
-    getCreateShow, setCreateShow,
+    getCreateShow, setCreateShow, getGuestBookWritingShow, setGuestBookWritingShow,
   }
 })

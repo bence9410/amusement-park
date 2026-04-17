@@ -12,6 +12,14 @@
     <v-icon icon="mdi-currency-eur" />
     <v-spacer />
     <v-btn
+      v-if="store.getVisitor._links.addRegistry"
+      class="ma-1"
+      color="black"
+      text="Guest book writing"
+      variant="flat"
+      @click="store.setGuestBookWritingShow(true)"
+    />
+    <v-btn
       v-if="store.getVisitor._links.leavePark"
       class="ma-1"
       color="black"
