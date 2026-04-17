@@ -1,84 +1,82 @@
 <template>
-  <div v-if="store.getVisitor">
-    <v-app-bar color="green">
-      <v-avatar class="mr-4 ml-5">
-        <v-img alt="Profile picture" :src="store.getVisitor.photo" />
-      </v-avatar>
-      <span>
-        {{ store.getVisitor.email }}
-      </span>
-      <span class="ml-3">
-        {{ store.getVisitor.spendingMoney }}
-      </span>
-      <v-icon icon="mdi-currency-eur" />
-      <v-spacer />
-      <v-btn
-        v-if="store.getVisitor._links.leavePark"
-        class="ma-1"
-        color="black"
-        text="Leave park"
-        variant="flat"
-        @click="leavePark"
-      />
-      <v-btn
-        v-if="isAdmin"
-        class="ma-1"
-        color="black"
-        text="Create"
-        variant="flat"
-        @click="store.setCreateShow(true)"
-      />
-      <v-btn
-        class="ma-1"
-        color="black"
-        text="Upload money"
-        variant="flat"
-        @click="uploadMoneyForm.reset(), uploadMoneyDialogShow = true"
-      />
-      <v-btn
-        class="ma-1 mr-3"
-        color="black"
-        :loading="logoutIsLoading"
-        text="Logout"
-        variant="flat"
-        @click="logout"
-      />
-    </v-app-bar>
+  <v-app-bar v-if="store.getVisitor" color="green">
+    <v-avatar class="mr-4 ml-5">
+      <v-img alt="Profile picture" :src="store.getVisitor.photo" />
+    </v-avatar>
+    <span>
+      {{ store.getVisitor.email }}
+    </span>
+    <span class="ml-3">
+      {{ store.getVisitor.spendingMoney }}
+    </span>
+    <v-icon icon="mdi-currency-eur" />
+    <v-spacer />
+    <v-btn
+      v-if="store.getVisitor._links.leavePark"
+      class="ma-1"
+      color="black"
+      text="Leave park"
+      variant="flat"
+      @click="leavePark"
+    />
+    <v-btn
+      v-if="isAdmin"
+      class="ma-1"
+      color="black"
+      text="Create"
+      variant="flat"
+      @click="store.setCreateShow(true)"
+    />
+    <v-btn
+      class="ma-1"
+      color="black"
+      text="Upload money"
+      variant="flat"
+      @click="uploadMoneyForm.reset(), uploadMoneyDialogShow = true"
+    />
+    <v-btn
+      class="ma-1 mr-3"
+      color="black"
+      :loading="logoutIsLoading"
+      text="Logout"
+      variant="flat"
+      @click="logout"
+    />
+  </v-app-bar>
 
-    <v-dialog v-model="uploadMoneyDialogShow" eager persistent width="50%">
-      <v-card>
-        <div class="text-right" style="width: 100%">
-          <v-btn class="ma-2" icon="mdi-close" @click="uploadMoneyDialogShow = false" />
-        </div>
-        <v-card-title class="text-h5">Upload money</v-card-title>
-        <v-form ref="uploadMoneyForm" v-model="uploadMoneyFormIsInvalid" @submit.prevent="uploadMoney">
-          <v-card-text>
-            <v-text-field
-              v-model="uploadMoneyValue"
-              label="Money"
-              :readonly="uploadMoneyFormIsLoading"
-              required
-              :rules="[
-                (v) =>
-                  (!!v && Number(v) > 0) || 'Value must be greater than 0.',
-              ]"
-            />
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn
-              color="green"
-              :disabled="!uploadMoneyFormIsInvalid"
-              :loading="uploadMoneyFormIsLoading"
-              text="Upload"
-              type="submit"
-              variant="flat"
-            />
-          </v-card-actions>
-        </v-form>
-      </v-card>
-    </v-dialog>
-  </div>
+  <v-dialog v-model="uploadMoneyDialogShow" eager persistent width="50%">
+    <v-card>
+      <div class="text-right" style="width: 100%">
+        <v-btn class="ma-2" icon="mdi-close" @click="uploadMoneyDialogShow = false" />
+      </div>
+      <v-card-title class="text-h5">Upload money</v-card-title>
+      <v-form ref="uploadMoneyForm" v-model="uploadMoneyFormIsInvalid" @submit.prevent="uploadMoney">
+        <v-card-text>
+          <v-text-field
+            v-model="uploadMoneyValue"
+            label="Money"
+            :readonly="uploadMoneyFormIsLoading"
+            required
+            :rules="[
+              (v) =>
+                (!!v && Number(v) > 0) || 'Value must be greater than 0.',
+            ]"
+          />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="green"
+            :disabled="!uploadMoneyFormIsInvalid"
+            :loading="uploadMoneyFormIsLoading"
+            text="Upload"
+            type="submit"
+            variant="flat"
+          />
+        </v-card-actions>
+      </v-form>
+    </v-card>
+  </v-dialog>
 </template>
 <script setup lang="ts">
   import { computed, ref } from 'vue'

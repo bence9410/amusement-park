@@ -1,109 +1,107 @@
 <template>
-  <div>
-    <div class="text-center py-5" style="background-color: #e9ecef">
-      <h1>Welcome Visitor</h1>
-    </div>
-    <v-row>
-      <v-col md="4" offset-md="4" sm="12">
-        <v-card class="mt-8">
-          <v-container>
-            <v-form v-model="signUpFormIsInvalid" @submit.prevent="signUp">
-              <v-text-field
-                v-model="signUpData.email"
-                :counter="50"
-                label="Email*"
-                :readonly="signUpFormIsLoading"
-                required
-                :rules="[
-                  (v) =>
-                    (!!v && emailRegexp.test(v)) ||
-                    'Email must be a well-formed email for example: email@example.com',
-                ]"
-              />
-              <v-text-field
-                v-model="signUpData.password"
-                :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
-                :counter="25"
-                hint="Length must be beetwen 8-25 and must contain upper and lowercase character and number."
-                label="Password*"
-                :readonly="signUpFormIsLoading"
-                required
-                :rules="[
-                  (v) =>
-                    (!!v && passwordRegexp.test(v)) ||
-                    'Must contain upper and lowercase characters and number and the length must be beetwen 8-25.',
-                ]"
-                :type="passwordShow ? 'text' : 'password'"
-                @click:append="passwordShow = !passwordShow"
-              />
-              <v-text-field
-                v-model="signUpData.confirmPassword"
-                :append-icon="confirmPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
-                :counter="25"
-                hint="Must be equals with password, length must be beetwen 8-25 and must contain upper and lowercase character and number."
-                label="Confirm Password*"
-                :readonly="signUpFormIsLoading"
-                required
-                :rules="[
-                  (v) =>
-                    (!!v &&
-                      passwordRegexp.test(v) &&
-                      signUpData.password == v) ||
-                    'Must be equals with password and contain upper and lowercase characters and number and the length must be beetwen 8-25.',
-                ]"
-                :type="confirmPasswordShow ? 'text' : 'password'"
-                @click:append="confirmPasswordShow = !confirmPasswordShow"
-              />
-              <v-date-input
-                v-model="signUpData.dateOfBirth"
-                input-format="yyyy-mm-dd"
-                label="Birthdate*"
-                :max="new Date().toISOString().substr(0, 10)"
-                min="1900-01-01"
-                :readonly="signUpFormIsLoading"
-                required
-                :rules="[(v) => !!v || 'Cannot be empty.']"
-              />
-              <v-file-input
-                v-model="image"
-                accept="image/png,image/jpeg,image/bmp"
-                label="Profile photo (size: 1:1)*"
-                prepend-icon="mdi-camera"
-                :readonly="signUpFormIsLoading"
-                required
-                :rules="[
-                  (v) =>
-                    !v ||
-                    v.size < 1_048_576 ||
-                    'Avatar size should be less than 1 MB!',
-                  (v) => !!v || 'Photo is required',
-                ]"
-                @change="showImg"
-              />
-              <v-col v-if="signUpData.photo != ''" align="center">
-                <v-img class="rounded-circle" height="100" :src="signUpData.photo" width="100" />
-              </v-col>
-              <v-row>
-                <v-col cols="6">
-                  <v-btn block color="green" text="Back" to="/" />
-                </v-col>
-                <v-col cols="6">
-                  <v-btn
-                    block
-                    color="green"
-                    :disabled="!signUpFormIsInvalid"
-                    :loading="signUpFormIsLoading"
-                    text="Sign up"
-                    type="submit"
-                  />
-                </v-col>
-              </v-row>
-            </v-form>
-          </v-container>
-        </v-card>
-      </v-col>
-    </v-row>
+  <div class="text-center py-5" style="background-color: #e9ecef">
+    <h1>Welcome Visitor</h1>
   </div>
+  <v-row>
+    <v-col md="4" offset-md="4" sm="12">
+      <v-card class="mt-8">
+        <v-container>
+          <v-form v-model="signUpFormIsInvalid" @submit.prevent="signUp">
+            <v-text-field
+              v-model="signUpData.email"
+              :counter="50"
+              label="Email*"
+              :readonly="signUpFormIsLoading"
+              required
+              :rules="[
+                (v) =>
+                  (!!v && emailRegexp.test(v)) ||
+                  'Email must be a well-formed email for example: email@example.com',
+              ]"
+            />
+            <v-text-field
+              v-model="signUpData.password"
+              :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
+              :counter="25"
+              hint="Length must be beetwen 8-25 and must contain upper and lowercase character and number."
+              label="Password*"
+              :readonly="signUpFormIsLoading"
+              required
+              :rules="[
+                (v) =>
+                  (!!v && passwordRegexp.test(v)) ||
+                  'Must contain upper and lowercase characters and number and the length must be beetwen 8-25.',
+              ]"
+              :type="passwordShow ? 'text' : 'password'"
+              @click:append="passwordShow = !passwordShow"
+            />
+            <v-text-field
+              v-model="signUpData.confirmPassword"
+              :append-icon="confirmPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
+              :counter="25"
+              hint="Must be equals with password, length must be beetwen 8-25 and must contain upper and lowercase character and number."
+              label="Confirm Password*"
+              :readonly="signUpFormIsLoading"
+              required
+              :rules="[
+                (v) =>
+                  (!!v &&
+                    passwordRegexp.test(v) &&
+                    signUpData.password == v) ||
+                  'Must be equals with password and contain upper and lowercase characters and number and the length must be beetwen 8-25.',
+              ]"
+              :type="confirmPasswordShow ? 'text' : 'password'"
+              @click:append="confirmPasswordShow = !confirmPasswordShow"
+            />
+            <v-date-input
+              v-model="signUpData.dateOfBirth"
+              input-format="yyyy-mm-dd"
+              label="Birthdate*"
+              :max="new Date().toISOString().substr(0, 10)"
+              min="1900-01-01"
+              :readonly="signUpFormIsLoading"
+              required
+              :rules="[(v) => !!v || 'Cannot be empty.']"
+            />
+            <v-file-input
+              v-model="image"
+              accept="image/png,image/jpeg,image/bmp"
+              label="Profile photo (size: 1:1)*"
+              prepend-icon="mdi-camera"
+              :readonly="signUpFormIsLoading"
+              required
+              :rules="[
+                (v) =>
+                  !v ||
+                  v.size < 1_048_576 ||
+                  'Avatar size should be less than 1 MB!',
+                (v) => !!v || 'Photo is required',
+              ]"
+              @change="showImg"
+            />
+            <v-col v-if="signUpData.photo != ''" align="center">
+              <v-img class="rounded-circle" height="100" :src="signUpData.photo" width="100" />
+            </v-col>
+            <v-row>
+              <v-col cols="6">
+                <v-btn block color="green" text="Back" to="/" />
+              </v-col>
+              <v-col cols="6">
+                <v-btn
+                  block
+                  color="green"
+                  :disabled="!signUpFormIsInvalid"
+                  :loading="signUpFormIsLoading"
+                  text="Sign up"
+                  type="submit"
+                />
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-container>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 <script setup lang="ts">
   import { ref } from 'vue'

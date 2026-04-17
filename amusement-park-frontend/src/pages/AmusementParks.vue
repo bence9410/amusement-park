@@ -1,265 +1,263 @@
 <template>
-  <div>
-    <div class="text-center py-5" style="background-color: #e9ecef">
-      <h1>Amusement park</h1>
-    </div>
-    <v-container>
-      <v-data-table-server
-        v-model:items-per-page="amusementParkTableItemsPerPage"
-        v-model:page="amusementParkTablePage"
-        v-model:sort-by="amusementParkTableSortBy"
-        class="custom-table"
-        :expanded="amusementParkTableExpandedRows"
-        :headers="amusementParkTableHeaders"
-        :items="amusementParkTableItems"
-        :items-length="amusementParkTableTotalItems"
-        :loading="amusementParkTableIsLoading"
-        loading-text="Loading... Please wait"
-        :search="amusementParkTableSearch"
-        show-expand
-        @update:expanded="amusementParkTableExpanded"
-        @update:options="amusementParkTableLoadItems"
-      >
-
-        <template #item.data-table-expand="{ internalItem, isExpanded, toggleExpand }">
-          <v-btn
-            :append-icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-            border
-            class="text-none"
-            color="medium-emphasis"
-            size="small"
-            slim
-            :text="isExpanded(internalItem) ? 'Collapse' : 'More info'"
-            variant="text"
-            width="105"
-            @click="toggleExpand(internalItem)"
-          />
-        </template>
-
-        <template #expanded-row="{ columns, item }">
-          <tr>
-            <td class="py-2" :colspan="columns.length - 2">
-              <guest-book-registry-table :link="(item as any)._links.addRegistry.href" />
-            </td>
-            <td :colspan="2">
-              <v-btn
-                block
-                class="ma-1"
-                color="black"
-                text="Enter park"
-                @click="enterPark(item)"
-              />
-            </td>
-          </tr>
-        </template>
-
-        <template #tfoot>
-          <tr>
-            <td>
-              <v-text-field
-                v-model="amusementParkSearch.name"
-                class="ma-1"
-                density="compact"
-                placeholder="Like name"
-              />
-            </td>
-            <td>
-              <v-text-field
-                v-model="amusementParkSearch.minCapital"
-                class="ma-1"
-                density="compact"
-                placeholder="Min capital"
-              />
-            </td>
-            <td>
-              <v-text-field
-                v-model="amusementParkSearch.minTotalArea"
-                class="ma-1"
-                density="compact"
-                placeholder="Min total area"
-              />
-            </td>
-            <td>
-              <v-text-field
-                v-model="amusementParkSearch.minEntranceFee"
-                class="ma-1"
-                density="compact"
-                placeholder="Min entrance fee"
-              />
-            </td>
-            <td>
-              <v-text-field
-                v-model="amusementParkSearch.minMachines"
-                class="ma-1"
-                density="compact"
-                placeholder="Min machines"
-              />
-            </td>
-            <td>
-              <v-text-field
-                v-model="amusementParkSearch.minGuestBookRegistries"
-                class="ma-1"
-                density="compact"
-                placeholder="Min guest book registries"
-              />
-            </td>
-            <td>
-              <v-text-field
-                v-model="amusementParkSearch.minActiveVisitors"
-                class="ma-1"
-                density="compact"
-                placeholder="Min active visitors"
-              />
-            </td>
-            <td>
-              <v-text-field
-                v-model="amusementParkSearch.minKnownVisitors"
-                class="ma-1"
-                density="compact"
-                placeholder="Min known visitors"
-              />
-            </td>
-          </tr>
-          <tr>
-            <td />
-            <td>
-              <v-text-field
-                v-model="amusementParkSearch.maxCapital"
-                class="ma-1"
-                density="compact"
-                placeholder="Max capital"
-              />
-            </td>
-            <td>
-              <v-text-field
-                v-model="amusementParkSearch.maxTotalArea"
-                class="ma-1"
-                density="compact"
-                placeholder="Max total area"
-              />
-            </td>
-            <td>
-              <v-text-field
-                v-model="amusementParkSearch.maxEntranceFee"
-                class="ma-1"
-                density="compact"
-                placeholder="Max entrance fee"
-              />
-            </td>
-            <td>
-              <v-text-field
-                v-model="amusementParkSearch.maxMachines"
-                class="ma-1"
-                density="compact"
-                placeholder="Max machines"
-              />
-            </td>
-            <td>
-              <v-text-field
-                v-model="amusementParkSearch.maxGuestBookRegistries"
-                class="ma-1"
-                density="compact"
-                placeholder="Max guest book registries"
-              />
-            </td>
-            <td>
-              <v-text-field
-                v-model="amusementParkSearch.maxActiveVisitors"
-                class="ma-1"
-                density="compact"
-                placeholder="Max active visitors"
-              />
-            </td>
-            <td>
-              <v-text-field
-                v-model="amusementParkSearch.maxKnownVisitors"
-                class="ma-1"
-                density="compact"
-                placeholder="Max known visitors"
-              />
-            </td>
-          </tr>
-        </template>
-      </v-data-table-server>
-    </v-container>
-    <v-dialog v-model="store.getCreateShow" eager persistent width="50%">
-      <v-card>
-        <v-container>
-          <div class="text-right" style="width: 100%">
-            <v-btn class="ma-2" icon="mdi-close" @click="store.setCreateShow(false)" />
-          </div>
-          <v-card-title>
-            <h2 style="background-color: #e9ecef">Create amusement park</h2>
-          </v-card-title>
-          <v-form
-            ref="amusementParkCreateForm"
-            v-model="amusementParkCreateFormIsInvalid"
-            @submit.prevent="createAmusementPark"
-          >
-            <v-card-text>
-              <v-text-field
-                v-model="amusementParkCreate.name"
-                :counter="20"
-                label="Name"
-                :readonly="amusementParkCreateFormIsLoading"
-                required
-                :rules="[
-                  (v) =>
-                    (!!v && v.length >= 5 && v.length <= 20) ||
-                    'Name size must be between 5 and 20.',
-                ]"
-              />
-              <v-text-field
-                v-model="amusementParkCreate.capital"
-                label="Capital"
-                :readonly="amusementParkCreateFormIsLoading"
-                required
-                :rules="[
-                  (v) =>
-                    (!!v && Number(v) >= 500 && Number(v) <= 50000) ||
-                    'Capital must be between 500 and 50000.',
-                ]"
-              />
-              <v-text-field
-                v-model="amusementParkCreate.totalArea"
-                label="Total area"
-                :readonly="amusementParkCreateFormIsLoading"
-                required
-                :rules="[
-                  (v) =>
-                    (!!v && Number(v) >= 50 && Number(v) <= 5000) ||
-                    'TotalArea must be between 50 and 5000. ',
-                ]"
-              />
-              <v-text-field
-                v-model="amusementParkCreate.entranceFee"
-                label="Entrance fee"
-                :readonly="amusementParkCreateFormIsLoading"
-                required
-                :rules="[
-                  (v) =>
-                    (!!v && Number(v) >= 5 && Number(v) <= 200) ||
-                    'EntranceFee must be between 5 and 200.',
-                ]"
-              />
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn
-                class="px-4"
-                color="green"
-                :disabled="!amusementParkCreateFormIsInvalid"
-                :loading="amusementParkCreateFormIsLoading"
-                text="Create"
-                type="submit"
-                variant="flat"
-              />
-            </v-card-actions>
-          </v-form>
-        </v-container>
-      </v-card>
-    </v-dialog>
+  <div class="text-center py-5" style="background-color: #e9ecef">
+    <h1>Amusement park</h1>
   </div>
+  <v-container>
+    <v-data-table-server
+      v-model:items-per-page="amusementParkTableItemsPerPage"
+      v-model:page="amusementParkTablePage"
+      v-model:sort-by="amusementParkTableSortBy"
+      class="custom-table"
+      :expanded="amusementParkTableExpandedRows"
+      :headers="amusementParkTableHeaders"
+      :items="amusementParkTableItems"
+      :items-length="amusementParkTableTotalItems"
+      :loading="amusementParkTableIsLoading"
+      loading-text="Loading... Please wait"
+      :search="amusementParkTableSearch"
+      show-expand
+      @update:expanded="amusementParkTableExpanded"
+      @update:options="amusementParkTableLoadItems"
+    >
+
+      <template #item.data-table-expand="{ internalItem, isExpanded, toggleExpand }">
+        <v-btn
+          :append-icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+          border
+          class="text-none"
+          color="medium-emphasis"
+          size="small"
+          slim
+          :text="isExpanded(internalItem) ? 'Collapse' : 'More info'"
+          variant="text"
+          width="105"
+          @click="toggleExpand(internalItem)"
+        />
+      </template>
+
+      <template #expanded-row="{ columns, item }">
+        <tr>
+          <td class="py-2" :colspan="columns.length - 2">
+            <guest-book-registry-table :link="(item as any)._links.addRegistry.href" />
+          </td>
+          <td :colspan="2">
+            <v-btn
+              block
+              class="ma-1"
+              color="black"
+              text="Enter park"
+              @click="enterPark(item)"
+            />
+          </td>
+        </tr>
+      </template>
+
+      <template #tfoot>
+        <tr>
+          <td>
+            <v-text-field
+              v-model="amusementParkSearch.name"
+              class="ma-1"
+              density="compact"
+              placeholder="Like name"
+            />
+          </td>
+          <td>
+            <v-text-field
+              v-model="amusementParkSearch.minCapital"
+              class="ma-1"
+              density="compact"
+              placeholder="Min capital"
+            />
+          </td>
+          <td>
+            <v-text-field
+              v-model="amusementParkSearch.minTotalArea"
+              class="ma-1"
+              density="compact"
+              placeholder="Min total area"
+            />
+          </td>
+          <td>
+            <v-text-field
+              v-model="amusementParkSearch.minEntranceFee"
+              class="ma-1"
+              density="compact"
+              placeholder="Min entrance fee"
+            />
+          </td>
+          <td>
+            <v-text-field
+              v-model="amusementParkSearch.minMachines"
+              class="ma-1"
+              density="compact"
+              placeholder="Min machines"
+            />
+          </td>
+          <td>
+            <v-text-field
+              v-model="amusementParkSearch.minGuestBookRegistries"
+              class="ma-1"
+              density="compact"
+              placeholder="Min guest book registries"
+            />
+          </td>
+          <td>
+            <v-text-field
+              v-model="amusementParkSearch.minActiveVisitors"
+              class="ma-1"
+              density="compact"
+              placeholder="Min active visitors"
+            />
+          </td>
+          <td>
+            <v-text-field
+              v-model="amusementParkSearch.minKnownVisitors"
+              class="ma-1"
+              density="compact"
+              placeholder="Min known visitors"
+            />
+          </td>
+        </tr>
+        <tr>
+          <td />
+          <td>
+            <v-text-field
+              v-model="amusementParkSearch.maxCapital"
+              class="ma-1"
+              density="compact"
+              placeholder="Max capital"
+            />
+          </td>
+          <td>
+            <v-text-field
+              v-model="amusementParkSearch.maxTotalArea"
+              class="ma-1"
+              density="compact"
+              placeholder="Max total area"
+            />
+          </td>
+          <td>
+            <v-text-field
+              v-model="amusementParkSearch.maxEntranceFee"
+              class="ma-1"
+              density="compact"
+              placeholder="Max entrance fee"
+            />
+          </td>
+          <td>
+            <v-text-field
+              v-model="amusementParkSearch.maxMachines"
+              class="ma-1"
+              density="compact"
+              placeholder="Max machines"
+            />
+          </td>
+          <td>
+            <v-text-field
+              v-model="amusementParkSearch.maxGuestBookRegistries"
+              class="ma-1"
+              density="compact"
+              placeholder="Max guest book registries"
+            />
+          </td>
+          <td>
+            <v-text-field
+              v-model="amusementParkSearch.maxActiveVisitors"
+              class="ma-1"
+              density="compact"
+              placeholder="Max active visitors"
+            />
+          </td>
+          <td>
+            <v-text-field
+              v-model="amusementParkSearch.maxKnownVisitors"
+              class="ma-1"
+              density="compact"
+              placeholder="Max known visitors"
+            />
+          </td>
+        </tr>
+      </template>
+    </v-data-table-server>
+  </v-container>
+  <v-dialog v-model="store.getCreateShow" eager persistent width="50%">
+    <v-card>
+      <v-container>
+        <div class="text-right" style="width: 100%">
+          <v-btn class="ma-2" icon="mdi-close" @click="store.setCreateShow(false)" />
+        </div>
+        <v-card-title>
+          <h2 style="background-color: #e9ecef">Create amusement park</h2>
+        </v-card-title>
+        <v-form
+          ref="amusementParkCreateForm"
+          v-model="amusementParkCreateFormIsInvalid"
+          @submit.prevent="createAmusementPark"
+        >
+          <v-card-text>
+            <v-text-field
+              v-model="amusementParkCreate.name"
+              :counter="20"
+              label="Name"
+              :readonly="amusementParkCreateFormIsLoading"
+              required
+              :rules="[
+                (v) =>
+                  (!!v && v.length >= 5 && v.length <= 20) ||
+                  'Name size must be between 5 and 20.',
+              ]"
+            />
+            <v-text-field
+              v-model="amusementParkCreate.capital"
+              label="Capital"
+              :readonly="amusementParkCreateFormIsLoading"
+              required
+              :rules="[
+                (v) =>
+                  (!!v && Number(v) >= 500 && Number(v) <= 50000) ||
+                  'Capital must be between 500 and 50000.',
+              ]"
+            />
+            <v-text-field
+              v-model="amusementParkCreate.totalArea"
+              label="Total area"
+              :readonly="amusementParkCreateFormIsLoading"
+              required
+              :rules="[
+                (v) =>
+                  (!!v && Number(v) >= 50 && Number(v) <= 5000) ||
+                  'TotalArea must be between 50 and 5000. ',
+              ]"
+            />
+            <v-text-field
+              v-model="amusementParkCreate.entranceFee"
+              label="Entrance fee"
+              :readonly="amusementParkCreateFormIsLoading"
+              required
+              :rules="[
+                (v) =>
+                  (!!v && Number(v) >= 5 && Number(v) <= 200) ||
+                  'EntranceFee must be between 5 and 200.',
+              ]"
+            />
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              class="px-4"
+              color="green"
+              :disabled="!amusementParkCreateFormIsInvalid"
+              :loading="amusementParkCreateFormIsLoading"
+              text="Create"
+              type="submit"
+              variant="flat"
+            />
+          </v-card-actions>
+        </v-form>
+      </v-container>
+    </v-card>
+  </v-dialog>
 </template>
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'

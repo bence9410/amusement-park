@@ -63,7 +63,10 @@
   import { ref, watch } from 'vue'
 
   const props = defineProps({
-    link: String,
+    link: {
+      type: String,
+      required: true,
+    },
   })
 
   const guestBookRegistryTableItemsPerPage = ref(5)
