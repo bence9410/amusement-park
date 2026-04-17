@@ -316,9 +316,11 @@
 </template>
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
+  import { useRouter } from 'vue-router'
   import { useAppStore } from '@/stores/app'
 
   const store = useAppStore()
+  const router = useRouter()
   const amusementParkTableItemsPerPage = ref(5)
   const amusementParkTablePage = ref(1)
   const amusementParkTableSortBy = ref([])
@@ -481,7 +483,10 @@
         const visitor = store.getVisitor
         const newVisitor = await response.json()
         visitor.spendingMoney = newVisitor.spendingMoney
-        store.addMessage('success', 'Successfully entered park ' + amusementPark.name)
+        visitor._links = newVisitor._links
+        store.getLinks.machine = amusementPark._links.machine.href
+        router.push('/machines')
+        store.addMessage('success', 'Successfully entered park ' + amusementPark.name + '.')
       } else {
         store.addMessage('error', await response.text())
       }

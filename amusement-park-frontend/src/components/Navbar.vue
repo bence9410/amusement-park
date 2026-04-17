@@ -13,6 +13,14 @@
       <v-icon icon="mdi-currency-eur" />
       <v-spacer />
       <v-btn
+        v-if="store.getVisitor._links.leavePark"
+        class="ma-1"
+        color="black"
+        text="Leave park"
+        variant="flat"
+        @click="leavePark"
+      />
+      <v-btn
         v-if="isAdmin"
         class="ma-1"
         color="black"
@@ -117,6 +125,22 @@
         store.getVisitor.spendingMoney = store.getVisitor.spendingMoney + Number(uploadMoneyValue.value)
         store.addMessage('success', 'Successfully uploaded ' + uploadMoneyValue.value + ' money.')
         uploadMoneyDialogShow.value = false
+      } else {
+        store.addMessage('error', await response.text())
+      }
+    })
+  }
+
+  function leavePark () {
+    fetch(store.getVisitor._links.leavePark.href, {
+      method: 'PUT',
+    }).then(async response => {
+      if (response.ok) {
+        const visitor = store.getVisitor
+        const newVisitor = await response.json()
+        visitor._links = newVisitor._links
+        router.push('/amusement-parks')
+        store.addMessage('success', 'Successfully left park.')
       } else {
         store.addMessage('error', await response.text())
       }

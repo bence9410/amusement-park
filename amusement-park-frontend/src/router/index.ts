@@ -18,7 +18,11 @@ const router = createRouter({
       name: 'amusementParks',
       component: () => import('../pages/AmusementParks.vue'),
     },
-
+    {
+      path: '/machines',
+      name: 'machines',
+      component: () => import('../pages/Machines.vue'),
+    },
   ],
 })
 
