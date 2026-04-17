@@ -56,6 +56,11 @@
                 theme="dark"
                 @update:options="guestBookRegistryTableLoadItems(item)"
               >
+
+                <template #item.dateOfRegistry="{ value }">
+                  {{ new Date(value).toLocaleString() }}
+                </template>
+
                 <template #tfoot>
                   <tr>
                     <td>

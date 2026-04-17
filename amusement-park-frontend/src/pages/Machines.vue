@@ -17,6 +17,11 @@
         :search="machineTableSearch"
         @update:options="machineTableLoadItems"
       >
+
+        <template #item.type="{ value }">
+          {{ types.filter(v => v.value === value)[0].title }}
+        </template>
+
         <template #tfoot>
           <tr>
             <td>
