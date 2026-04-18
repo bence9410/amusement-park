@@ -142,10 +142,10 @@
       method: 'PUT',
     }).then(async response => {
       if (response.ok) {
+        router.push('/amusement-parks')
         const visitor = store.getVisitor
         const newVisitor = await response.json()
         visitor._links = newVisitor._links
-        router.push('/amusement-parks')
         store.addMessage('success', 'Successfully left park.')
       } else {
         store.addMessage('error', await response.text())
