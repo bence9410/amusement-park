@@ -87,38 +87,37 @@
     textOfRegistry: '',
     visitorEmail: '',
   })
-  let guestBookRegistryTimer = 0
+  let guestBookRegistryTimer: number
 
   function guestBookRegistryTableLoadItems () {
     guestBookRegistryTableIsLoading.value = true
-    clearTimeout(guestBookRegistryTimer)
-    guestBookRegistryTimer = setTimeout(() => {
-      let url = props.link
-      const input: { [key: string]: string } = {}
-      const entries = Object.entries(guestBookRegistrySearch.value)
-      for (const e of entries) {
-        if (e[1] != '') {
-          input[e[0]] = e[1]
-        }
+    let url = props.link
+    const input: { [key: string]: string } = {}
+    const entries = Object.entries(guestBookRegistrySearch.value)
+    for (const e of entries) {
+      if (e[1] != '') {
+        input[e[0]] = e[1]
       }
-      url += '?input=' + encodeURI(JSON.stringify(input))
-      url += '&page=' + (guestBookRegistryTablePage.value - 1)
-      url += '&size=' + guestBookRegistryTableItemsPerPage.value
-      if (guestBookRegistryTableSortBy.value.length === 1) {
-        url += '&sort=' + guestBookRegistryTableSortBy.value[0].key + ',' + guestBookRegistryTableSortBy.value[0].order
+    }
+    url += '?input=' + encodeURI(JSON.stringify(input))
+    url += '&page=' + (guestBookRegistryTablePage.value - 1)
+    url += '&size=' + guestBookRegistryTableItemsPerPage.value
+    if (guestBookRegistryTableSortBy.value.length === 1) {
+      url += '&sort=' + guestBookRegistryTableSortBy.value[0].key + ',' + guestBookRegistryTableSortBy.value[0].order
+    }
+    fetch(url).then(async response => {
+      guestBookRegistryTableIsLoading.value = false
+      if (response.ok) {
+        const guestBookRegistrysResponse = await response.json()
+        guestBookRegistryTableTotalItems.value = guestBookRegistrysResponse.page.totalElements
+        guestBookRegistryTableItems.value = guestBookRegistrysResponse._embedded ? guestBookRegistrysResponse._embedded.guestBookRegistrySearchResponseDtoList : []
       }
-      fetch(url).then(async response => {
-        guestBookRegistryTableIsLoading.value = false
-        if (response.ok) {
-          const guestBookRegistrysResponse = await response.json()
-          guestBookRegistryTableTotalItems.value = guestBookRegistrysResponse.page.totalElements
-          guestBookRegistryTableItems.value = guestBookRegistrysResponse._embedded ? guestBookRegistrysResponse._embedded.guestBookRegistrySearchResponseDtoList : []
-        }
-      })
-    }, guestBookRegistryTimer === 0 ? 0 : 2000)
+    })
   }
 
   watch(guestBookRegistrySearch.value, () => {
-    guestBookRegistryTableSearch.value = String(Date.now())
+    guestBookRegistryTableIsLoading.value = true
+    clearTimeout(guestBookRegistryTimer)
+    guestBookRegistryTimer = setTimeout(() => guestBookRegistryTableSearch.value = String(Date.now()), 1500)
   })
 </script>

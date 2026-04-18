@@ -311,39 +311,36 @@
     totalArea: '',
     entranceFee: '',
   })
-  let amusementParkTimer = 0
+  let amusementParkTimer: number
 
   function amusementParkTableLoadItems () {
     amusementParkTableIsLoading.value = true
-    clearTimeout(amusementParkTimer)
-    amusementParkTimer = setTimeout(() => {
-      let url = store.getLinks.amusementPark
-      const input: { [key: string]: number | string } = {}
-      if (amusementParkSearch.value.name != '') {
-        input.name = amusementParkSearch.value.name
+    let url = store.getLinks.amusementPark
+    const input: { [key: string]: number | string } = {}
+    if (amusementParkSearch.value.name != '') {
+      input.name = amusementParkSearch.value.name
+    }
+    const entries = Object.entries(amusementParkSearch.value)
+    for (let i = 1; i < entries.length; i++) {
+      const e = entries[i]
+      if (e[1] != '' && !Number.isNaN(Number(e[1]))) {
+        input[e[0]] = Number(e[1])
       }
-      const entries = Object.entries(amusementParkSearch.value)
-      for (let i = 1; i < entries.length; i++) {
-        const e = entries[i]
-        if (e[1] != '' && !Number.isNaN(Number(e[1]))) {
-          input[e[0]] = Number(e[1])
-        }
+    }
+    url += '?input=' + encodeURI(JSON.stringify(input))
+    url += '&page=' + (amusementParkTablePage.value - 1)
+    url += '&size=' + amusementParkTableItemsPerPage.value
+    if (amusementParkTableSortBy.value.length === 1) {
+      url += '&sort=' + amusementParkTableSortBy.value[0].key + ',' + amusementParkTableSortBy.value[0].order
+    }
+    fetch(url).then(async response => {
+      amusementParkTableIsLoading.value = false
+      if (response.ok) {
+        const amusementParkResponse = await response.json()
+        amusementParkTableTotalItems.value = amusementParkResponse.page.totalElements
+        amusementParkTableItems.value = amusementParkResponse._embedded ? amusementParkResponse._embedded.amusementParkDetailResponseDtoList : []
       }
-      url += '?input=' + encodeURI(JSON.stringify(input))
-      url += '&page=' + (amusementParkTablePage.value - 1)
-      url += '&size=' + amusementParkTableItemsPerPage.value
-      if (amusementParkTableSortBy.value.length === 1) {
-        url += '&sort=' + amusementParkTableSortBy.value[0].key + ',' + amusementParkTableSortBy.value[0].order
-      }
-      fetch(url).then(async response => {
-        amusementParkTableIsLoading.value = false
-        if (response.ok) {
-          const amusementParkResponse = await response.json()
-          amusementParkTableTotalItems.value = amusementParkResponse.page.totalElements
-          amusementParkTableItems.value = amusementParkResponse._embedded ? amusementParkResponse._embedded.amusementParkDetailResponseDtoList : []
-        }
-      })
-    }, amusementParkTimer === 0 ? 0 : 2000)
+    })
   }
 
   function amusementParkTableExpanded (ids: any) {
@@ -393,7 +390,9 @@
   })
 
   watch(amusementParkSearch.value, () => {
-    amusementParkTableSearch.value = String(Date.now())
+    amusementParkTableIsLoading.value = true
+    clearTimeout(amusementParkTimer)
+    amusementParkTimer = setTimeout(() => amusementParkTableSearch.value = String(Date.now()), 1500)
   })
 </script>
 <style>

@@ -395,42 +395,39 @@
   const video = ref('')
   let getOffMachineLink: string
   let getOffMachineTimer: number
-  let machineTimer = 0
+  let machineTimer: number
 
   function machineTableLoadItems () {
     machineTableIsLoading.value = true
-    clearTimeout(machineTimer)
-    machineTimer = setTimeout(() => {
-      let url = store.getLinks.machine
-      const input: { [key: string]: number | string } = {}
-      if (machineSearch.value.fantasyName != '') {
-        input.fantasyName = machineSearch.value.fantasyName
+    let url = store.getLinks.machine
+    const input: { [key: string]: number | string } = {}
+    if (machineSearch.value.fantasyName != '') {
+      input.fantasyName = machineSearch.value.fantasyName
+    }
+    const entries = Object.entries(machineSearch.value)
+    for (let i = 1; i < entries.length - 1; i++) {
+      const e = entries[i]
+      if (e[1] != '' && !Number.isNaN(Number(e[1]))) {
+        input[e[0]] = Number(e[1])
       }
-      const entries = Object.entries(machineSearch.value)
-      for (let i = 1; i < entries.length - 1; i++) {
-        const e = entries[i]
-        if (e[1] != '' && !Number.isNaN(Number(e[1]))) {
-          input[e[0]] = Number(e[1])
-        }
+    }
+    if (machineSearch.value.type != '') {
+      input.type = machineSearch.value.type
+    }
+    url += '?input=' + encodeURI(JSON.stringify(input))
+    url += '&page=' + (machineTablePage.value - 1)
+    url += '&size=' + machineTableItemsPerPage.value
+    if (machineTableSortBy.value.length === 1) {
+      url += '&sort=' + machineTableSortBy.value[0].key + ',' + machineTableSortBy.value[0].order
+    }
+    fetch(url).then(async response => {
+      machineTableIsLoading.value = false
+      if (response.ok) {
+        const machineResponse = await response.json()
+        machineTableTotalItems.value = machineResponse.page.totalElements
+        machineTableItems.value = machineResponse._embedded ? machineResponse._embedded.machineSearchResponseDtoList : []
       }
-      if (machineSearch.value.type != '') {
-        input.type = machineSearch.value.type
-      }
-      url += '?input=' + encodeURI(JSON.stringify(input))
-      url += '&page=' + (machineTablePage.value - 1)
-      url += '&size=' + machineTableItemsPerPage.value
-      if (machineTableSortBy.value.length === 1) {
-        url += '&sort=' + machineTableSortBy.value[0].key + ',' + machineTableSortBy.value[0].order
-      }
-      fetch(url).then(async response => {
-        machineTableIsLoading.value = false
-        if (response.ok) {
-          const machineResponse = await response.json()
-          machineTableTotalItems.value = machineResponse.page.totalElements
-          machineTableItems.value = machineResponse._embedded ? machineResponse._embedded.machineSearchResponseDtoList : []
-        }
-      })
-    }, machineTimer === 0 ? 0 : 2000)
+    })
   }
 
   function createMachine () {
@@ -523,7 +520,9 @@
   })
 
   watch(machineSearch.value, () => {
-    machineTableSearch.value = String(Date.now())
+    machineTableIsLoading.value = true
+    clearTimeout(machineTimer)
+    machineTimer = setTimeout(() => machineTableSearch.value = String(Date.now()), 1500)
   })
 
   watch(onMachineDialog, () => {
