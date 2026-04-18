@@ -1,6 +1,5 @@
 server.forward-headers-strategy: framework
 amusement-park:
-  ai: true
   transaction-logging: true
 spring:
   jmx.enabled: false
