@@ -60,13 +60,14 @@
   </v-data-table-server>
 </template>
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
+  import { computed, ref, watch } from 'vue'
 
   const props = defineProps({
     link: {
       type: String,
       required: true,
     },
+    forceUpdate: Number,
   })
 
   const guestBookRegistryTableItemsPerPage = ref(5)
@@ -120,4 +121,6 @@
     clearTimeout(guestBookRegistryTimer)
     guestBookRegistryTimer = setTimeout(() => guestBookRegistryTableSearch.value = String(Date.now()), 1500)
   })
+
+  watch(computed(() => props.forceUpdate), () => guestBookRegistryTableLoadItems())
 </script>

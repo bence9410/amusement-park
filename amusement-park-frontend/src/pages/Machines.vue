@@ -295,7 +295,7 @@
           @submit.prevent="createGuestBookRegistry"
         >
           <v-card-text>
-            <v-text-field
+            <v-textarea
               v-model="guestBookRegistryContent"
               :counter="100"
               label="Content"
@@ -321,7 +321,7 @@
             />
           </v-card-actions>
         </v-form>
-        <guest-book-registry-table :link="store.getVisitor._links.addRegistry.href" />
+        <guest-book-registry-table :force-update="forceUpdate" :link="store.getVisitor._links.addRegistry.href" />
       </v-container>
     </v-card>
   </v-dialog>
@@ -393,6 +393,9 @@
   const onMachineDialog = ref(false)
   const onMachineFantasyName = ref('')
   const video = ref('')
+
+  const forceUpdate = ref(0)
+
   let getOffMachineLink: string
   let getOffMachineTimer: number
   let machineTimer: number
@@ -506,8 +509,8 @@
       body: guestBookRegistryContent.value,
     }).then(async response => {
       guestBookRegistryCreateFormIsLoading.value = false
-      store.setGuestBookWritingShow(false)
       if (response.ok) {
+        forceUpdate.value++
         store.addMessage('success', 'Successfully writed to the guest book registry.')
       } else {
         store.addMessage('error', await response.text())
