@@ -51,6 +51,7 @@ public class ResourceFactory {
 				.email(email)
 				.password(VALID_PASSWORD)
 				.confirmPassword(VALID_PASSWORD)
-				.dateOfBirth(DATE_OF_BIRTH).build(); //@formatter:on
+				.dateOfBirth(DATE_OF_BIRTH)
+                .photo("asdfghjkl").build(); //@formatter:on
     }
 }
