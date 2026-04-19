@@ -1,7 +1,7 @@
 package hu.beni.amusementpark.repository.custom.impl;
 
 import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
-import hu.beni.amusementpark.dto.response.AmusementParkDetailResponseDto;
+import hu.beni.amusementpark.dto.response.AmusementParkSearchResponseDto;
 import hu.beni.amusementpark.entity.*;
 import hu.beni.amusementpark.repository.custom.AmusementParkRepositoryCustom;
 import jakarta.persistence.EntityManager;
@@ -25,13 +25,13 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
     private final EntityManager entityManager;
 
     @Override
-    public Page<AmusementParkDetailResponseDto> findAll(AmusementParkSearchRequestDto dto, Pageable pageable) {
+    public Page<AmusementParkSearchResponseDto> findAll(AmusementParkSearchRequestDto dto, Pageable pageable) {
 
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
         Long count = executeCountQuery(cb, dto);
 
-        List<AmusementParkDetailResponseDto> result = executeSearchQuery(cb, dto, pageable);
+        List<AmusementParkSearchResponseDto> result = executeSearchQuery(cb, dto, pageable);
 
         return new PageImpl<>(result, pageable, count);
     }
@@ -113,9 +113,9 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
                 .getSingleResult();
     }
 
-    private List<AmusementParkDetailResponseDto> executeSearchQuery(CriteriaBuilder cb,
+    private List<AmusementParkSearchResponseDto> executeSearchQuery(CriteriaBuilder cb,
                                                                     AmusementParkSearchRequestDto dto, Pageable pageable) {
-        CriteriaQuery<AmusementParkDetailResponseDto> cq = cb.createQuery(AmusementParkDetailResponseDto.class);
+        CriteriaQuery<AmusementParkSearchResponseDto> cq = cb.createQuery(AmusementParkSearchResponseDto.class);
         Root<AmusementPark> root = cq.from(AmusementPark.class);
 
         Subquery<Long> countMachines = cq.subquery(Long.class);
@@ -193,7 +193,7 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
         ofNullable(dto.getMaxKnownVisitors()).map(maxKnownVisitors -> cb.le(countKnownVisitors, maxKnownVisitors))
                 .ifPresent(predicates::add);
 
-        cq.select(cb.construct(AmusementParkDetailResponseDto.class, root.get(AmusementPark_.id), root.get(AmusementPark_.name), root.get(AmusementPark_.capital),
+        cq.select(cb.construct(AmusementParkSearchResponseDto.class, root.get(AmusementPark_.id), root.get(AmusementPark_.name), root.get(AmusementPark_.capital),
                         root.get(AmusementPark_.totalArea), root.get(AmusementPark_.entranceFee), countMachines,
                         countGuestBookRegistries, countActiveVisitors, countKnownVisitors))
                 .where(predicates.toArray(new Predicate[predicates.size()]));

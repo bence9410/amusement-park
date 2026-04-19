@@ -5,18 +5,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class GuestBookRegistrySearchResponseDto {
+public class VisitorResponseDto {
 
-    private String visitorEmail;
+    private String email;
 
-    private String textOfRegistry;
+    private String authority;
 
-    private LocalDateTime dateOfRegistry;
+    private Integer spendingMoney;
+
+    private String photo;
 
 }

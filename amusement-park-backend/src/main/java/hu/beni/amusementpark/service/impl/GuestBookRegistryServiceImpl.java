@@ -15,7 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_IN_PARK_WITH_ID;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifNull;
 
 @Service
@@ -28,16 +29,11 @@ public class GuestBookRegistryServiceImpl implements GuestBookRegistryService {
     private final GuestBookRegistryRepository guestBookRegistryRepository;
 
     @Override
-    public GuestBookRegistry findById(Long guestBookRegistryId) {
-        return ifNull(guestBookRegistryRepository.findById(guestBookRegistryId), NO_GUEST_BOOK_REGISTRY_WITH_ID);
-    }
-
-    @Override
-    public GuestBookRegistry addRegistry(Long amusementParkId, String visitorEmail, String textOfRegistry) {
+    public void addRegistry(Long amusementParkId, String visitorEmail, String textOfRegistry) {
         AmusementPark amusementPark = ifNull(amusementParkRepository.findByIdReadOnlyId(amusementParkId),
                 NO_AMUSEMENT_PARK_WITH_ID);
         Visitor visitor = ifNull(visitorRepository.findById(visitorEmail), NO_VISITOR_IN_PARK_WITH_ID);
-        return guestBookRegistryRepository.save(GuestBookRegistry.builder().textOfRegistry(textOfRegistry)
+        guestBookRegistryRepository.save(GuestBookRegistry.builder().textOfRegistry(textOfRegistry)
                 .visitor(visitor).amusementPark(amusementPark).build());
     }
 

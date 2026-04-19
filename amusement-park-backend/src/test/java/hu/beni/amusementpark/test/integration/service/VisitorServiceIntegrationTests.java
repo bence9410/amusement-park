@@ -1,14 +1,12 @@
 package hu.beni.amusementpark.test.integration.service;
 
 import hu.beni.amusementpark.entity.Visitor;
-import hu.beni.amusementpark.enums.VisitorEventType;
 import hu.beni.amusementpark.helper.ValidEntityFactory;
+import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.VisitorService;
 import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,9 +15,12 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
     @Autowired
     private VisitorService visitorService;
 
+    @Autowired
+    private VisitorRepository visitorRepository;
+
     @Test
-    public void findByEmailTest() {
-        assertEquals(testVisitorEmail, visitorService.findByEmail(testVisitorEmail).getEmail());
+    public void findByEmailMakeFreshlyLoggedInTest() {
+        assertEquals(testVisitorEmail, visitorService.findByEmailMakeFreshlyLoggedIn(testVisitorEmail).getEmail());
         select++;
         assertStatements();
     }
@@ -28,7 +29,8 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
     public void signUpTest() {
         Visitor visitor = visitorService.signUp(ValidEntityFactory.createVisitor());
         assertEquals("ROLE_VISITOR", visitor.getAuthority());
-        assertEquals(250, visitor.getSpendingMoney().intValue());
+        assertEquals(250, visitor.getSpendingMoney());
+
         select += 2;
         insert++;
         assertStatements();
@@ -36,93 +38,65 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 
     @Test
     public void uploadMoneyTest() {
-        Integer amountToUpload = 500;
+        int amountToUpload = 500;
         visitorService.uploadMoney(amountToUpload, testVisitorEmail);
         update++;
         assertStatements();
 
         assertEquals(visitorSpendingMoney + amountToUpload,
-                visitorService.findByEmail(testVisitorEmail).getSpendingMoney().intValue());
+                visitorService.findByEmailMakeFreshlyLoggedIn(testVisitorEmail).getSpendingMoney());
         select++;
         assertStatements();
     }
 
     @Test
     public void leaveParkTest() {
-        assertNull(visitorService.leavePark(amusementParkId, inParkVisitorEmail).getAmusementPark());
+        visitorService.leavePark(amusementParkId, inParkVisitorEmail);
         select++;
-        insert++;
         update++;
         assertStatements();
 
-        Visitor visitor = visitorService.findByEmail(inParkVisitorEmail);
+        Visitor visitor = visitorRepository.findById(inParkVisitorEmail).get();
         assertNull(visitor.getAmusementPark());
-        assertEquals(1, visitor.getVisitorEvents().size());
-        assertEquals(VisitorEventType.LEAVE_PARK, visitor.getVisitorEvents().iterator().next().getType());
     }
 
     @Test
     public void enterParkTest() {
-        assertNotNull(visitorService.enterPark(amusementParkId, testVisitorEmail).getAmusementPark());
+        visitorService.enterPark(amusementParkId, testVisitorEmail);
         select += 4;
-        insert += 2;
+        insert++;
         update += 2;
         assertStatements();
 
-        Visitor visitor = visitorService.findByEmail(testVisitorEmail);
+        Visitor visitor = visitorRepository.findById(testVisitorEmail).get();
         assertEquals(amusementParkCapital + amusementParkEntranceFee,
-                amusementParkRepository.findById(amusementParkId).get().getCapital().intValue());
-        assertEquals(visitorSpendingMoney - amusementParkEntranceFee, visitor.getSpendingMoney().intValue());
+                amusementParkRepository.findById(amusementParkId).get().getCapital());
+        assertEquals(visitorSpendingMoney - amusementParkEntranceFee, visitor.getSpendingMoney());
         assertNotNull(visitor.getAmusementPark());
-        assertEquals(1, visitor.getVisitorEvents().size());
-        assertEquals(VisitorEventType.ENTER_PARK, visitor.getVisitorEvents().iterator().next().getType());
     }
 
     @Test
     public void getOnMachineTest() {
-        assertNotNull(visitorService.getOnMachine(amusementParkId, machineId, inParkVisitorEmail));
+        visitorService.getOnMachine(amusementParkId, machineId, inParkVisitorEmail);
         select += 3;
-        insert++;
         update += 2;
         assertStatements();
 
-        Visitor visitor = visitorService.findByEmail(inParkVisitorEmail);
+        Visitor visitor = visitorRepository.findById(inParkVisitorEmail).get();
         assertEquals(amusementParkCapital + machineTicketPrice,
-                amusementParkRepository.findById(amusementParkId).get().getCapital().intValue());
-        assertEquals(visitorSpendingMoney - machineTicketPrice, visitor.getSpendingMoney().intValue());
+                amusementParkRepository.findById(amusementParkId).get().getCapital());
+        assertEquals(visitorSpendingMoney - machineTicketPrice, visitor.getSpendingMoney());
         assertNotNull(visitor.getMachine());
-        assertEquals(1, visitor.getVisitorEvents().size());
-        assertEquals(VisitorEventType.GET_ON_MACHINE, visitor.getVisitorEvents().iterator().next().getType());
     }
 
     @Test
     public void getOffMachine() {
-        assertNull(visitorService.getOffMachine(amusementParkId, machineId, "onMachine@gmail.com").getMachine());
+        visitorService.getOffMachine(amusementParkId, machineId, "onMachine@gmail.com");
         select++;
-        insert++;
         update++;
         assertStatements();
 
-        Visitor visitor = visitorService.findByEmail("onMachine@gmail.com");
+        Visitor visitor = visitorRepository.findById("onMachine@gmail.com").get();
         assertNull(visitor.getMachine());
-        assertEquals(1, visitor.getVisitorEvents().size());
-        assertEquals(VisitorEventType.GET_OFF_MACHINE, visitor.getVisitorEvents().iterator().next().getType());
-    }
-
-    @Test
-    public void findAllVisitorTest() {
-        List<Visitor> visitors = visitorService.findAllVisitor();
-        assertEquals(5, visitors.size());
-        assertFalse(visitors.stream().map(Visitor::getAuthority).anyMatch("ROLE_ADMIN"::equals));
-        select++;
-        assertStatements();
-    }
-
-    @Test
-    public void deleteTest() {
-        visitorService.delete(testVisitorEmail);
-        select++;
-        delete++;
-        assertStatements();
     }
 }

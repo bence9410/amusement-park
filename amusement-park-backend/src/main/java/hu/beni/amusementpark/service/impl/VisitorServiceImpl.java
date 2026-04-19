@@ -1,22 +1,24 @@
 package hu.beni.amusementpark.service.impl;
 
 import hu.beni.amusementpark.entity.*;
-import hu.beni.amusementpark.enums.VisitorEventType;
-import hu.beni.amusementpark.exception.AmusementParkException;
-import hu.beni.amusementpark.repository.*;
+import hu.beni.amusementpark.repository.AmusementParkKnowVisitorRepository;
+import hu.beni.amusementpark.repository.AmusementParkRepository;
+import hu.beni.amusementpark.repository.MachineRepository;
+import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.VisitorService;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
@@ -31,10 +33,10 @@ public class VisitorServiceImpl implements VisitorService {
     private final MachineRepository machineRepository;
     private final VisitorRepository visitorRepository;
     private final AmusementParkKnowVisitorRepository amusementParkKnowVisitorRepository;
-    private final VisitorEventRepository visitorEventRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String email) {
+    public UserDetails loadUserByUsername(@NonNull String email) {
         Visitor visitor = visitorRepository.findById(email)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(COULD_NOT_FIND_USER, email)));
         return new User(email, visitor.getPassword(),
@@ -42,10 +44,12 @@ public class VisitorServiceImpl implements VisitorService {
     }
 
     @Override
-    public Visitor findByEmail(String visitorEmail) {
+    public Visitor findByEmailMakeFreshlyLoggedIn(String visitorEmail) {
         Visitor visitor = ifNull(visitorRepository.findById(visitorEmail),
                 String.format(COULD_NOT_FIND_USER, visitorEmail));
         Optional.ofNullable(visitor.getPhoto()).map(Photo::getPhoto);
+        visitor.setAmusementPark(null);
+        visitor.setMachine(null);
         return visitor;
     }
 
@@ -55,24 +59,23 @@ public class VisitorServiceImpl implements VisitorService {
                 String.format(EMAIL_ALREADY_TAKEN, visitor.getEmail()));
         visitor.setAuthority("ROLE_VISITOR");
         visitor.setSpendingMoney(250);
+        visitor.setPassword(passwordEncoder.encode(visitor.getPassword()));
         return visitorRepository.save(visitor);
     }
 
+    @Override
     public void uploadMoney(Integer amount, String visitorEmail) {
         visitorRepository.incrementSpendingMoneyByEmail(amount, visitorEmail);
     }
 
     @Override
-    public Visitor enterPark(Long amusementParkId, String visitorEmail) {
+    public void enterPark(Long amusementParkId, String visitorEmail) {
         AmusementPark amusementPark = ifNull(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId),
                 NO_AMUSEMENT_PARK_WITH_ID);
         Visitor visitor = ifNull(visitorRepository.findById(visitorEmail), VISITOR_NOT_SIGNED_UP);
         checkIfVisitorAbleToEnterPark(amusementPark.getEntranceFee(), visitor);
         addToKnownVisitorsIfFirstEnter(amusementPark, visitor);
         incrementCaitalAndDecreaseSpendingMoneyAndSetPark(amusementPark, visitor);
-        visitorEventRepository.save(VisitorEvent.builder().type(VisitorEventType.ENTER_PARK)
-                .amusementPark(amusementPark).visitor(visitor).build());
-        return visitor;
     }
 
     private void checkIfVisitorAbleToEnterPark(Integer entranceFee, Visitor visitor) {
@@ -94,17 +97,13 @@ public class VisitorServiceImpl implements VisitorService {
     }
 
     @Override
-    public Visitor getOnMachine(Long amusementParkId, Long machineId, String visitorEmail) {
+    public void getOnMachine(Long amusementParkId, Long machineId, String visitorEmail) {
         Machine machine = ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId),
                 NO_MACHINE_IN_PARK_WITH_ID);
         Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail),
                 NO_VISITOR_IN_PARK_WITH_ID);
         checkIfVisitorAbleToGetOnMachine(machine, visitor);
         incrementCapitalAndDecreaseSpendingMoneyAndSetMachine(amusementParkId, machine, visitor);
-        visitorEventRepository.save(VisitorEvent.builder().type(VisitorEventType.GET_ON_MACHINE)
-                .amusementPark(AmusementPark.builder().id(amusementParkId).build()).machine(machine).visitor(visitor)
-                .build());
-        return visitor;
     }
 
     private void checkIfVisitorAbleToGetOnMachine(Machine machine, Visitor visitor) {
@@ -124,45 +123,16 @@ public class VisitorServiceImpl implements VisitorService {
     }
 
     @Override
-    public Visitor getOffMachine(Long amusementParkId, Long machineId, String visitorEmail) {
+    public void getOffMachine(Long amusementParkId, Long machineId, String visitorEmail) {
         Visitor visitor = ifNull(visitorRepository.findByMachineIdAndVisitorEmail(machineId, visitorEmail),
                 NO_VISITOR_ON_MACHINE_WITH_ID);
         visitor.setMachine(null);
-        visitorEventRepository.save(VisitorEvent.builder().type(VisitorEventType.GET_OFF_MACHINE)
-                .amusementPark(AmusementPark.builder().id(amusementParkId).build())
-                .machine(Machine.builder().id(machineId).build()).visitor(visitor).build());
-        return visitor;
     }
 
     @Override
-    public Visitor leavePark(Long amusementParkId, String visitorEmail) {
+    public void leavePark(Long amusementParkId, String visitorEmail) {
         Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail),
                 NO_VISITOR_IN_PARK_WITH_ID);
         visitor.setAmusementPark(null);
-        visitorEventRepository.save(VisitorEvent.builder().type(VisitorEventType.LEAVE_PARK)
-                .amusementPark(AmusementPark.builder().id(amusementParkId).build()).visitor(visitor).build());
-        return visitor;
-    }
-
-    @Override
-    public List<Visitor> findAllVisitor() {
-        return visitorRepository.findAllVisitor();
-    }
-
-    @Override
-    public void delete(String visitorEmail) {
-        Visitor visitor = ifNull(visitorRepository.findById(visitorEmail), VISITOR_NOT_SIGNED_UP);
-        if (visitor.getAuthority().equals("ROLE_ADMIN")) {
-            throw new AmusementParkException(CAN_NOT_DELETE_ADMIN);
-        }
-        visitorRepository.deleteById(visitorEmail);
-    }
-
-    @Override
-    public Visitor getOffMachineAndLeavePark(String visitorEmail) {
-        Visitor visitor = visitorRepository.findById(visitorEmail).get();
-        visitor.setMachine(null);
-        visitor.setAmusementPark(null);
-        return visitor;
     }
 }

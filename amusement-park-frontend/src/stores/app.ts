@@ -2,10 +2,6 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 
 export const useAppStore = defineStore('app', () => {
-  const links: any = ref()
-  const getLinks = computed(() => links.value)
-  const setLinks = (v: any) => links.value = v
-
   const visitor: any = ref()
   const getVisitor = computed(() => visitor.value)
   const setVisitor = (v: any) => visitor.value = v
@@ -28,6 +24,10 @@ export const useAppStore = defineStore('app', () => {
     messages.value.splice(messages.value.indexOf(m), 1)
   }
 
+  const amusementParkId = ref(0)
+  const getAmusementParkId = computed(() => amusementParkId.value)
+  const setAmusementParkId = (v: number) => amusementParkId.value = v
+
   const createShow = ref(false)
   const getCreateShow = computed(() => createShow.value)
   const setCreateShow = (v: boolean) => createShow.value = v
@@ -37,7 +37,7 @@ export const useAppStore = defineStore('app', () => {
   const setGuestBookWritingShow = (v: boolean) => guestBookWritingShow.value = v
 
   return {
-    getLinks, setLinks, getVisitor, setVisitor, getMessages, addMessage, removeMessage,
+    getVisitor, setVisitor, getMessages, addMessage, removeMessage, getAmusementParkId, setAmusementParkId,
     getCreateShow, setCreateShow, getGuestBookWritingShow, setGuestBookWritingShow,
   }
 })

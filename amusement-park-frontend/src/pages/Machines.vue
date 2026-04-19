@@ -321,7 +321,7 @@
             />
           </v-card-actions>
         </v-form>
-        <guest-book-registry-table :force-update="forceUpdate" :link="store.getVisitor._links.addRegistry.href" />
+        <guest-book-registry-table :force-update="forceUpdate" :link="'/api/amusement-parks/' + store.getAmusementParkId + '/visitors/guest-book-registries'" />
       </v-container>
     </v-card>
   </v-dialog>
@@ -396,13 +396,13 @@
 
   const forceUpdate = ref(0)
 
-  let getOffMachineLink: string
+  let getOffMachineId: number
   let getOffMachineTimer: number
   let machineTimer: number
 
   function machineTableLoadItems () {
     machineTableIsLoading.value = true
-    let url = store.getLinks.machine
+    let url = '/api/amusement-parks/' + store.getAmusementParkId + '/machines'
     const input: { [key: string]: number | string } = {}
     if (machineSearch.value.fantasyName != '') {
       input.fantasyName = machineSearch.value.fantasyName
@@ -427,15 +427,15 @@
       machineTableIsLoading.value = false
       if (response.ok) {
         const machineResponse = await response.json()
-        machineTableTotalItems.value = machineResponse.page.totalElements
-        machineTableItems.value = machineResponse._embedded ? machineResponse._embedded.machineSearchResponseDtoList : []
+        machineTableTotalItems.value = machineResponse.totalElements
+        machineTableItems.value = machineResponse.content || []
       }
     })
   }
 
   function createMachine () {
     machineCreateFormIsLoading.value = true
-    fetch(store.getLinks.machine, {
+    fetch('/api/amusement-parks/' + store.getAmusementParkId + '/machines', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -454,17 +454,15 @@
   }
 
   function getOnMachine (machine: any) {
-    fetch(machine._links.getOnMachine.href, {
+    fetch('/api/amusement-parks/' + store.getAmusementParkId + '/machines/' + machine.id + '/visitors/get-on-machine', {
       method: 'PUT',
     }).then(async response => {
       if (response.ok) {
         store.addMessage('success', 'Successfully got on machine ' + machine.fantasyName + '.')
         onMachineFantasyName.value = machine.fantasyName
         onMachineDialog.value = true
-        const visitor = store.getVisitor
-        const newVisitor = await response.json()
-        visitor.spendingMoney = newVisitor.spendingMoney
-        getOffMachineLink = newVisitor._links.getOffMachine.href
+        store.getVisitor.spendingMoney = store.getVisitor.spendingMoney - machine.ticketPrice
+        getOffMachineId = machine.id
         let videoLength
         switch (machine.type) {
           case 'CAROUSEL': {
@@ -504,7 +502,7 @@
 
   function createGuestBookRegistry () {
     guestBookRegistryCreateFormIsLoading.value = true
-    fetch(store.getVisitor._links.addRegistry.href, {
+    fetch('/api/amusement-parks/' + store.getAmusementParkId + '/visitors/guest-book-registries', {
       method: 'POST',
       body: guestBookRegistryContent.value,
     }).then(async response => {
@@ -531,7 +529,7 @@
   watch(onMachineDialog, () => {
     if (!onMachineDialog.value) {
       clearTimeout(getOffMachineTimer)
-      fetch(getOffMachineLink, {
+      fetch('/api/amusement-parks/' + store.getAmusementParkId + '/machines/' + getOffMachineId + '/visitors/get-off-machine', {
         method: 'PUT',
       }).then(async response => {
         if (response.ok) {

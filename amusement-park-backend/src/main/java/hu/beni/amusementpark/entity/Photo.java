@@ -4,12 +4,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @EqualsAndHashCode(of = "id")
 public class Photo {
@@ -20,13 +22,5 @@ public class Photo {
 
     @Lob
     private String photo;
-
-    public Photo(String photo) {
-        this.photo = photo;
-    }
-
-    protected Photo() {
-        super();
-    }
 
 }

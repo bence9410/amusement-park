@@ -1,21 +1,18 @@
 package hu.beni.amusementpark.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hu.beni.amusementpark.dto.request.MachineCreateRequestDto;
 import hu.beni.amusementpark.dto.request.MachineSearchRequestDto;
-import hu.beni.amusementpark.dto.resource.MachineResource;
 import hu.beni.amusementpark.dto.response.MachineSearchResponseDto;
 import hu.beni.amusementpark.exception.AmusementParkException;
-import hu.beni.amusementpark.factory.LinkFactory;
 import hu.beni.amusementpark.mapper.MachineMapper;
 import hu.beni.amusementpark.service.MachineService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -33,8 +30,6 @@ public class MachineController {
 
     private final ObjectMapper objectMapper;
     private final MachineService machineService;
-    private final MachineMapper machineMapper;
-    private final PagedResourcesAssembler<MachineSearchResponseDto> pagedResourceAssembler;
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
@@ -53,29 +48,20 @@ public class MachineController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public MachineResource addMachine(@PathVariable Long amusementParkId,
-                                      @Valid @RequestBody MachineResource machineResource) {
-        return machineMapper
-                .toModel(machineService.addMachine(amusementParkId, machineMapper.toEntity(machineResource)));
-    }
-
-    @GetMapping("/{machineId}")
-    public MachineResource findById(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
-        return machineMapper.toModel(machineService.findById(amusementParkId, machineId));
+    public void addMachine(@PathVariable Long amusementParkId,
+                           @Valid @RequestBody MachineCreateRequestDto machineResource) {
+        machineService.addMachine(amusementParkId, MachineMapper.toEntity(machineResource));
     }
 
     @GetMapping
-    public PagedModel<EntityModel<MachineSearchResponseDto>> findAllPaged(@PathVariable Long amusementParkId,
-                                                                          @RequestParam(required = false) MachineSearchRequestDto input, @PageableDefault Pageable pageable) {
+    public Page<MachineSearchResponseDto> findAllPaged(@PathVariable Long amusementParkId,
+                                                       @RequestParam(required = false) MachineSearchRequestDto input,
+                                                       @PageableDefault Pageable pageable) {
         if (input == null) {
             input = new MachineSearchRequestDto();
         }
         input.setAmusementParkId(amusementParkId);
-        PagedModel<EntityModel<MachineSearchResponseDto>> result = pagedResourceAssembler
-                .toModel(machineService.findAll(input, pageable));
-        result.getContent()
-                .forEach(r -> r.add(LinkFactory.createGetOnMachineLink(amusementParkId, r.getContent().getId())));
-        return result;
+        return machineService.findAll(input, pageable);
     }
 
 }

@@ -15,11 +15,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_IN_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class GuestBookServiceUnitTests {
@@ -45,34 +44,11 @@ public class GuestBookServiceUnitTests {
     }
 
     @Test
-    public void findByIdNegativeNoGuestBook() {
-        Long guestBookRegistryId = 0L;
-
-        assertThatThrownBy(() -> guestBookService.findById(guestBookRegistryId))
-                .isInstanceOf(AmusementParkException.class).hasMessage(NO_GUEST_BOOK_REGISTRY_WITH_ID);
-
-        verify(guestBookRegistryRepository).findById(guestBookRegistryId);
-    }
-
-    @Test
-    public void findByIdPositive() {
-        GuestBookRegistry guestBookRegistry = GuestBookRegistry.builder().id(0L).build();
-        Long guestBookRegistryId = guestBookRegistry.getId();
-
-        when(guestBookRegistryRepository.findById(guestBookRegistryId)).thenReturn(Optional.of(guestBookRegistry));
-
-        assertEquals(guestBookRegistry, guestBookService.findById(guestBookRegistryId));
-
-        verify(guestBookRegistryRepository).findById(guestBookRegistryId);
-    }
-
-    @Test
     public void addRegistryNegativeNoAmusementPark() {
         Long amusementParkId = 0L;
         String visitorEmail = "benike@gmail.com";
-        String textOfRegistry = OPINION_ON_THE_PARK;
 
-        assertThatThrownBy(() -> guestBookService.addRegistry(amusementParkId, visitorEmail, textOfRegistry))
+        assertThatThrownBy(() -> guestBookService.addRegistry(amusementParkId, visitorEmail, OPINION_ON_THE_PARK))
                 .isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
 
         verify(amusementParkRepository).findByIdReadOnlyId(amusementParkId);
@@ -83,11 +59,9 @@ public class GuestBookServiceUnitTests {
         AmusementPark amusementPark = AmusementPark.builder().id(0L).build();
         Long amusementParkId = amusementPark.getId();
         String visitorEmail = "benike@gmail.com";
-        String textOfRegistry = OPINION_ON_THE_PARK;
-
         when(amusementParkRepository.findByIdReadOnlyId(amusementParkId)).thenReturn(Optional.of(amusementPark));
 
-        assertThatThrownBy(() -> guestBookService.addRegistry(amusementParkId, visitorEmail, textOfRegistry))
+        assertThatThrownBy(() -> guestBookService.addRegistry(amusementParkId, visitorEmail, OPINION_ON_THE_PARK))
                 .isInstanceOf(AmusementParkException.class).hasMessage(NO_VISITOR_IN_PARK_WITH_ID);
 
         verify(amusementParkRepository).findByIdReadOnlyId(amusementParkId);
@@ -104,15 +78,13 @@ public class GuestBookServiceUnitTests {
 
         when(amusementParkRepository.findByIdReadOnlyId(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(visitorRepository.findById(visitorEmail)).thenReturn(Optional.of(visitor));
-        GuestBookRegistry guestBookRegistry = GuestBookRegistry.builder().amusementPark(amusementPark)
-                .textOfRegistry(textOfRegistry).visitor(visitor).build();
-        when(guestBookRegistryRepository.save(any(GuestBookRegistry.class))).thenReturn(guestBookRegistry);
 
-        assertEquals(guestBookRegistry, guestBookService.addRegistry(amusementParkId, visitorEmail, textOfRegistry));
+        guestBookService.addRegistry(amusementParkId, visitorEmail, textOfRegistry);
 
         verify(amusementParkRepository).findByIdReadOnlyId(amusementParkId);
         verify(visitorRepository).findById(visitorEmail);
-        verify(guestBookRegistryRepository).save(any(GuestBookRegistry.class));
+        verify(guestBookRegistryRepository).save(GuestBookRegistry.builder()
+                .amusementPark(amusementPark).textOfRegistry(textOfRegistry).visitor(visitor).build());
     }
 
 }

@@ -12,7 +12,7 @@
     <v-icon icon="mdi-currency-eur" />
     <v-spacer />
     <v-btn
-      v-if="store.getVisitor._links.addRegistry"
+      v-if="route.path === '/machines'"
       class="ma-1"
       color="black"
       text="Guest book writing"
@@ -20,7 +20,7 @@
       @click="store.setGuestBookWritingShow(true)"
     />
     <v-btn
-      v-if="store.getVisitor._links.leavePark"
+      v-if="route.path === '/machines'"
       class="ma-1"
       color="black"
       text="Leave park"
@@ -88,10 +88,11 @@
 </template>
 <script setup lang="ts">
   import { computed, ref } from 'vue'
-  import { useRouter } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { useAppStore } from '@/stores/app'
 
   const store = useAppStore()
+  const route = useRoute()
   const router = useRouter()
   const uploadMoneyForm = ref()
   const uploadMoneyFormIsInvalid = ref(false)
@@ -104,7 +105,7 @@
 
   function logout () {
     logoutIsLoading.value = true
-    fetch(store.getLinks.logout, {
+    fetch('/api/logout', {
       method: 'POST',
     }).then(async response => {
       logoutIsLoading.value = false
@@ -119,7 +120,7 @@
   }
   async function uploadMoney () {
     uploadMoneyFormIsLoading.value = true
-    fetch(store.getVisitor._links.uploadMoney.href, {
+    fetch('/api/visitors/uploadMoney', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -138,14 +139,11 @@
   }
 
   function leavePark () {
-    fetch(store.getVisitor._links.leavePark.href, {
+    fetch('/api/amusement-parks/' + store.getAmusementParkId + '/visitors/leave-park', {
       method: 'PUT',
     }).then(async response => {
       if (response.ok) {
         router.push('/amusement-parks')
-        const visitor = store.getVisitor
-        const newVisitor = await response.json()
-        visitor._links = newVisitor._links
         store.addMessage('success', 'Successfully left park.')
       } else {
         store.addMessage('error', await response.text())

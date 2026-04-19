@@ -16,25 +16,13 @@
   const store = useAppStore()
   const router = useRouter()
 
-  fetch('/api/links').then(async response => {
+  fetch('/api/me').then(async response => {
     if (response.ok) {
-      const responseBody = await response.json()
-      const links: any = {}
-      for (const element of responseBody) {
-        links[element.rel] = element.href
-      }
-      store.setLinks(links)
-      fetch(store.getLinks.me).then(async response => {
-        if (response.ok) {
-          const visitor = await response.json()
-          visitor._links.addRegistry = null
-          visitor._links.leavePark = null
-          store.setVisitor(visitor)
-          router.push('/amusement-parks')
-        } else {
-          router.push('/')
-        }
-      })
+      const visitor = await response.json()
+      store.setVisitor(visitor)
+      router.push('/amusement-parks')
+    } else {
+      router.push('/')
     }
   })
 </script>

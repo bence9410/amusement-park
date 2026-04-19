@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface VisitorRepository extends JpaRepository<Visitor, String> {
@@ -28,8 +27,5 @@ public interface VisitorRepository extends JpaRepository<Visitor, String> {
 
     @Query("Select v from Visitor v where v.amusementPark.id = :amusementParkId and v.email = :visitorEmail")
     Optional<Visitor> findByAmusementParkIdAndVisitorEmail(Long amusementParkId, String visitorEmail);
-
-    @Query("Select v from Visitor v where v.authority = 'ROLE_VISITOR'")
-    List<Visitor> findAllVisitor();
 
 }

@@ -127,7 +127,7 @@
 
   async function signUp () {
     signUpFormIsLoading.value = true
-    fetch(store.getLinks.signUp, {
+    fetch('/api/signUp', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

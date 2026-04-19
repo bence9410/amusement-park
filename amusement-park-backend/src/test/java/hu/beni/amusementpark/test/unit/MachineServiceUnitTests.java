@@ -61,7 +61,6 @@ public class MachineServiceUnitTests {
         AmusementPark amusementPark = AmusementPark.builder().id(0L).capital(100).build();
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().price(200).build();
-
         when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId))
                 .thenReturn(Optional.of(amusementPark));
 
@@ -76,7 +75,6 @@ public class MachineServiceUnitTests {
         AmusementPark amusementPark = AmusementPark.builder().id(10L).capital(300).totalArea(100).build();
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().price(200).size(30).build();
-
         when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId))
                 .thenReturn(Optional.of(amusementPark));
         when(machineRepository.sumAreaByAmusementParkId(amusementParkId)).thenReturn(Optional.of(80L));
@@ -93,45 +91,18 @@ public class MachineServiceUnitTests {
         AmusementPark amusementPark = AmusementPark.builder().id(10L).capital(300).totalArea(100).build();
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().price(200).size(80).build();
-
         when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId))
                 .thenReturn(Optional.of(amusementPark));
         when(machineRepository.sumAreaByAmusementParkId(amusementParkId)).thenReturn(Optional.of(20L));
         when(machineRepository.save(machine)).thenReturn(machine);
 
-        assertEquals(machine, machineService.addMachine(amusementPark.getId(), machine));
+        machineService.addMachine(amusementPark.getId(), machine);
 
         assertEquals(amusementPark, machine.getAmusementPark());
-
         verify(amusementParkRepository).findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
         verify(machineRepository).sumAreaByAmusementParkId(amusementParkId);
         verify(amusementParkRepository).decreaseCapitalById(machine.getPrice(), amusementParkId);
         verify(machineRepository).save(machine);
-    }
-
-    @Test
-    public void findByIdNegativeNoMachine() {
-        Long amusementParkId = 0L;
-        Long machineId = 1L;
-
-        assertThatThrownBy(() -> machineService.findById(amusementParkId, machineId))
-                .isInstanceOf(AmusementParkException.class).hasMessage(NO_MACHINE_IN_PARK_WITH_ID);
-
-        verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-    }
-
-    @Test
-    public void findByIdPositive() {
-        Long amusementParkId = 0L;
-        Machine machine = Machine.builder().id(1L).build();
-        Long machineId = machine.getId();
-
-        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
-                .thenReturn(Optional.of(machine));
-
-        assertEquals(machine, machineService.findById(amusementParkId, machineId));
-
-        verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
     }
 
     @Test
@@ -141,7 +112,6 @@ public class MachineServiceUnitTests {
                         MachineSearchResponseDto.builder().fantasyName("Super roller coaster").build()));
         Pageable pageable = PageRequest.of(0, 10);
         MachineSearchRequestDto dto = new MachineSearchRequestDto();
-
         when(machineRepository.findAll(dto, pageable)).thenReturn(page);
 
         assertEquals(page, machineService.findAll(dto, pageable));

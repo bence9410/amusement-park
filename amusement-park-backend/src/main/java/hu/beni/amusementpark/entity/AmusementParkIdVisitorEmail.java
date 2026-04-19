@@ -9,8 +9,6 @@ import java.io.Serializable;
 @Embeddable
 public class AmusementParkIdVisitorEmail implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     private Long amusementParkId;
 
     private String visitorEmail;

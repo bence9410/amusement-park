@@ -6,10 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Tolerate;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -18,8 +15,10 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Data
-@Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 @EqualsAndHashCode(of = "id")
 public class GuestBookRegistry {
 
@@ -41,10 +40,5 @@ public class GuestBookRegistry {
     @NotNull
     @ManyToOne(fetch = LAZY)
     private AmusementPark amusementPark;
-
-    @Tolerate
-    protected GuestBookRegistry() {
-        super();
-    }
 
 }

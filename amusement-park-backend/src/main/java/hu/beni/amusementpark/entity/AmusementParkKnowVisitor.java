@@ -4,8 +4,10 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -14,6 +16,8 @@ import static jakarta.persistence.FetchType.LAZY;
 
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @EqualsAndHashCode(of = "id")
 public class AmusementParkKnowVisitor {
@@ -35,10 +39,6 @@ public class AmusementParkKnowVisitor {
     public AmusementParkKnowVisitor(AmusementPark amusementPark, Visitor visitor) {
         this.amusementPark = amusementPark;
         this.visitor = visitor;
-    }
-
-    protected AmusementParkKnowVisitor() {
-        super();
     }
 
 }

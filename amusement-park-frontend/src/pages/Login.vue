@@ -74,7 +74,7 @@
 
   async function login () {
     loginFormIsLoading.value = true
-    fetch(store.getLinks.login, {
+    fetch('/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',

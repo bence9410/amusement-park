@@ -26,12 +26,12 @@ public class MachineServiceImpl implements MachineService {
     private final MachineRepository machineRepository;
 
     @Override
-    public Machine addMachine(Long amusementParkId, Machine machine) {
+    public void addMachine(Long amusementParkId, Machine machine) {
         AmusementPark amusementPark = ifNull(
                 amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId),
                 NO_AMUSEMENT_PARK_WITH_ID);
         checkForMoneyAndFreeArea(amusementPark, machine);
-        return buyMachine(amusementPark, machine);
+        buyMachine(amusementPark, machine);
     }
 
     private void checkForMoneyAndFreeArea(AmusementPark amusementPark, Machine machine) {
@@ -41,16 +41,10 @@ public class MachineServiceImpl implements MachineService {
                 MACHINE_IS_TOO_BIG);
     }
 
-    private Machine buyMachine(AmusementPark amusementPark, Machine machine) {
+    private void buyMachine(AmusementPark amusementPark, Machine machine) {
         amusementParkRepository.decreaseCapitalById(machine.getPrice(), amusementPark.getId());
         machine.setAmusementPark(amusementPark);
-        return machineRepository.save(machine);
-    }
-
-    @Override
-    public Machine findById(Long amusementParkId, Long machineId) {
-        return ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId),
-                NO_MACHINE_IN_PARK_WITH_ID);
+        machineRepository.save(machine);
     }
 
     @Override

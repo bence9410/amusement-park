@@ -8,9 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface MachineService {
 
-    Machine addMachine(Long amusementParkId, Machine machine);
-
-    Machine findById(Long amusementParkId, Long machineId);
+    void addMachine(Long amusementParkId, Machine machine);
 
     Page<MachineSearchResponseDto> findAll(MachineSearchRequestDto dto, Pageable pageable);
 

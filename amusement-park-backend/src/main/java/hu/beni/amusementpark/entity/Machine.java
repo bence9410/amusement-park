@@ -4,10 +4,7 @@ import hu.beni.amusementpark.enums.MachineType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Tolerate;
+import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
 import java.util.List;
@@ -17,8 +14,10 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Data
-@Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 @EqualsAndHashCode(of = "id")
 public class Machine {
 
@@ -60,13 +59,5 @@ public class Machine {
 
     @OneToMany(mappedBy = "machine")
     private List<Visitor> visitors;
-
-    @OneToMany(mappedBy = "machine")
-    private List<VisitorEvent> visitorEvents;
-
-    @Tolerate
-    protected Machine() {
-        super();
-    }
 
 }

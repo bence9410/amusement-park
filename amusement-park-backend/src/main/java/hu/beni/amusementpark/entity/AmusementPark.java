@@ -6,9 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import lombok.experimental.Tolerate;
 import org.hibernate.validator.constraints.Range;
 
@@ -18,8 +16,10 @@ import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Data
-@Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 @EqualsAndHashCode(of = "id")
 public class AmusementPark {
 
@@ -54,14 +54,6 @@ public class AmusementPark {
 
     @OneToMany(mappedBy = "amusementPark", cascade = REMOVE)
     private Set<AmusementParkKnowVisitor> knownVisitors;
-
-    @OneToMany(mappedBy = "amusementPark", cascade = REMOVE)
-    private Set<VisitorEvent> visitorEvents;
-
-    @Tolerate
-    protected AmusementPark() {
-        super();
-    }
 
     @Tolerate
     public AmusementPark(Long id) {

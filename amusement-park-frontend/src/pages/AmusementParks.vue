@@ -38,7 +38,7 @@
       <template #expanded-row="{ columns, item }">
         <tr>
           <td class="py-2" :colspan="columns.length - 2">
-            <guest-book-registry-table :link="(item as any)._links.addRegistry.href" />
+            <guest-book-registry-table :link="'/api/amusement-parks/' + (item as any).id + '/visitors/guest-book-registries'" />
           </td>
           <td :colspan="2">
             <v-btn
@@ -315,7 +315,7 @@
 
   function amusementParkTableLoadItems () {
     amusementParkTableIsLoading.value = true
-    let url = store.getLinks.amusementPark
+    let url = '/api/amusement-parks'
     const input: { [key: string]: number | string } = {}
     if (amusementParkSearch.value.name != '') {
       input.name = amusementParkSearch.value.name
@@ -337,8 +337,8 @@
       amusementParkTableIsLoading.value = false
       if (response.ok) {
         const amusementParkResponse = await response.json()
-        amusementParkTableTotalItems.value = amusementParkResponse.page.totalElements
-        amusementParkTableItems.value = amusementParkResponse._embedded ? amusementParkResponse._embedded.amusementParkDetailResponseDtoList : []
+        amusementParkTableTotalItems.value = amusementParkResponse.totalElements
+        amusementParkTableItems.value = amusementParkResponse.content || []
       }
     })
   }
@@ -349,7 +349,7 @@
 
   async function createAmusementPark () {
     amusementParkCreateFormIsLoading.value = true
-    fetch(store.getLinks.amusementPark, {
+    fetch('/api/amusement-parks', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -368,15 +368,12 @@
   }
 
   function enterPark (amusementPark: any) {
-    fetch(amusementPark._links.visitorEnterPark.href, {
+    fetch('/api/amusement-parks/' + amusementPark.id + '/visitors/enter-park', {
       method: 'PUT',
     }).then(async response => {
       if (response.ok) {
-        const visitor = store.getVisitor
-        const newVisitor = await response.json()
-        visitor.spendingMoney = newVisitor.spendingMoney
-        visitor._links = newVisitor._links
-        store.getLinks.machine = amusementPark._links.machine.href
+        store.getVisitor.spendingMoney = store.getVisitor.spendingMoney - amusementPark.entranceFee
+        store.setAmusementParkId(amusementPark.id)
         router.push('/machines')
         store.addMessage('success', 'Successfully entered park ' + amusementPark.name + '.')
       } else {

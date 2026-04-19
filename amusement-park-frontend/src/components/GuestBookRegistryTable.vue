@@ -110,8 +110,8 @@
       guestBookRegistryTableIsLoading.value = false
       if (response.ok) {
         const guestBookRegistrysResponse = await response.json()
-        guestBookRegistryTableTotalItems.value = guestBookRegistrysResponse.page.totalElements
-        guestBookRegistryTableItems.value = guestBookRegistrysResponse._embedded ? guestBookRegistrysResponse._embedded.guestBookRegistrySearchResponseDtoList : []
+        guestBookRegistryTableTotalItems.value = guestBookRegistrysResponse.totalElements
+        guestBookRegistryTableItems.value = guestBookRegistrysResponse.content || []
       }
     })
   }

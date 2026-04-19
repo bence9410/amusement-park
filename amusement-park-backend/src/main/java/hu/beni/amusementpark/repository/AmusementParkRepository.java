@@ -1,6 +1,5 @@
 package hu.beni.amusementpark.repository;
 
-import hu.beni.amusementpark.dto.response.AmusementParkDetailResponseDto;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.repository.custom.AmusementParkRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,11 +26,5 @@ public interface AmusementParkRepository extends JpaRepository<AmusementPark, Lo
 
     @Query("Select new hu.beni.amusementpark.entity.AmusementPark(a.id, a.capital, a.totalArea) from AmusementPark a where a.id = :amusementParkId")
     Optional<AmusementPark> findByIdReadOnlyIdAndCapitalAndTotalArea(Long amusementParkId);
-
-    @Query("Select new hu.beni.amusementpark.dto.response.AmusementParkDetailResponseDto(a.id, a.name, a.capital, a.totalArea, a.entranceFee, "
-            + "(Select count(m) from Machine m where m.amusementPark = a), (Select count(g) from GuestBookRegistry g where g.amusementPark = a), "
-            + "(Select count(v) from Visitor v where v.amusementPark = a), (Select count(akv) from AmusementParkKnowVisitor akv where akv.amusementPark = a)) "
-            + "from AmusementPark a where a.id = :amusementParkId")
-    Optional<AmusementParkDetailResponseDto> findDetailById(Long amusementParkId);
 
 }

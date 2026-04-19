@@ -1,15 +1,15 @@
 package hu.beni.amusementpark.validation.validator;
 
-import hu.beni.amusementpark.dto.resource.VisitorResource;
+import hu.beni.amusementpark.dto.request.VisitorSignUpRequestDto;
 import hu.beni.amusementpark.validation.constraint.PasswordConfirmPasswordSameConstraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 public class PasswordConfirmPasswordSameValidator
-        implements ConstraintValidator<PasswordConfirmPasswordSameConstraint, VisitorResource> {
+        implements ConstraintValidator<PasswordConfirmPasswordSameConstraint, VisitorSignUpRequestDto> {
 
     @Override
-    public boolean isValid(VisitorResource value, ConstraintValidatorContext context) {
+    public boolean isValid(VisitorSignUpRequestDto value, ConstraintValidatorContext context) {
         if (value.getPassword() == null || value.getConfirmPassword() == null) {
             return true;
         } else if (!value.getPassword().equals(value.getConfirmPassword())) {

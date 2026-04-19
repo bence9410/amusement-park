@@ -96,9 +96,8 @@ public class TransactionLoggerConfig {
     }
 
     private void logResult(String transactionId, MethodInvocation methodInvocation, long start, String result) {
-        log.info(transactionId + ": " + methodInvocation.getThis().getClass().getSimpleName() + "."
-                + methodInvocation.getMethod().getName() + " completed " + result + " in "
-                + Long.toString(System.currentTimeMillis() - start) + "ms.");
+        log.info("{}: {}.{} completed {} in {}ms.", transactionId, methodInvocation.getThis().getClass().getSimpleName(),
+                methodInvocation.getMethod().getName(), result, System.currentTimeMillis() - start);
     }
 
 }

@@ -5,10 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Tolerate;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.Range;
@@ -22,10 +19,13 @@ import static jakarta.persistence.FetchType.LAZY;
 import static java.lang.Integer.MAX_VALUE;
 
 @Data
-@Entity
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 @DynamicUpdate
 @EqualsAndHashCode(of = "email")
+@ToString(of = "email")
 public class Visitor {
 
     @Id
@@ -66,13 +66,5 @@ public class Visitor {
 
     @OneToMany(mappedBy = "visitor")
     private Set<AmusementParkKnowVisitor> knownAmusementParks;
-
-    @OneToMany(mappedBy = "visitor")
-    private Set<VisitorEvent> visitorEvents;
-
-    @Tolerate
-    protected Visitor() {
-        super();
-    }
 
 }

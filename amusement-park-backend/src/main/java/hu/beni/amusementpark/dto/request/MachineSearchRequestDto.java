@@ -1,9 +1,15 @@
 package hu.beni.amusementpark.dto.request;
 
 import hu.beni.amusementpark.enums.MachineType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MachineSearchRequestDto {
 
     private Long amusementParkId;

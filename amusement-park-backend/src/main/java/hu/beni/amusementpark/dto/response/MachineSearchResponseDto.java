@@ -1,17 +1,17 @@
 package hu.beni.amusementpark.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import hu.beni.amusementpark.enums.MachineType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class MachineSearchResponseDto {
 
-    @JsonIgnore
     private Long id;
 
     private String fantasyName;

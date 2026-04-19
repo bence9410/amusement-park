@@ -1,7 +1,7 @@
 package hu.beni.amusementpark.test.integration.service;
 
 import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
-import hu.beni.amusementpark.dto.response.AmusementParkDetailResponseDto;
+import hu.beni.amusementpark.dto.response.AmusementParkSearchResponseDto;
 import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementPark;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class AmusementParkServiceIntegrationTests extends AbstractStatementCounterTests {
 
@@ -20,49 +19,8 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
 
     @Test
     public void saveTest() {
-        assertNotNull(amusementParkService.save(createAmusementPark()).getId());
+        amusementParkService.save(createAmusementPark());
         insert++;
-        assertStatements();
-    }
-
-    @Test
-    public void findByIdTest() {
-        assertEquals("test park 100", amusementParkService.findById(amusementParkId).getName());
-        select++;
-        assertStatements();
-    }
-
-    @Test
-    public void findDetailByIdTest() {
-        AmusementParkDetailResponseDto amusementParkDetailResponseDto = amusementParkService
-                .findDetailById(amusementParkId);
-
-        assertEquals("test park 100", amusementParkDetailResponseDto.getName());
-        assertEquals(1, amusementParkDetailResponseDto.getNumberOfMachines().intValue());
-        assertEquals(2, amusementParkDetailResponseDto.getNumberOfGuestBookRegistries().intValue());
-        assertEquals(2, amusementParkDetailResponseDto.getNumberOfActiveVisitors().intValue());
-        assertEquals(2, amusementParkDetailResponseDto.getNumberOfKnownVisitors().intValue());
-
-        select++;
-        assertStatements();
-
-        amusementParkDetailResponseDto = amusementParkService.findDetailById(anotherAmusementParkId);
-
-        assertEquals("test park 101", amusementParkDetailResponseDto.getName());
-        assertEquals(1, amusementParkDetailResponseDto.getNumberOfMachines().intValue());
-        assertEquals(0, amusementParkDetailResponseDto.getNumberOfGuestBookRegistries().intValue());
-        assertEquals(0, amusementParkDetailResponseDto.getNumberOfActiveVisitors().intValue());
-        assertEquals(0, amusementParkDetailResponseDto.getNumberOfKnownVisitors().intValue());
-
-        select++;
-        assertStatements();
-    }
-
-    @Test
-    public void deleteTest() {
-        amusementParkService.delete(anotherAmusementParkId);
-        select += 6;
-        delete += 2;
         assertStatements();
     }
 
@@ -72,10 +30,9 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
         dto.setName("park");
         dto.setMinEntranceFee(200);
 
-        Page<AmusementParkDetailResponseDto> page = amusementParkService.findAll(dto, PageRequest.of(0, 10));
+        Page<AmusementParkSearchResponseDto> page = amusementParkService.findAll(dto, PageRequest.of(0, 10));
 
         assertEquals(2, page.getTotalElements());
-
         select += 2;
         assertStatements();
     }
