@@ -109,7 +109,7 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
 
         return entityManager
                 .createQuery(cq.select(cb.count(root.get(AmusementPark_.id)))
-                        .where(predicates.toArray(new Predicate[predicates.size()])))
+                        .where(predicates.toArray(new Predicate[0])))
                 .getSingleResult();
     }
 

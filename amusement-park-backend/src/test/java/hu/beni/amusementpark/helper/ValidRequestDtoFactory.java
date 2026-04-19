@@ -9,34 +9,32 @@ import java.time.LocalDate;
 
 public class ValidRequestDtoFactory {
 
+    public static AmusementParkCreateRequestDto createAmusementPark() {
+        return AmusementParkCreateRequestDto
+                .builder()
+                .name("Bence's park")
+                .capital(3000)
+                .totalArea(1000)
+                .entranceFee(50).build();
+    }
+
     public static MachineCreateRequestDto createMachine() {
         return MachineCreateRequestDto
                 .builder()
-                .fantasyName("Nagy hajó")
-                .size(100)
-                .price(250)
-                .numberOfSeats(30)
+                .fantasyName("Big ship")
                 .minimumRequiredAge(18)
                 .ticketPrice(10)
-                .type("CAROUSEL").build();
+                .video("asd")
+                .videoLengthInSeconds(5).build();
     }
 
     public static VisitorSignUpRequestDto createVisitor() {
         return VisitorSignUpRequestDto
                 .builder()
-                .email("resource@gmail.com")
+                .email("dto@gmail.com")
                 .password(StringParamConstants.VALID_PASSWORD)
                 .confirmPassword(StringParamConstants.VALID_PASSWORD)
                 .dateOfBirth(LocalDate.of(1994, 10, 22))
                 .photo("asdfghjkl").build();
-    }
-
-    public static AmusementParkCreateRequestDto createAmusementPark() {
-        return AmusementParkCreateRequestDto
-                .builder()
-                .name("Beni parkja")
-                .capital(3000)
-                .totalArea(1000)
-                .entranceFee(50).build();
     }
 }

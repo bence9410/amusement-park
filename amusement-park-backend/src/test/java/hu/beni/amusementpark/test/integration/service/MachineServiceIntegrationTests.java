@@ -28,12 +28,9 @@ public class MachineServiceIntegrationTests extends AbstractStatementCounterTest
         assertNotNull(machine.getId());
         assertNotNull(machine.getAmusementPark());
         assertEquals(amusementParkId, machine.getAmusementPark().getId());
-        select += 2;
-        update++;
+        select++;
         insert++;
         assertStatements();
-        assertEquals(amusementParkCapital - machine.getPrice(),
-                amusementParkRepository.findById(amusementParkId).get().getCapital());
     }
 
     @Test

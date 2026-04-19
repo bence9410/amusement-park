@@ -9,25 +9,20 @@ values ('nembence1994@gmail.com', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:
 insert into amusement_park(name, capital, total_area, entrance_fee)
 values ('Bence''s park', 30000, 5000, 100);
 
-insert into machine(fantasy_name, minimum_required_age, number_of_seats, price, size_of_machine, ticket_price, type,
-                    amusement_park_id)
-values ('Retro carousel', 12, 20, 500, 200, 15, 'CAROUSEL', (select id from amusement_park));
+insert into machine(fantasy_name, minimum_required_age, ticket_price, video, video_length_in_seconds, amusement_park_id)
+values ('Retro carousel', 12, 15, 'asd', 5, (select id from amusement_park));
 
-insert into machine(fantasy_name, minimum_required_age, number_of_seats, price, size_of_machine, ticket_price, type,
-                    amusement_park_id)
-values ('Magical dodgem', 12, 15, 350, 250, 20, 'DODGEM', (select id from amusement_park));
+insert into machine(fantasy_name, minimum_required_age, ticket_price, video, video_length_in_seconds, amusement_park_id)
+values ('Magical dodgem', 12, 20, 'asd', 5, (select id from amusement_park));
 
-insert into machine(fantasy_name, minimum_required_age, number_of_seats, price, size_of_machine, ticket_price, type,
-                    amusement_park_id)
-values ('Electric gocart', 16, 10, 450, 300, 25, 'GOKART', (select id from amusement_park));
+insert into machine(fantasy_name, minimum_required_age, ticket_price, video, video_length_in_seconds, amusement_park_id)
+values ('Electric gocart', 16, 25, 'asd', 5, (select id from amusement_park));
 
-insert into machine(fantasy_name, minimum_required_age, number_of_seats, price, size_of_machine, ticket_price, type,
-                    amusement_park_id)
-values ('Titanic', 14, 30, 600, 400, 30, 'SHIP', (select id from amusement_park));
+insert into machine(fantasy_name, minimum_required_age, ticket_price, video, video_length_in_seconds, amusement_park_id)
+values ('Titanic', 14, 30, 'asd', 5, (select id from amusement_park));
 
-insert into machine(fantasy_name, minimum_required_age, number_of_seats, price, size_of_machine, ticket_price, type,
-                    amusement_park_id)
-values ('Super roller coaster', 14, 20, 550, 450, 30, 'ROLLER_COASTER', (select id from amusement_park));
+insert into machine(fantasy_name, minimum_required_age, ticket_price, video, video_length_in_seconds, amusement_park_id)
+values ('Super roller coaster', 14, 30, 'asd', 5, (select id from amusement_park));
 
 insert into amusement_park_know_visitor(date_of_first_enter, amusement_park_id, visitor_email)
 values ('2020-05-06 15:33:00', (select id from amusement_park), 'nembence1994@gmail.com');
@@ -41,13 +36,11 @@ values ('test park 100', 5000, 5000, 200);
 insert into amusement_park(name, capital, total_area, entrance_fee)
 values ('test park 101', 5000, 5000, 200);
 
-insert into machine(fantasy_name, minimum_required_age, number_of_seats, price, size_of_machine, ticket_price, type,
-                    amusement_park_id)
-values ('test Titanic', 10, 10, 200, 200, 20, 'SHIP', (select id from amusement_park where name = 'test park 100'));
+insert into machine(fantasy_name, minimum_required_age, ticket_price, video, video_length_in_seconds, amusement_park_id)
+values ('test Titanic', 10, 20, 'asd', 5, (select id from amusement_park where name = 'test park 100'));
 
-insert into machine(fantasy_name, minimum_required_age, number_of_seats, price, size_of_machine, ticket_price, type,
-                    amusement_park_id)
-values ('test2 Titanic', 10, 10, 200, 200, 20, 'SHIP', (select id from amusement_park where name = 'test park 101'));
+insert into machine(fantasy_name, minimum_required_age, ticket_price, video, video_length_in_seconds, amusement_park_id)
+values ('test2 Titanic', 10, 20, 'asd', 5, (select id from amusement_park where name = 'test park 101'));
 
 insert into visitor(email, authority, date_of_birth, date_of_sign_up, password, spending_money)
 values ('test@gmail.com', 'ROLE_VISITOR', '1994-10-22', '2020-05-06 15:33:03.894',

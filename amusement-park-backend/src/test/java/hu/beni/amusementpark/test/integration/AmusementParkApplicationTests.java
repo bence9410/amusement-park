@@ -10,7 +10,6 @@ import hu.beni.amusementpark.dto.request.VisitorSignUpRequestDto;
 import hu.beni.amusementpark.dto.response.AmusementParkSearchResponseDto;
 import hu.beni.amusementpark.dto.response.MachineSearchResponseDto;
 import hu.beni.amusementpark.dto.response.VisitorResponseDto;
-import hu.beni.amusementpark.enums.MachineType;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.helper.MyAssert.ExceptionAsserter;
 import hu.beni.amusementpark.helper.RestResponsePage;
@@ -32,15 +31,12 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_TOO_EXPENSIVE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.validationError;
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.oneOfMessage;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.rangeMessage;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.sizeMessage;
 import static hu.beni.amusementpark.helper.MyAssert.assertThrows;
-import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -214,15 +210,13 @@ public class AmusementParkApplicationTests {
 
         AmusementParkSearchResponseDto amusementParkSearchResponseDto = getAmusementParks().getBody().getContent().getLast();
         String machineUrl = "http://localhost:" + port + "/api/amusement-parks/" + amusementParkSearchResponseDto.getId() + "/machines";
-        MachineCreateRequestDto machineResource = ValidRequestDtoFactory.createMachine();
-        machineResource.setType("asd");
-        assertThrows(() -> restTemplate.postForObject(machineUrl, machineResource, Void.class),
-                HttpClientErrorException.class, teaPotStatusAndMachineTypeMustMatch());
-
-        machineResource.setType(MachineType.CAROUSEL.toString());
-        machineResource.setPrice(2000);
-        assertThrows(() -> restTemplate.postForObject(machineUrl, machineResource, Void.class),
-                HttpClientErrorException.class, teaPotStatusAndMachineTooExpensiveMessage());
+        MachineCreateRequestDto machineCreateRequestDto = ValidRequestDtoFactory.createMachine();
+        machineCreateRequestDto.setFantasyName("");
+        assertThrows(() -> restTemplate.postForObject(machineUrl, machineCreateRequestDto, Void.class),
+                HttpClientErrorException.class, exception -> {
+                    assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
+                    assertEquals(validationError("fantasyName", sizeMessage(5, 50)), exception.getResponseBodyAsString());
+                });
     }
 
     @Test
@@ -290,23 +284,6 @@ public class AmusementParkApplicationTests {
         return exception -> {
             assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
             assertEquals(validationError("entranceFee", rangeMessage(5, 200)), exception.getResponseBodyAsString());
-        };
-    }
-
-    private ExceptionAsserter<HttpClientErrorException> teaPotStatusAndMachineTypeMustMatch() {
-        return exception -> {
-            assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
-            assertEquals(
-                    validationError("type", oneOfMessage(
-                            Stream.of(MachineType.values()).map(MachineType::toString).collect(toSet()).toString())),
-                    exception.getResponseBodyAsString());
-        };
-    }
-
-    private ExceptionAsserter<HttpClientErrorException> teaPotStatusAndMachineTooExpensiveMessage() {
-        return exception -> {
-            assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
-            assertEquals(MACHINE_IS_TOO_EXPENSIVE, exception.getResponseBodyAsString());
         };
     }
 }

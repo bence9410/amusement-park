@@ -5,12 +5,10 @@ import hu.beni.amusementpark.dto.response.MachineSearchResponseDto;
 import hu.beni.amusementpark.entity.AmusementPark_;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Machine_;
+import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.repository.custom.MachineRepositoryCustom;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -40,31 +38,13 @@ public class MachineRepositoryCustomImpl implements MachineRepositoryCustom {
         return new PageImpl<>(result, pageable, count);
     }
 
-    private Predicate[] createPredicates(CriteriaBuilder cb, Root<Machine> root, MachineSearchRequestDto dto) {
+    private List<Predicate> createPredicates(CriteriaBuilder cb, Root<Machine> root, MachineSearchRequestDto dto) {
         List<Predicate> predicates = new ArrayList<>();
 
         predicates.add(cb.equal(root.get(Machine_.amusementPark).get(AmusementPark_.id), dto.getAmusementParkId()));
 
         ofNullable(dto.getFantasyName())
                 .map(fantasyName -> cb.like(root.get(Machine_.fantasyName), "%" + fantasyName + "%"))
-                .ifPresent(predicates::add);
-
-        ofNullable(dto.getMinSize()).map(minSize -> cb.ge(root.get(Machine_.size), minSize)).ifPresent(predicates::add);
-
-        ofNullable(dto.getMaxSize()).map(maxSize -> cb.le(root.get(Machine_.size), maxSize)).ifPresent(predicates::add);
-
-        ofNullable(dto.getMinPrice()).map(minPrice -> cb.ge(root.get(Machine_.price), minPrice))
-                .ifPresent(predicates::add);
-
-        ofNullable(dto.getMaxPrice()).map(maxPrice -> cb.le(root.get(Machine_.price), maxPrice))
-                .ifPresent(predicates::add);
-
-        ofNullable(dto.getMinNumberOfSeats())
-                .map(minNumberOfSeats -> cb.ge(root.get(Machine_.numberOfSeats), minNumberOfSeats))
-                .ifPresent(predicates::add);
-
-        ofNullable(dto.getMaxNumberOfSeats())
-                .map(maxNumberOfSeats -> cb.le(root.get(Machine_.numberOfSeats), maxNumberOfSeats))
                 .ifPresent(predicates::add);
 
         ofNullable(dto.getMinMinimumRequiredAge())
@@ -81,17 +61,28 @@ public class MachineRepositoryCustomImpl implements MachineRepositoryCustom {
         ofNullable(dto.getMaxTicketPrice()).map(maxTicketPrice -> cb.le(root.get(Machine_.ticketPrice), maxTicketPrice))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getType()).map(type -> cb.equal(root.get(Machine_.type), type)).ifPresent(predicates::add);
-
-        return predicates.toArray(new Predicate[predicates.size()]);
-
+        return predicates;
     }
 
     private Long executeCountQuery(CriteriaBuilder cb, MachineSearchRequestDto dto) {
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<Machine> root = cq.from(Machine.class);
+
+        Subquery<Long> countVisitors = cq.subquery(Long.class);
+        Root<Machine> correlatedRoot = countVisitors.correlate(root);
+        SetJoin<Root<Machine>, Visitor> machineSetJoin = correlatedRoot.joinSet(Machine_.visitors.getName());
+        countVisitors.select(cb.count(machineSetJoin));
+
+        List<Predicate> predicates = createPredicates(cb, root, dto);
+
+        ofNullable(dto.getMinNumberOfVisitorsOnMachine()).map(minNumberOfVisitorsOnMachine -> cb.ge(countVisitors, minNumberOfVisitorsOnMachine))
+                .ifPresent(predicates::add);
+        ofNullable(dto.getMaxNumberOfVisitorsOnMachine()).map(maxNumberOfVisitorsOnMachine -> cb.le(countVisitors, maxNumberOfVisitorsOnMachine))
+                .ifPresent(predicates::add);
+
         return entityManager
-                .createQuery(cq.select(cb.count(root.get(Machine_.id))).where(createPredicates(cb, root, dto)))
+                .createQuery(cq.select(cb.count(root.get(Machine_.id)))
+                        .where(predicates.toArray(new Predicate[0])))
                 .getSingleResult();
     }
 
@@ -100,17 +91,37 @@ public class MachineRepositoryCustomImpl implements MachineRepositoryCustom {
         CriteriaQuery<MachineSearchResponseDto> cq = cb.createQuery(MachineSearchResponseDto.class);
         Root<Machine> root = cq.from(Machine.class);
 
+        Subquery<Long> countVisitors = cq.subquery(Long.class);
+        Root<Machine> correlatedRoot = countVisitors.correlate(root);
+        SetJoin<Root<Machine>, Visitor> machineSetJoin = correlatedRoot.joinSet(Machine_.visitors.getName());
+        countVisitors.select(cb.count(machineSetJoin));
+
         Order order = pageable.getSortOr(Sort.by(Direction.DESC, "id")).stream().findFirst().get();
-        if (order.getDirection().isAscending()) {
-            cq.orderBy(cb.asc(root.get(order.getProperty())));
+        if (order.getProperty().equals("numberOfVisitorsOnMachine")) {
+            if (order.getDirection().isAscending()) {
+                cq.orderBy(cb.asc(countVisitors));
+            } else {
+                cq.orderBy(cb.desc(countVisitors));
+            }
         } else {
-            cq.orderBy(cb.desc(root.get(order.getProperty())));
+            if (order.getDirection().isAscending()) {
+                cq.orderBy(cb.asc(root.get(order.getProperty())));
+            } else {
+                cq.orderBy(cb.desc(root.get(order.getProperty())));
+            }
         }
 
-        cq.multiselect(root.get(Machine_.id), root.get(Machine_.fantasyName), root.get(Machine_.size),
-                        root.get(Machine_.price), root.get(Machine_.numberOfSeats), root.get(Machine_.minimumRequiredAge),
-                        root.get(Machine_.ticketPrice), root.get(Machine_.type))
-                .where(createPredicates(cb, root, dto));
+        List<Predicate> predicates = createPredicates(cb, root, dto);
+
+        ofNullable(dto.getMinNumberOfVisitorsOnMachine()).map(minNumberOfVisitorsOnMachine -> cb.ge(countVisitors, minNumberOfVisitorsOnMachine))
+                .ifPresent(predicates::add);
+        ofNullable(dto.getMaxNumberOfVisitorsOnMachine()).map(maxNumberOfVisitorsOnMachine -> cb.le(countVisitors, maxNumberOfVisitorsOnMachine))
+                .ifPresent(predicates::add);
+
+        cq.select(cb.construct(MachineSearchResponseDto.class, root.get(Machine_.id), root.get(Machine_.fantasyName),
+                        root.get(Machine_.minimumRequiredAge), root.get(Machine_.ticketPrice), root.get(Machine_.video),
+                        root.get(Machine_.videoLengthInSeconds), countVisitors))
+                .where(predicates.toArray(new Predicate[0]));
         return entityManager.createQuery(cq).setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize()).getResultList();
     }

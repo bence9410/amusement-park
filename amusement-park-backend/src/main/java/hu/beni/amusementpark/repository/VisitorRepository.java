@@ -16,12 +16,6 @@ public interface VisitorRepository extends JpaRepository<Visitor, String> {
     @Query("Update Visitor v set v.spendingMoney = v.spendingMoney + :amount where v.email = :visitorEmail")
     void incrementSpendingMoneyByEmail(Integer amount, String visitorEmail);
 
-    @Query("Select count(v) from Visitor v where v.machine.id = :machineId")
-    Long countByMachineId(Long machineId);
-
-    @Query("Select count(v) from Visitor v where v.amusementPark.id = :amusementParkId")
-    Long countByAmusementParkId(Long amusementParkId);
-
     @Query("Select v from Visitor v where v.machine.id = :machineId and v.email = :visitorEmail")
     Optional<Visitor> findByMachineIdAndVisitorEmail(Long machineId, String visitorEmail);
 

@@ -1,6 +1,5 @@
 package hu.beni.amusementpark.dto.request;
 
-import hu.beni.amusementpark.enums.MachineType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,18 +15,6 @@ public class MachineSearchRequestDto {
 
     private String fantasyName;
 
-    private Integer minSize;
-
-    private Integer maxSize;
-
-    private Integer minPrice;
-
-    private Integer maxPrice;
-
-    private Integer minNumberOfSeats;
-
-    private Integer maxNumberOfSeats;
-
     private Integer minMinimumRequiredAge;
 
     private Integer maxMinimumRequiredAge;
@@ -36,6 +23,8 @@ public class MachineSearchRequestDto {
 
     private Integer maxTicketPrice;
 
-    private MachineType type;
+    private Integer minNumberOfVisitorsOnMachine;
+
+    private Integer maxNumberOfVisitorsOnMachine;
 
 }

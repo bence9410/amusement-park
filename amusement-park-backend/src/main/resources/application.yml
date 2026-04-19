@@ -1,4 +1,3 @@
-server.forward-headers-strategy: framework
 amusement-park:
   transaction-logging: true
 spring:

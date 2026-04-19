@@ -65,7 +65,7 @@ public class GuestBookRegistryRepositoryCustomImpl implements GuestBookRegistryR
                         .lessThanOrEqualTo(root.get(GuestBookRegistry_.dateOfRegistry), maxDateOfRegistry))
                 .ifPresent(predicates::add);
 
-        return predicates.toArray(new Predicate[predicates.size()]);
+        return predicates.toArray(new Predicate[0]);
     }
 
     private Long executeCountQuery(CriteriaBuilder cb, GuestBookRegistrySearchRequestDto dto) {

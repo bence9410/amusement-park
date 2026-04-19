@@ -17,11 +17,7 @@
       @update:options="machineTableLoadItems"
     >
 
-      <template #item.type="{ value }">
-        {{ types.filter(v => v.value === value)[0].title }}
-      </template>
-
-      <template #item.actions="{ item }">
+      <template #item.action="{ item }">
         <v-btn
           color="black"
           text="Get on"
@@ -42,30 +38,6 @@
           </td>
           <td>
             <v-text-field
-              v-model="machineSearch.minSize"
-              class="ma-1"
-              density="compact"
-              placeholder="Min size"
-            />
-          </td>
-          <td>
-            <v-text-field
-              v-model="machineSearch.minPrice"
-              class="ma-1"
-              density="compact"
-              placeholder="Min price"
-            />
-          </td>
-          <td>
-            <v-text-field
-              v-model="machineSearch.minNumberOfSeats"
-              class="ma-1"
-              density="compact"
-              placeholder="Min number of seats"
-            />
-          </td>
-          <td>
-            <v-text-field
               v-model="machineSearch.minMinimumRequiredAge"
               class="ma-1"
               density="compact"
@@ -81,42 +53,16 @@
             />
           </td>
           <td>
-            <v-select
-              v-model="machineSearch.type"
+            <v-text-field
+              v-model="machineSearch.minNumberOfVisitorsOnMachine"
               class="ma-1"
-              clearable
               density="compact"
-              :items="types"
-              placeholder="Type"
+              placeholder="Min number of visitors on"
             />
           </td>
         </tr>
         <tr>
           <td />
-          <td>
-            <v-text-field
-              v-model="machineSearch.maxSize"
-              class="ma-1"
-              density="compact"
-              placeholder="Max size"
-            />
-          </td>
-          <td>
-            <v-text-field
-              v-model="machineSearch.maxPrice"
-              class="ma-1"
-              density="compact"
-              placeholder="Max price"
-            />
-          </td>
-          <td>
-            <v-text-field
-              v-model="machineSearch.maxNumberOfSeats"
-              class="ma-1"
-              density="compact"
-              placeholder="Max number of seats"
-            />
-          </td>
           <td>
             <v-text-field
               v-model="machineSearch.maxMinimumRequiredAge"
@@ -133,7 +79,14 @@
               placeholder="Max ticket price"
             />
           </td>
-          <td />
+          <td>
+            <v-text-field
+              v-model="machineSearch.maxNumberOfVisitorsOnMachine"
+              class="ma-1"
+              density="compact"
+              placeholder="Max number of visitors on"
+            />
+          </td>
         </tr>
       </template>
     </v-data-table-server>
@@ -161,41 +114,8 @@
               required
               :rules="[
                 (v) =>
-                  (!!v && v.length >= 5 && v.length <= 25) ||
-                  'Fantasy name size must be between 5 and 25.',
-              ]"
-            />
-            <v-text-field
-              v-model="machineCreate.size"
-              label="Size"
-              :readonly="machineCreateFormIsLoading"
-              required
-              :rules="[
-                (v) =>
-                  (!!v && Number(v) >= 20 && Number(v) <= 200) ||
-                  'Size must be between 20 and 200.',
-              ]"
-            />
-            <v-text-field
-              v-model="machineCreate.price"
-              label="Price"
-              :readonly="machineCreateFormIsLoading"
-              required
-              :rules="[
-                (v) =>
-                  (!!v && Number(v) >= 50 && Number(v) <= 2000) ||
-                  'Price must be between 50 and 2000. ',
-              ]"
-            />
-            <v-text-field
-              v-model="machineCreate.numberOfSeats"
-              label="Number of seats"
-              :readonly="machineCreateFormIsLoading"
-              required
-              :rules="[
-                (v) =>
-                  (!!v && Number(v) >= 5 && Number(v) <= 250) ||
-                  'Number of seats must be between 5 and 250.',
+                  (!!v && v.length >= 5 && v.length <= 50) ||
+                  'Fantasy name size must be between 5 and 50.',
               ]"
             />
             <v-text-field
@@ -216,23 +136,41 @@
               required
               :rules="[
                 (v) =>
-                  (!!v && Number(v) >= 5 && Number(v) <= 30) ||
-                  'Ticket price must be between 5 and 30.',
+                  (!!v && Number(v) >= 1 && Number(v) <= 30) ||
+                  'Ticket price must be between 1 and 30.',
               ]"
             />
-            <v-select
-              v-model="machineCreate.type"
-              :items="types"
-              label="Type"
+            <v-text-field
+              v-model="machineCreate.video"
+              label="YouTube video id"
               :readonly="machineCreateFormIsLoading"
               required
               :rules="[
                 (v) =>
                   (!!v) ||
-                  'Type is required.'
+                  'Video is required.'
               ]"
             />
+            <v-text-field
+              v-model="machineCreate.videoLengthInSeconds"
+              label="Video length is seconds"
+              :readonly="machineCreateFormIsLoading"
+              required
+              :rules="[
+                (v) =>
+                  (!!v && Number(v) >= 5 && Number(v) <= 300) ||
+                  'Video length must be between 5 and 300.',
+              ]"
+            />
+            <img src="../assets/videoHint.png">
+            <iframe
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              frameborder="0"
+              :src="'https://www.youtube.com/embed/' + machineCreate.video"
+            />
           </v-card-text>
+
           <v-card-actions>
             <v-spacer />
             <v-btn
@@ -341,48 +279,31 @@
   const machineTableSearch = ref('')
   const machineSearch = ref({
     fantasyName: '',
-    minSize: '',
-    maxSize: '',
-    minPrice: '',
-    maxPrice: '',
-    minNumberOfSeats: '',
-    maxNumberOfSeats: '',
     minMinimumRequiredAge: '',
     maxMinimumRequiredAge: '',
     minTicketPrice: '',
     maxTicketPrice: '',
-    type: '',
+    minNumberOfVisitorsOnMachine: '',
+    maxNumberOfVisitorsOnMachine: '',
   })
   const machineTableItems = ref([])
   const machineTableHeaders = [
     { title: 'Fantasy name', key: 'fantasyName' },
-    { title: 'Size', key: 'size' },
-    { title: 'Price', key: 'price' },
-    { title: 'Number of seats', key: 'numberOfSeats' },
     { title: 'Minimum required age', key: 'minimumRequiredAge' },
     { title: 'Ticket price', key: 'ticketPrice' },
-    { title: 'Type', key: 'type' },
-    { title: 'Action', key: 'actions', sortable: false },
+    { title: 'Number of visitors on machine', key: 'numberOfVisitorsOnMachine' },
+    { title: 'Action', key: 'action', sortable: false },
   ]
 
-  const types = [
-    { title: 'Carousel', value: 'CAROUSEL' },
-    { title: 'Roller coaster', value: 'ROLLER_COASTER' },
-    { title: 'Gokart', value: 'GOKART' },
-    { title: 'Dodgem', value: 'DODGEM' },
-    { title: 'Ship', value: 'SHIP' },
-  ]
   const machineCreateForm = ref()
   const machineCreateFormIsInvalid = ref(false)
   const machineCreateFormIsLoading = ref(false)
   const machineCreate = ref({
     fantasyName: '',
-    size: '',
-    price: '',
-    numberOfSeats: '',
     minimumRequiredAge: '',
     ticketPrice: '',
-    type: '',
+    video: '',
+    videoLengthInSeconds: '',
   })
 
   const guestBookRegistryCreateForm = ref()
@@ -408,14 +329,11 @@
       input.fantasyName = machineSearch.value.fantasyName
     }
     const entries = Object.entries(machineSearch.value)
-    for (let i = 1; i < entries.length - 1; i++) {
+    for (let i = 1; i < entries.length; i++) {
       const e = entries[i]
       if (e[1] != '' && !Number.isNaN(Number(e[1]))) {
         input[e[0]] = Number(e[1])
       }
-    }
-    if (machineSearch.value.type != '') {
-      input.type = machineSearch.value.type
     }
     url += '?input=' + encodeURI(JSON.stringify(input))
     url += '&page=' + (machineTablePage.value - 1)
@@ -460,40 +378,13 @@
       if (response.ok) {
         store.addMessage('success', 'Successfully got on machine ' + machine.fantasyName + '.')
         onMachineFantasyName.value = machine.fantasyName
+        video.value = 'https://www.youtube.com/embed/' + machine.video
         onMachineDialog.value = true
         store.getVisitor.spendingMoney = store.getVisitor.spendingMoney - machine.ticketPrice
         getOffMachineId = machine.id
-        let videoLength
-        switch (machine.type) {
-          case 'CAROUSEL': {
-            video.value = 'https://www.youtube.com/embed/oNY_R3MmIbM'
-            videoLength = 319_000
-            break
-          }
-          case 'ROLLER_COASTER': {
-            video.value = 'https://www.youtube.com/embed/s9njwl_VzZA'
-            videoLength = 207_000
-            break
-          }
-          case 'GOKART': {
-            video.value = 'https://www.youtube.com/embed/Qa2kYagOCiw'
-            videoLength = 175_000
-            break
-          }
-          case 'DODGEM': {
-            video.value = 'https://www.youtube.com/embed/FATfO8ScbCI'
-            videoLength = 106_000
-            break
-          }
-          case 'SHIP': {
-            video.value = 'https://www.youtube.com/embed/UYWkF0BATDc'
-            videoLength = 219_000
-            break
-          }
-        }
         getOffMachineTimer = setTimeout(() => {
           onMachineDialog.value = false
-        }, videoLength)
+        }, machine.videoLengthInSeconds * 1000)
       } else {
         store.addMessage('error', await response.text())
       }

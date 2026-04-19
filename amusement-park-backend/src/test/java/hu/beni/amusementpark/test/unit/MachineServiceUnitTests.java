@@ -57,51 +57,18 @@ public class MachineServiceUnitTests {
     }
 
     @Test
-    public void addMachineNegativeTooExpensiveMachine() {
-        AmusementPark amusementPark = AmusementPark.builder().id(0L).capital(100).build();
-        Long amusementParkId = amusementPark.getId();
-        Machine machine = Machine.builder().price(200).build();
-        when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId))
-                .thenReturn(Optional.of(amusementPark));
-
-        assertThatThrownBy(() -> machineService.addMachine(amusementParkId, machine))
-                .isInstanceOf(AmusementParkException.class).hasMessage(MACHINE_IS_TOO_EXPENSIVE);
-
-        verify(amusementParkRepository).findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
-    }
-
-    @Test
-    public void addMachineNegativeTooBigMachine() {
-        AmusementPark amusementPark = AmusementPark.builder().id(10L).capital(300).totalArea(100).build();
-        Long amusementParkId = amusementPark.getId();
-        Machine machine = Machine.builder().price(200).size(30).build();
-        when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId))
-                .thenReturn(Optional.of(amusementPark));
-        when(machineRepository.sumAreaByAmusementParkId(amusementParkId)).thenReturn(Optional.of(80L));
-
-        assertThatThrownBy(() -> machineService.addMachine(amusementParkId, machine))
-                .isInstanceOf(AmusementParkException.class).hasMessage(MACHINE_IS_TOO_BIG);
-
-        verify(amusementParkRepository).findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
-        verify(machineRepository).sumAreaByAmusementParkId(amusementParkId);
-    }
-
-    @Test
     public void addMachinePositive() {
         AmusementPark amusementPark = AmusementPark.builder().id(10L).capital(300).totalArea(100).build();
         Long amusementParkId = amusementPark.getId();
-        Machine machine = Machine.builder().price(200).size(80).build();
+        Machine machine = Machine.builder().build();
         when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId))
                 .thenReturn(Optional.of(amusementPark));
-        when(machineRepository.sumAreaByAmusementParkId(amusementParkId)).thenReturn(Optional.of(20L));
         when(machineRepository.save(machine)).thenReturn(machine);
 
         machineService.addMachine(amusementPark.getId(), machine);
 
         assertEquals(amusementPark, machine.getAmusementPark());
         verify(amusementParkRepository).findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
-        verify(machineRepository).sumAreaByAmusementParkId(amusementParkId);
-        verify(amusementParkRepository).decreaseCapitalById(machine.getPrice(), amusementParkId);
         verify(machineRepository).save(machine);
     }
 

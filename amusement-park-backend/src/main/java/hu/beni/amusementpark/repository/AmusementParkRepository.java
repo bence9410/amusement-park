@@ -11,10 +11,6 @@ import java.util.Optional;
 public interface AmusementParkRepository extends JpaRepository<AmusementPark, Long>, AmusementParkRepositoryCustom {
 
     @Modifying
-    @Query("Update AmusementPark a set a.capital = a.capital - :amount where a.id = :amusementParkId")
-    void decreaseCapitalById(Integer amount, Long amusementParkId);
-
-    @Modifying
     @Query("Update AmusementPark a set a.capital = a.capital + :amount where a.id = :amusementParkId")
     void incrementCapitalById(Integer amount, Long amusementParkId);
 

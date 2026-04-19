@@ -111,8 +111,6 @@ public class VisitorServiceImpl implements VisitorService {
         ifFirstLessThanSecond(visitor.getSpendingMoney(), machine.getTicketPrice(), NOT_ENOUGH_MONEY);
         ifFirstLessThanSecond(Period.between(visitor.getDateOfBirth(), LocalDate.now()).getYears(),
                 machine.getMinimumRequiredAge(), VISITOR_IS_TOO_YOUNG);
-        ifPrimitivesEquals(visitorRepository.countByMachineId(machine.getId()), machine.getNumberOfSeats(),
-                NO_FREE_SEAT_ON_MACHINE);
     }
 
     private void incrementCapitalAndDecreaseSpendingMoneyAndSetMachine(Long amusementParkId, Machine machine,

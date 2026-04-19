@@ -46,7 +46,7 @@ public class GuestBookServiceUnitTests {
     @Test
     public void addRegistryNegativeNoAmusementPark() {
         Long amusementParkId = 0L;
-        String visitorEmail = "benike@gmail.com";
+        String visitorEmail = "bence@gmail.com";
 
         assertThatThrownBy(() -> guestBookService.addRegistry(amusementParkId, visitorEmail, OPINION_ON_THE_PARK))
                 .isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
@@ -58,7 +58,7 @@ public class GuestBookServiceUnitTests {
     public void addRegistryNegativeNoVisitorInPark() {
         AmusementPark amusementPark = AmusementPark.builder().id(0L).build();
         Long amusementParkId = amusementPark.getId();
-        String visitorEmail = "benike@gmail.com";
+        String visitorEmail = "bence@gmail.com";
         when(amusementParkRepository.findByIdReadOnlyId(amusementParkId)).thenReturn(Optional.of(amusementPark));
 
         assertThatThrownBy(() -> guestBookService.addRegistry(amusementParkId, visitorEmail, OPINION_ON_THE_PARK))
@@ -72,7 +72,7 @@ public class GuestBookServiceUnitTests {
     public void addRegistryPositive() {
         AmusementPark amusementPark = AmusementPark.builder().id(0L).build();
         Long amusementParkId = amusementPark.getId();
-        Visitor visitor = Visitor.builder().email("benike@gmail.com").build();
+        Visitor visitor = Visitor.builder().email("bence@gmail.com").build();
         String visitorEmail = visitor.getEmail();
         String textOfRegistry = OPINION_ON_THE_PARK;
 

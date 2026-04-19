@@ -13,8 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
-import static hu.beni.amusementpark.exception.ExceptionUtil.ifFirstLessThanSecond;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifNull;
 
 @Service
@@ -30,19 +29,6 @@ public class MachineServiceImpl implements MachineService {
         AmusementPark amusementPark = ifNull(
                 amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId),
                 NO_AMUSEMENT_PARK_WITH_ID);
-        checkForMoneyAndFreeArea(amusementPark, machine);
-        buyMachine(amusementPark, machine);
-    }
-
-    private void checkForMoneyAndFreeArea(AmusementPark amusementPark, Machine machine) {
-        ifFirstLessThanSecond(amusementPark.getCapital(), machine.getPrice(), MACHINE_IS_TOO_EXPENSIVE);
-        ifFirstLessThanSecond(amusementPark.getTotalArea(),
-                machineRepository.sumAreaByAmusementParkId(amusementPark.getId()).orElse(0L) + machine.getSize(),
-                MACHINE_IS_TOO_BIG);
-    }
-
-    private void buyMachine(AmusementPark amusementPark, Machine machine) {
-        amusementParkRepository.decreaseCapitalById(machine.getPrice(), amusementPark.getId());
         machine.setAmusementPark(amusementPark);
         machineRepository.save(machine);
     }

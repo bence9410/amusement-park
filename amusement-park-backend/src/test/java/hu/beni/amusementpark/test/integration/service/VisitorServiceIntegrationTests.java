@@ -78,7 +78,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
     @Test
     public void getOnMachineTest() {
         visitorService.getOnMachine(amusementParkId, machineId, inParkVisitorEmail);
-        select += 3;
+        select += 2;
         update += 2;
         assertStatements();
 
