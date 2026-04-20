@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @PasswordConfirmPasswordSameConstraint
-public class VisitorSignUpRequestDto {
+public class UserSignUpRequestDto {
 
     @NotNull
     @Email(regexp = Constants.EMAIL_REGEXP)

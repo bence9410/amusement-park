@@ -46,14 +46,14 @@ public class GuestBookRegistryController {
         });
     }
 
-    @PostMapping("/amusement-parks/{amusementParkId}/visitors/guest-book-registries")
+    @PostMapping("/amusement-parks/{amusementParkId}/guest-book-registries")
     public void addRegistry(@PathVariable Long amusementParkId,
                             @Size(min = 2, max = 100) @RequestBody String textOfRegistry,
                             Principal principal) {
         guestBookRegistryService.addRegistry(amusementParkId, principal.getName(), textOfRegistry);
     }
 
-    @GetMapping("/amusement-parks/{amusementParkId}/visitors/guest-book-registries")
+    @GetMapping("/amusement-parks/{amusementParkId}/guest-book-registries")
     public Page<GuestBookRegistrySearchResponseDto> findAllPaged(@PathVariable Long amusementParkId,
                                                                  @RequestParam(required = false) GuestBookRegistrySearchRequestDto input,
                                                                  @PageableDefault Pageable pageable) {

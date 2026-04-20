@@ -23,8 +23,8 @@ public class MachineSearchRequestDto {
 
     private Integer maxTicketPrice;
 
-    private Integer minNumberOfVisitorsOnMachine;
+    private Integer minNumberOfUsersOnMachine;
 
-    private Integer maxNumberOfVisitorsOnMachine;
+    private Integer maxNumberOfUsersOnMachine;
 
 }

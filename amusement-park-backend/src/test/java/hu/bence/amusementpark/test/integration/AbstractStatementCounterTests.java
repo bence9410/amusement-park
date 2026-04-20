@@ -8,7 +8,7 @@ import hu.bence.amusementpark.entity.AmusementPark;
 import hu.bence.amusementpark.entity.GuestBookRegistry;
 import hu.bence.amusementpark.entity.Machine;
 import hu.bence.amusementpark.repository.AmusementParkRepository;
-import hu.bence.amusementpark.repository.VisitorRepository;
+import hu.bence.amusementpark.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,15 +26,15 @@ public abstract class AbstractStatementCounterTests {
     @Autowired
     protected AmusementParkRepository amusementParkRepository;
     @Autowired
-    protected VisitorRepository visitorRepository;
+    protected UserRepository userRepository;
     protected long amusementParkId;
     protected int amusementParkEntranceFee;
     protected long anotherAmusementParkId;
     protected long machineId;
     protected int machineTicketPrice;
-    protected String testVisitorEmail = "test@gmail.com";
-    protected String inParkVisitorEmail = "inPark@gmail.com";
-    protected int visitorSpendingMoney = 1000;
+    protected String testUserEmail = "test@gmail.com";
+    protected String inParkUserEmail = "inPark@gmail.com";
+    protected int userMoney = 1000;
     protected long guestBookId;
     protected long insert;
     protected long select;

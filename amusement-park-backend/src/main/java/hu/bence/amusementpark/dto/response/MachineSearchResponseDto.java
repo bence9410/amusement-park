@@ -23,5 +23,5 @@ public class MachineSearchResponseDto {
 
     private Integer videoLengthInSeconds;
 
-    private Long numberOfVisitorsOnMachine;
+    private Long numberOfUsersOnMachine;
 }

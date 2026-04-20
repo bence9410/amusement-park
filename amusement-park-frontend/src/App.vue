@@ -18,8 +18,7 @@
 
   fetch('/api/me').then(async response => {
     if (response.ok) {
-      const visitor = await response.json()
-      store.setVisitor(visitor)
+      store.setUser(await response.json())
       router.push('/amusement-parks')
     } else {
       router.push('/')

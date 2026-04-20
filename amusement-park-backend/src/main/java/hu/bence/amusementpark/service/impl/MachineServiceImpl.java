@@ -27,9 +27,9 @@ public class MachineServiceImpl implements MachineService {
     private final MachineRepository machineRepository;
 
     @Override
-    public void addMachine(Long amusementParkId, Machine machine, String visitorEmail) {
+    public void addMachine(Long amusementParkId, Machine machine, String userEmail) {
         AmusementPark amusementPark = ifNull(amusementParkRepository.findById(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
-        ifNotEquals(visitorEmail, amusementPark.getOwner().getEmail(), AMUSEMENT_PARK_NOT_OWNED_BY_YOU);
+        ifNotEquals(userEmail, amusementPark.getOwner().getEmail(), AMUSEMENT_PARK_NOT_OWNED_BY_YOU);
         machine.setAmusementPark(amusementPark);
         machineRepository.save(machine);
     }

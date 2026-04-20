@@ -5,7 +5,7 @@ import hu.bence.amusementpark.dto.response.GuestBookRegistrySearchResponseDto;
 import hu.bence.amusementpark.entity.AmusementPark_;
 import hu.bence.amusementpark.entity.GuestBookRegistry;
 import hu.bence.amusementpark.entity.GuestBookRegistry_;
-import hu.bence.amusementpark.entity.Visitor_;
+import hu.bence.amusementpark.entity.Users_;
 import hu.bence.amusementpark.repository.custom.GuestBookRegistryRepositoryCustom;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -49,8 +49,8 @@ public class GuestBookRegistryRepositoryCustomImpl implements GuestBookRegistryR
         predicates.add(
                 cb.equal(root.get(GuestBookRegistry_.amusementPark).get(AmusementPark_.id), dto.getAmusementParkId()));
 
-        ofNullable(dto.getVisitorEmail()).map(visitorEmail -> cb
-                        .like(root.get(GuestBookRegistry_.visitor).get(Visitor_.email), "%" + visitorEmail + "%"))
+        ofNullable(dto.getUserEmail()).map(userEmail -> cb
+                        .like(root.get(GuestBookRegistry_.user).get(Users_.email), "%" + userEmail + "%"))
                 .ifPresent(predicates::add);
 
         ofNullable(dto.getTextOfRegistry()).map(textOfRegistry -> cb
@@ -89,7 +89,7 @@ public class GuestBookRegistryRepositoryCustomImpl implements GuestBookRegistryR
             cq.orderBy(cb.desc(root.get(order.getProperty())));
         }
 
-        cq.multiselect(root.get(GuestBookRegistry_.visitor).get(Visitor_.email),
+        cq.multiselect(root.get(GuestBookRegistry_.user).get(Users_.email),
                         root.get(GuestBookRegistry_.textOfRegistry), root.get(GuestBookRegistry_.dateOfRegistry))
                 .where(createPredicates(cb, root, dto));
         return entityManager.createQuery(cq).setFirstResult((int) pageable.getOffset())

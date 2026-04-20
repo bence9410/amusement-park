@@ -5,7 +5,7 @@ import hu.bence.amusementpark.dto.response.MachineSearchResponseDto;
 import hu.bence.amusementpark.entity.AmusementPark_;
 import hu.bence.amusementpark.entity.Machine;
 import hu.bence.amusementpark.entity.Machine_;
-import hu.bence.amusementpark.entity.Visitor;
+import hu.bence.amusementpark.entity.Users;
 import hu.bence.amusementpark.repository.custom.MachineRepositoryCustom;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
@@ -68,16 +68,16 @@ public class MachineRepositoryCustomImpl implements MachineRepositoryCustom {
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<Machine> root = cq.from(Machine.class);
 
-        Subquery<Long> countVisitors = cq.subquery(Long.class);
-        Root<Machine> correlatedRoot = countVisitors.correlate(root);
-        SetJoin<Root<Machine>, Visitor> machineSetJoin = correlatedRoot.joinSet(Machine_.visitors.getName());
-        countVisitors.select(cb.count(machineSetJoin));
+        Subquery<Long> countUsers = cq.subquery(Long.class);
+        Root<Machine> correlatedRoot = countUsers.correlate(root);
+        SetJoin<Root<Machine>, Users> machineSetJoin = correlatedRoot.joinSet(Machine_.users.getName());
+        countUsers.select(cb.count(machineSetJoin));
 
         List<Predicate> predicates = createPredicates(cb, root, dto);
 
-        ofNullable(dto.getMinNumberOfVisitorsOnMachine()).map(minNumberOfVisitorsOnMachine -> cb.ge(countVisitors, minNumberOfVisitorsOnMachine))
+        ofNullable(dto.getMinNumberOfUsersOnMachine()).map(minNumberOfUsersOnMachine -> cb.ge(countUsers, minNumberOfUsersOnMachine))
                 .ifPresent(predicates::add);
-        ofNullable(dto.getMaxNumberOfVisitorsOnMachine()).map(maxNumberOfVisitorsOnMachine -> cb.le(countVisitors, maxNumberOfVisitorsOnMachine))
+        ofNullable(dto.getMaxNumberOfUsersOnMachine()).map(maxNumberOfUsersOnMachine -> cb.le(countUsers, maxNumberOfUsersOnMachine))
                 .ifPresent(predicates::add);
 
         return entityManager
@@ -91,17 +91,17 @@ public class MachineRepositoryCustomImpl implements MachineRepositoryCustom {
         CriteriaQuery<MachineSearchResponseDto> cq = cb.createQuery(MachineSearchResponseDto.class);
         Root<Machine> root = cq.from(Machine.class);
 
-        Subquery<Long> countVisitors = cq.subquery(Long.class);
-        Root<Machine> correlatedRoot = countVisitors.correlate(root);
-        SetJoin<Root<Machine>, Visitor> machineSetJoin = correlatedRoot.joinSet(Machine_.visitors.getName());
-        countVisitors.select(cb.count(machineSetJoin));
+        Subquery<Long> countUsers = cq.subquery(Long.class);
+        Root<Machine> correlatedRoot = countUsers.correlate(root);
+        SetJoin<Root<Machine>, Users> machineSetJoin = correlatedRoot.joinSet(Machine_.users.getName());
+        countUsers.select(cb.count(machineSetJoin));
 
         Order order = pageable.getSortOr(Sort.by(Direction.DESC, "id")).stream().findFirst().get();
-        if (order.getProperty().equals("numberOfVisitorsOnMachine")) {
+        if (order.getProperty().equals("numberOfUsersOnMachine")) {
             if (order.getDirection().isAscending()) {
-                cq.orderBy(cb.asc(countVisitors));
+                cq.orderBy(cb.asc(countUsers));
             } else {
-                cq.orderBy(cb.desc(countVisitors));
+                cq.orderBy(cb.desc(countUsers));
             }
         } else {
             if (order.getDirection().isAscending()) {
@@ -113,14 +113,14 @@ public class MachineRepositoryCustomImpl implements MachineRepositoryCustom {
 
         List<Predicate> predicates = createPredicates(cb, root, dto);
 
-        ofNullable(dto.getMinNumberOfVisitorsOnMachine()).map(minNumberOfVisitorsOnMachine -> cb.ge(countVisitors, minNumberOfVisitorsOnMachine))
+        ofNullable(dto.getMinNumberOfUsersOnMachine()).map(minNumberOfUsersOnMachine -> cb.ge(countUsers, minNumberOfUsersOnMachine))
                 .ifPresent(predicates::add);
-        ofNullable(dto.getMaxNumberOfVisitorsOnMachine()).map(maxNumberOfVisitorsOnMachine -> cb.le(countVisitors, maxNumberOfVisitorsOnMachine))
+        ofNullable(dto.getMaxNumberOfUsersOnMachine()).map(maxNumberOfUsersOnMachine -> cb.le(countUsers, maxNumberOfUsersOnMachine))
                 .ifPresent(predicates::add);
 
         cq.select(cb.construct(MachineSearchResponseDto.class, root.get(Machine_.id), root.get(Machine_.fantasyName),
                         root.get(Machine_.minimumRequiredAge), root.get(Machine_.ticketPrice), root.get(Machine_.video),
-                        root.get(Machine_.videoLengthInSeconds), countVisitors))
+                        root.get(Machine_.videoLengthInSeconds), countUsers))
                 .where(predicates.toArray(new Predicate[0]));
         return entityManager.createQuery(cq).setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize()).getResultList();

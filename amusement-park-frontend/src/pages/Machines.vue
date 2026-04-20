@@ -54,10 +54,10 @@
           </td>
           <td>
             <v-text-field
-              v-model="machineSearch.minNumberOfVisitorsOnMachine"
+              v-model="machineSearch.minNumberOfUsersOnMachine"
               class="ma-1"
               density="compact"
-              placeholder="Min number of visitors on"
+              placeholder="Min number of users on"
             />
           </td>
         </tr>
@@ -81,10 +81,10 @@
           </td>
           <td>
             <v-text-field
-              v-model="machineSearch.maxNumberOfVisitorsOnMachine"
+              v-model="machineSearch.maxNumberOfUsersOnMachine"
               class="ma-1"
               density="compact"
-              placeholder="Max number of visitors on"
+              placeholder="Max number of users on"
             />
           </td>
         </tr>
@@ -259,7 +259,7 @@
             />
           </v-card-actions>
         </v-form>
-        <guest-book-registry-table :force-update="forceUpdate" :link="'/api/amusement-parks/' + store.getAmusementParkId + '/visitors/guest-book-registries'" />
+        <guest-book-registry-table :force-update="forceUpdate" :link="'/api/amusement-parks/' + store.getAmusementParkId + '/guest-book-registries'" />
       </v-container>
     </v-card>
   </v-dialog>
@@ -283,15 +283,15 @@
     maxMinimumRequiredAge: '',
     minTicketPrice: '',
     maxTicketPrice: '',
-    minNumberOfVisitorsOnMachine: '',
-    maxNumberOfVisitorsOnMachine: '',
+    minNumberOfUsersOnMachine: '',
+    maxNumberOfUsersOnMachine: '',
   })
   const machineTableItems = ref([])
   const machineTableHeaders = [
     { title: 'Fantasy name', key: 'fantasyName' },
     { title: 'Minimum required age', key: 'minimumRequiredAge' },
     { title: 'Ticket price', key: 'ticketPrice' },
-    { title: 'Number of visitors on machine', key: 'numberOfVisitorsOnMachine' },
+    { title: 'Number of users on machine', key: 'numberOfUsersOnMachine' },
     { title: 'Action', key: 'action', sortable: false },
   ]
 
@@ -372,7 +372,7 @@
   }
 
   function getOnMachine (machine: any) {
-    fetch('/api/amusement-parks/' + store.getAmusementParkId + '/machines/' + machine.id + '/visitors/get-on-machine', {
+    fetch('/api/amusement-parks/' + store.getAmusementParkId + '/machines/' + machine.id + '/get-on-machine', {
       method: 'PUT',
     }).then(async response => {
       if (response.ok) {
@@ -380,9 +380,9 @@
         onMachineFantasyName.value = machine.fantasyName
         video.value = 'https://www.youtube.com/embed/' + machine.video
         onMachineDialog.value = true
-        const visitor = await response.json()
-        store.getVisitor.money = visitor.money
-        store.getVisitor.coupon = visitor.coupon
+        const user = await response.json()
+        store.getUser.money = user.money
+        store.getUser.coupon = user.coupon
         getOffMachineId = machine.id
         getOffMachineTimer = setTimeout(() => {
           onMachineDialog.value = false
@@ -395,7 +395,7 @@
 
   function createGuestBookRegistry () {
     guestBookRegistryCreateFormIsLoading.value = true
-    fetch('/api/amusement-parks/' + store.getAmusementParkId + '/visitors/guest-book-registries', {
+    fetch('/api/amusement-parks/' + store.getAmusementParkId + '/guest-book-registries', {
       method: 'POST',
       body: guestBookRegistryContent.value,
     }).then(async response => {
@@ -422,7 +422,7 @@
   watch(onMachineDialog, () => {
     if (!onMachineDialog.value) {
       clearTimeout(getOffMachineTimer)
-      fetch('/api/amusement-parks/' + store.getAmusementParkId + '/machines/' + getOffMachineId + '/visitors/get-off-machine', {
+      fetch('/api/amusement-parks/' + store.getAmusementParkId + '/machines/' + getOffMachineId + '/get-off-machine', {
         method: 'PUT',
       }).then(async response => {
         if (response.ok) {

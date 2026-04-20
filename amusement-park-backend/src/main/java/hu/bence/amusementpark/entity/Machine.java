@@ -47,6 +47,6 @@ public class Machine {
     private AmusementPark amusementPark;
 
     @OneToMany(mappedBy = "machine")
-    private Set<Visitor> visitors;
+    private Set<Users> users;
 
 }

@@ -26,7 +26,7 @@ public class AmusementParkRestAdvice {
     @ExceptionHandler(Throwable.class)
     public String handleException(Throwable throwable) {
         log.error(ERROR, throwable);
-        return UNEXPECTED_ERROR_OCCURED;
+        return UNEXPECTED_ERROR_OCCURRED;
     }
 
     @ExceptionHandler(AmusementParkException.class)

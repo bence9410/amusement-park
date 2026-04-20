@@ -4,7 +4,7 @@ import hu.bence.amusementpark.dto.request.MachineSearchRequestDto;
 import hu.bence.amusementpark.dto.response.MachineSearchResponseDto;
 import hu.bence.amusementpark.entity.AmusementPark;
 import hu.bence.amusementpark.entity.Machine;
-import hu.bence.amusementpark.entity.Visitor;
+import hu.bence.amusementpark.entity.Users;
 import hu.bence.amusementpark.exception.AmusementParkException;
 import hu.bence.amusementpark.repository.AmusementParkRepository;
 import hu.bence.amusementpark.repository.MachineRepository;
@@ -61,8 +61,8 @@ public class MachineServiceUnitTests {
 
     @Test
     public void addMachineNegativeNotOwned() {
-        Visitor visitor = Visitor.builder().email(EMAIL).build();
-        AmusementPark amusementPark = AmusementPark.builder().id(10L).owner(visitor).build();
+        Users user = Users.builder().email(EMAIL).build();
+        AmusementPark amusementPark = AmusementPark.builder().id(10L).owner(user).build();
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().build();
         when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
@@ -75,8 +75,8 @@ public class MachineServiceUnitTests {
 
     @Test
     public void addMachinePositive() {
-        Visitor visitor = Visitor.builder().email(EMAIL).build();
-        AmusementPark amusementPark = AmusementPark.builder().id(10L).owner(visitor).build();
+        Users user = Users.builder().email(EMAIL).build();
+        AmusementPark amusementPark = AmusementPark.builder().id(10L).owner(user).build();
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().build();
         when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));

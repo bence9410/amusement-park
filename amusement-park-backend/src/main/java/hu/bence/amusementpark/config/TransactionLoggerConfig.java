@@ -3,7 +3,7 @@ package hu.bence.amusementpark.config;
 import hu.bence.amusementpark.service.impl.AmusementParkServiceImpl;
 import hu.bence.amusementpark.service.impl.GuestBookRegistryServiceImpl;
 import hu.bence.amusementpark.service.impl.MachineServiceImpl;
-import hu.bence.amusementpark.service.impl.VisitorServiceImpl;
+import hu.bence.amusementpark.service.impl.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -32,7 +32,7 @@ public class TransactionLoggerConfig {
         targetClasses = new HashSet<>();
         targetClasses.add(AmusementParkServiceImpl.class);
         targetClasses.add(MachineServiceImpl.class);
-        targetClasses.add(VisitorServiceImpl.class);
+        targetClasses.add(UserServiceImpl.class);
         targetClasses.add(GuestBookRegistryServiceImpl.class);
     }
 

@@ -20,10 +20,10 @@ import static jakarta.persistence.FetchType.LAZY;
 @AllArgsConstructor
 @Entity
 @EqualsAndHashCode(of = "id")
-public class AmusementParkKnowVisitor {
+public class AmusementParkKnowUser {
 
     @EmbeddedId
-    private AmusementParkIdVisitorEmail id = new AmusementParkIdVisitorEmail();
+    private AmusementParkIdUserEmail id = new AmusementParkIdUserEmail();
 
     @CreationTimestamp
     private LocalDateTime dateOfFirstEnter;
@@ -32,13 +32,13 @@ public class AmusementParkKnowVisitor {
     @ManyToOne(fetch = LAZY)
     private AmusementPark amusementPark;
 
-    @MapsId("visitorEmail")
+    @MapsId("userEmail")
     @ManyToOne(fetch = LAZY)
-    private Visitor visitor;
+    private Users user;
 
-    public AmusementParkKnowVisitor(AmusementPark amusementPark, Visitor visitor) {
+    public AmusementParkKnowUser(AmusementPark amusementPark, Users user) {
         this.amusementPark = amusementPark;
-        this.visitor = visitor;
+        this.user = user;
     }
 
 }

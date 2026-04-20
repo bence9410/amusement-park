@@ -23,8 +23,8 @@ public class AmusementParkSearchResponseDto {
 
     private Long numberOfGuestBookRegistries;
 
-    private Long numberOfActiveVisitors;
+    private Long numberOfActiveUsers;
 
-    private Long numberOfKnownVisitors;
+    private Long numberOfKnownUsers;
 
 }

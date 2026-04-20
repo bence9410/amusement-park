@@ -3,10 +3,10 @@ package hu.bence.amusementpark.test.unit;
 import hu.bence.amusementpark.dto.request.AmusementParkSearchRequestDto;
 import hu.bence.amusementpark.dto.response.AmusementParkSearchResponseDto;
 import hu.bence.amusementpark.entity.AmusementPark;
-import hu.bence.amusementpark.entity.Visitor;
+import hu.bence.amusementpark.entity.Users;
 import hu.bence.amusementpark.exception.AmusementParkException;
 import hu.bence.amusementpark.repository.AmusementParkRepository;
-import hu.bence.amusementpark.repository.VisitorRepository;
+import hu.bence.amusementpark.repository.UserRepository;
 import hu.bence.amusementpark.service.AmusementParkService;
 import hu.bence.amusementpark.service.impl.AmusementParkServiceImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -30,44 +30,44 @@ import static org.mockito.Mockito.*;
 public class AmusementParkServiceUnitTests {
 
     private AmusementParkRepository amusementParkRepository;
-    private VisitorRepository visitorRepository;
+    private UserRepository userRepository;
 
     private AmusementParkService amusementParkService;
 
     @BeforeEach
     public void setUp() {
         amusementParkRepository = mock(AmusementParkRepository.class);
-        visitorRepository = mock(VisitorRepository.class);
-        amusementParkService = new AmusementParkServiceImpl(amusementParkRepository, visitorRepository);
+        userRepository = mock(UserRepository.class);
+        amusementParkService = new AmusementParkServiceImpl(amusementParkRepository, userRepository);
     }
 
     @AfterEach
     public void verifyNoMoreInteractionsOnMocks() {
-        verifyNoMoreInteractions(amusementParkRepository, visitorRepository);
+        verifyNoMoreInteractions(amusementParkRepository, userRepository);
     }
 
     @Test
-    public void saveNegativeNoVisitor() {
+    public void saveNegativeNoUser() {
         AmusementPark amusementPark = AmusementPark.builder().build();
 
         assertThatThrownBy(() -> amusementParkService.save(amusementPark, EMAIL))
                 .isInstanceOf(AmusementParkException.class)
                 .hasMessage(String.format(COULD_NOT_FIND_USER, EMAIL));
 
-        verify(visitorRepository).findById(EMAIL);
+        verify(userRepository).findById(EMAIL);
     }
 
     @Test
     public void savePositive() {
         AmusementPark amusementPark = AmusementPark.builder().build();
-        Visitor visitor = Visitor.builder().email(EMAIL).build();
-        when(visitorRepository.findById(EMAIL)).thenReturn(Optional.of(visitor));
+        Users user = Users.builder().email(EMAIL).build();
+        when(userRepository.findById(EMAIL)).thenReturn(Optional.of(user));
         when(amusementParkRepository.save(amusementPark)).thenReturn(amusementPark);
 
         amusementParkService.save(amusementPark, EMAIL);
 
         assertNotNull(amusementPark.getOwner());
-        verify(visitorRepository).findById(EMAIL);
+        verify(userRepository).findById(EMAIL);
         verify(amusementParkRepository).save(amusementPark);
     }
 

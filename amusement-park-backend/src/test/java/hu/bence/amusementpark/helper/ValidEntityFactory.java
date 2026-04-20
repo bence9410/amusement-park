@@ -2,7 +2,7 @@ package hu.bence.amusementpark.helper;
 
 import hu.bence.amusementpark.entity.AmusementPark;
 import hu.bence.amusementpark.entity.Machine;
-import hu.bence.amusementpark.entity.Visitor;
+import hu.bence.amusementpark.entity.Users;
 
 import java.time.LocalDate;
 
@@ -26,8 +26,8 @@ public class ValidEntityFactory {
                 .videoLengthInSeconds(5).build();
     }
 
-    public static Visitor createVisitor() {
-        return Visitor.builder()
+    public static Users createUser() {
+        return Users.builder()
                 .email(EMAIL + "m")
                 .password(VALID_PASSWORD)
                 .authority("ROLE_ADMIN")

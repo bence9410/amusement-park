@@ -33,12 +33,12 @@ public class AmusementParkSearchRequestDto {
 
     private Integer maxGuestBookRegistries;
 
-    private Integer minActiveVisitors;
+    private Integer minActiveUsers;
 
-    private Integer maxActiveVisitors;
+    private Integer maxActiveUsers;
 
-    private Integer minKnownVisitors;
+    private Integer minKnownUsers;
 
-    private Integer maxKnownVisitors;
+    private Integer maxKnownUsers;
 
 }

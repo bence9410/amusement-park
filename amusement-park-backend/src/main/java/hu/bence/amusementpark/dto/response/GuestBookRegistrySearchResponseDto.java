@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class GuestBookRegistrySearchResponseDto {
 
-    private String visitorEmail;
+    private String userEmail;
 
     private String textOfRegistry;
 

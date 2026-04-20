@@ -19,7 +19,7 @@ public class GuestBookServiceIntegrationTests extends AbstractStatementCounterTe
 
     @Test
     public void addRegistryTest() {
-        guestBookService.addRegistry(amusementParkId, inParkVisitorEmail, OPINION_ON_THE_PARK);
+        guestBookService.addRegistry(amusementParkId, inParkUserEmail, OPINION_ON_THE_PARK);
         select += 2;
         insert++;
         assertStatements();

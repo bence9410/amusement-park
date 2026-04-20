@@ -1,14 +1,14 @@
 package hu.bence.amusementpark.mapper;
 
-import hu.bence.amusementpark.dto.request.VisitorSignUpRequestDto;
-import hu.bence.amusementpark.dto.response.VisitorResponseDto;
+import hu.bence.amusementpark.dto.request.UserSignUpRequestDto;
+import hu.bence.amusementpark.dto.response.UserResponseDto;
 import hu.bence.amusementpark.entity.Photo;
-import hu.bence.amusementpark.entity.Visitor;
+import hu.bence.amusementpark.entity.Users;
 
-public class VisitorMapper {
+public class UserMapper {
 
-    public static VisitorResponseDto toDto(Visitor entity) {
-        return VisitorResponseDto.builder()
+    public static UserResponseDto toDto(Users entity) {
+        return UserResponseDto.builder()
                 .email(entity.getEmail())
                 .authority(entity.getAuthority())
                 .money(entity.getMoney())
@@ -16,16 +16,16 @@ public class VisitorMapper {
                 .photo(entity.getPhoto().getPhoto()).build();
     }
 
-    public static VisitorResponseDto toDtoWithoutPhoto(Visitor entity) {
-        return VisitorResponseDto.builder()
+    public static UserResponseDto toDtoWithoutPhoto(Users entity) {
+        return UserResponseDto.builder()
                 .email(entity.getEmail())
                 .authority(entity.getAuthority())
                 .money(entity.getMoney())
                 .coupon(entity.getCoupon()).build();
     }
 
-    public static Visitor toEntity(VisitorSignUpRequestDto dto) {
-        return Visitor.builder()
+    public static Users toEntity(UserSignUpRequestDto dto) {
+        return Users.builder()
                 .email(dto.getEmail())
                 .password(dto.getPassword())
                 .dateOfBirth(dto.getDateOfBirth())

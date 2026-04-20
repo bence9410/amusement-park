@@ -7,10 +7,10 @@ import java.io.Serializable;
 
 @Data
 @Embeddable
-public class AmusementParkIdVisitorEmail implements Serializable {
+public class AmusementParkIdUserEmail implements Serializable {
 
     private Long amusementParkId;
 
-    private String visitorEmail;
+    private String userEmail;
 
 }

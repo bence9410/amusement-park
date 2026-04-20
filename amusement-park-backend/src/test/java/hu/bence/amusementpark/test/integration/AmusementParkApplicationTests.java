@@ -6,10 +6,10 @@ import hu.bence.amusementpark.config.RestTemplateConfig;
 import hu.bence.amusementpark.constants.StringParamConstants;
 import hu.bence.amusementpark.dto.request.AmusementParkCreateRequestDto;
 import hu.bence.amusementpark.dto.request.MachineCreateRequestDto;
-import hu.bence.amusementpark.dto.request.VisitorSignUpRequestDto;
+import hu.bence.amusementpark.dto.request.UserSignUpRequestDto;
 import hu.bence.amusementpark.dto.response.AmusementParkSearchResponseDto;
 import hu.bence.amusementpark.dto.response.MachineSearchResponseDto;
-import hu.bence.amusementpark.dto.response.VisitorResponseDto;
+import hu.bence.amusementpark.dto.response.UserResponseDto;
 import hu.bence.amusementpark.exception.AmusementParkException;
 import hu.bence.amusementpark.helper.MyAssert.ExceptionAsserter;
 import hu.bence.amusementpark.helper.RestResponsePage;
@@ -62,19 +62,19 @@ public class AmusementParkApplicationTests {
 
     @Test
     public void signUpAndUploadMoneyAndVisitorCanNotCreateParkAndLogoutTest() {
-        VisitorSignUpRequestDto visitorSignUpRequestDto = ValidRequestDtoFactory.createVisitor();
+        UserSignUpRequestDto userSignUpRequestDto = ValidRequestDtoFactory.createUser();
 
-        VisitorResponseDto visitorResponseDto = signUp(visitorSignUpRequestDto);
+        UserResponseDto userResponseDto = signUp(userSignUpRequestDto);
 
-        assertEquals(visitorSignUpRequestDto.getEmail(), visitorResponseDto.getEmail());
-        assertEquals(visitorSignUpRequestDto.getPhoto(), visitorResponseDto.getPhoto());
-        assertEquals(250, visitorResponseDto.getMoney());
-        assertEquals("ROLE_VISITOR", visitorResponseDto.getAuthority());
+        assertEquals(userSignUpRequestDto.getEmail(), userResponseDto.getEmail());
+        assertEquals(userSignUpRequestDto.getPhoto(), userResponseDto.getPhoto());
+        assertEquals(250, userResponseDto.getMoney());
+        assertEquals("ROLE_VISITOR", userResponseDto.getAuthority());
 
         uploadMoney500();
 
-        visitorResponseDto = restTemplate.exchange("http://localhost:" + port + "/api/me", HttpMethod.GET, HttpEntity.EMPTY, VisitorResponseDto.class).getBody();
-        assertEquals(750, visitorResponseDto.getMoney());
+        userResponseDto = restTemplate.exchange("http://localhost:" + port + "/api/me", HttpMethod.GET, HttpEntity.EMPTY, UserResponseDto.class).getBody();
+        assertEquals(750, userResponseDto.getMoney());
 
         getAmusementParksWorks();
 
@@ -83,12 +83,12 @@ public class AmusementParkApplicationTests {
         logout();
     }
 
-    private VisitorResponseDto signUp(VisitorSignUpRequestDto visitorSignUpRequestDto) {
-        return restTemplate.exchange("http://localhost:" + port + "/api/signUp", HttpMethod.POST, new HttpEntity<>(visitorSignUpRequestDto), VisitorResponseDto.class).getBody();
+    private UserResponseDto signUp(UserSignUpRequestDto userSignUpRequestDto) {
+        return restTemplate.exchange("http://localhost:" + port + "/api/signUp", HttpMethod.POST, new HttpEntity<>(userSignUpRequestDto), UserResponseDto.class).getBody();
     }
 
     private void uploadMoney500() {
-        restTemplate.postForObject("http://localhost:" + port + "/api/visitors/uploadMoney", 500, Void.class);
+        restTemplate.postForObject("http://localhost:" + port + "/api/uploadMoney", 500, Void.class);
     }
 
     private void getAmusementParksWorks() {
@@ -111,9 +111,12 @@ public class AmusementParkApplicationTests {
     }
 
     private void logout() {
-        ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:" + port + "/api/logout", null, String.class);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity("http://localhost:" + port + "/api/logout", null, String.class);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+        } catch (HttpClientErrorException e) {
+            //ignore exception for no static resource for redirect to /
+        }
     }
 
     @Test
@@ -152,18 +155,18 @@ public class AmusementParkApplicationTests {
         assertEquals(0, page.getContent().size());
     }
 
-    private VisitorResponseDto loginAsAdmin() {
+    private UserResponseDto loginAsAdmin() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        ResponseEntity<VisitorResponseDto> response = restTemplate.exchange("http://localhost:" + port + "/api/login", HttpMethod.POST,
-                new HttpEntity<>(createMap("nembence1994@gmail.com", StringParamConstants.VALID_PASSWORD), headers), VisitorResponseDto.class);
+        ResponseEntity<UserResponseDto> response = restTemplate.exchange("http://localhost:" + port + "/api/login", HttpMethod.POST,
+                new HttpEntity<>(createMap("nembence1994@gmail.com", StringParamConstants.VALID_PASSWORD), headers), UserResponseDto.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getHeaders().getFirst("Set-Cookie").contains("SESSION="));
-        VisitorResponseDto visitorResponseDto = response.getBody();
-        assertEquals("nembence1994@gmail.com", visitorResponseDto.getEmail());
-        assertEquals("ROLE_ADMIN", visitorResponseDto.getAuthority());
-        return visitorResponseDto;
+        UserResponseDto userResponseDto = response.getBody();
+        assertEquals("nembence1994@gmail.com", userResponseDto.getEmail());
+        assertEquals("ROLE_ADMIN", userResponseDto.getAuthority());
+        return userResponseDto;
     }
 
     private MultiValueMap<String, String> createMap(String username, String password) {
@@ -220,7 +223,7 @@ public class AmusementParkApplicationTests {
 
     @Test
     public void positiveTest() {
-        VisitorResponseDto visitorResponseDto = loginAsAdmin();
+        UserResponseDto userResponseDto = loginAsAdmin();
 
         postAmusementPark();
 
@@ -228,20 +231,20 @@ public class AmusementParkApplicationTests {
 
         addMachine("http://localhost:" + port + "/api/amusement-parks/" + amusementParkId + "/machines");
 
-        enterPark("http://localhost:" + port + "/api/amusement-parks/" + amusementParkId + "/visitors/enter-park");
+        enterPark("http://localhost:" + port + "/api/amusement-parks/" + amusementParkId + "/enter-park");
 
         Long machineId = restTemplate.exchange("http://localhost:" + port + "/api/amusement-parks/" + amusementParkId + "/machines",
                 HttpMethod.GET, HttpEntity.EMPTY, PAGED_MACHINE).getBody().getContent().getFirst().getId();
 
         getOnMachine("http://localhost:" + port + "/api/amusement-parks/" + amusementParkId +
-                "/machines/" + machineId + "/visitors/get-on-machine");
+                "/machines/" + machineId + "/get-on-machine");
 
         getOffMachine("http://localhost:" + port + "/api/amusement-parks/" + amusementParkId +
-                "/machines/" + machineId + "/visitors/get-off-machine");
+                "/machines/" + machineId + "/get-off-machine");
 
-        addRegistry("http://localhost:" + port + "/api//amusement-parks/" + amusementParkId + "/visitors/guest-book-registries");
+        addRegistry("http://localhost:" + port + "/api//amusement-parks/" + amusementParkId + "/guest-book-registries");
 
-        leavePark("http://localhost:" + port + "/api/amusement-parks/" + amusementParkId + "/visitors/leave-park");
+        leavePark("http://localhost:" + port + "/api/amusement-parks/" + amusementParkId + "/leave-park");
     }
 
     private void addMachine(String url) {

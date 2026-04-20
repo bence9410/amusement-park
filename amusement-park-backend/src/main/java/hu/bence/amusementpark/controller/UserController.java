@@ -1,11 +1,11 @@
 package hu.bence.amusementpark.controller;
 
 import hu.bence.amusementpark.constants.Constants;
-import hu.bence.amusementpark.dto.request.VisitorSignUpRequestDto;
-import hu.bence.amusementpark.dto.response.VisitorResponseDto;
-import hu.bence.amusementpark.entity.Visitor;
-import hu.bence.amusementpark.mapper.VisitorMapper;
-import hu.bence.amusementpark.service.VisitorService;
+import hu.bence.amusementpark.dto.request.UserSignUpRequestDto;
+import hu.bence.amusementpark.dto.response.UserResponseDto;
+import hu.bence.amusementpark.entity.Users;
+import hu.bence.amusementpark.mapper.UserMapper;
+import hu.bence.amusementpark.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -32,22 +32,22 @@ import java.util.Optional;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @ConditionalOnWebApplication
-public class VisitorController {
+public class UserController {
 
-    private final VisitorService visitorService;
+    private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final SecurityContextRepository securityContextRepository;
 
     @GetMapping("/me")
-    public ResponseEntity<VisitorResponseDto> me(Principal principal) {
-        Optional<Visitor> visitor = Optional.ofNullable(principal).map(Principal::getName)
-                .map(visitorService::findByEmailMakeFreshlyLoggedIn);
-        return visitor.map(VisitorMapper::toDto).map(ResponseEntity::ok)
+    public ResponseEntity<UserResponseDto> me(Principal principal) {
+        Optional<Users> user = Optional.ofNullable(principal).map(Principal::getName)
+                .map(userService::findByEmailMakeFreshlyLoggedIn);
+        return user.map(UserMapper::toDto).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
     @PostMapping("/login")
-    public VisitorResponseDto login(HttpServletRequest request, HttpServletResponse response) {
+    public UserResponseDto login(HttpServletRequest request, HttpServletResponse response) {
         String username = request.getParameter("email");
         String password = request.getParameter("password");
 
@@ -55,16 +55,16 @@ public class VisitorController {
                 () -> new BadCredentialsException("Email must be well-formed, for example: somebody@example.com"));
 
         saveSecurityContext(username, password, request, response);
-        return VisitorMapper.toDto(visitorService.findByEmailMakeFreshlyLoggedIn(username));
+        return UserMapper.toDto(userService.findByEmailMakeFreshlyLoggedIn(username));
     }
 
     @PostMapping("/signUp")
-    public VisitorResponseDto signUp(@Valid @RequestBody VisitorSignUpRequestDto visitorSignUpRequestDto,
-                                     HttpServletRequest request, HttpServletResponse response) {
-        VisitorResponseDto visitorResponseDto = VisitorMapper
-                .toDto(visitorService.signUp(VisitorMapper.toEntity(visitorSignUpRequestDto)));
-        saveSecurityContext(visitorSignUpRequestDto.getEmail(), visitorSignUpRequestDto.getPassword(), request, response);
-        return visitorResponseDto;
+    public UserResponseDto signUp(@Valid @RequestBody UserSignUpRequestDto userSignUpRequestDto,
+                                  HttpServletRequest request, HttpServletResponse response) {
+        UserResponseDto userResponseDto = UserMapper
+                .toDto(userService.signUp(UserMapper.toEntity(userSignUpRequestDto)));
+        saveSecurityContext(userSignUpRequestDto.getEmail(), userSignUpRequestDto.getPassword(), request, response);
+        return userResponseDto;
     }
 
     private void saveSecurityContext(String username, String password, HttpServletRequest request, HttpServletResponse response) {
@@ -75,30 +75,30 @@ public class VisitorController {
         securityContextRepository.saveContext(securityContext, request, response);
     }
 
-    @PostMapping("/visitors/uploadMoney")
+    @PostMapping("/uploadMoney")
     public void uploadMoney(@Range(min = 1) @RequestBody Integer amount, Principal principal) {
-        visitorService.uploadMoney(amount, principal.getName());
+        userService.uploadMoney(amount, principal.getName());
     }
 
-    @PutMapping("amusement-parks/{amusementParkId}/visitors/enter-park")
-    public VisitorResponseDto enterPark(@PathVariable Long amusementParkId, Principal principal) {
-        return VisitorMapper.toDtoWithoutPhoto(visitorService.enterPark(amusementParkId, principal.getName()));
+    @PutMapping("amusement-parks/{amusementParkId}/enter-park")
+    public UserResponseDto enterPark(@PathVariable Long amusementParkId, Principal principal) {
+        return UserMapper.toDtoWithoutPhoto(userService.enterPark(amusementParkId, principal.getName()));
     }
 
-    @PutMapping("amusement-parks/{amusementParkId}/visitors/leave-park")
+    @PutMapping("amusement-parks/{amusementParkId}/leave-park")
     public void leavePark(@PathVariable Long amusementParkId, Principal principal) {
-        visitorService.leavePark(amusementParkId, principal.getName());
+        userService.leavePark(amusementParkId, principal.getName());
     }
 
-    @PutMapping("amusement-parks/{amusementParkId}/machines/{machineId}/visitors/get-on-machine")
-    public VisitorResponseDto getOnMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
-                                           Principal principal) {
-        return VisitorMapper.toDtoWithoutPhoto(visitorService.getOnMachine(amusementParkId, machineId, principal.getName()));
+    @PutMapping("amusement-parks/{amusementParkId}/machines/{machineId}/get-on-machine")
+    public UserResponseDto getOnMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
+                                        Principal principal) {
+        return UserMapper.toDtoWithoutPhoto(userService.getOnMachine(amusementParkId, machineId, principal.getName()));
     }
 
-    @PutMapping("amusement-parks/{amusementParkId}/machines/{machineId}/visitors/get-off-machine")
+    @PutMapping("amusement-parks/{amusementParkId}/machines/{machineId}/get-off-machine")
     public void getOffMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
                               Principal principal) {
-        visitorService.getOffMachine(amusementParkId, machineId, principal.getName());
+        userService.getOffMachine(amusementParkId, machineId, principal.getName());
     }
 }

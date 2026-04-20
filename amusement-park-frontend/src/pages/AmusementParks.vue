@@ -38,7 +38,7 @@
       <template #expanded-row="{ columns, item }">
         <tr>
           <td class="py-2" :colspan="columns.length - 2">
-            <guest-book-registry-table :link="'/api/amusement-parks/' + (item as any).id + '/visitors/guest-book-registries'" />
+            <guest-book-registry-table :link="'/api/amusement-parks/' + (item as any).id + '/guest-book-registries'" />
           </td>
           <td :colspan="2">
             <v-btn
@@ -88,18 +88,18 @@
           </td>
           <td>
             <v-text-field
-              v-model="amusementParkSearch.minActiveVisitors"
+              v-model="amusementParkSearch.minActiveUsers"
               class="ma-1"
               density="compact"
-              placeholder="Min active visitors"
+              placeholder="Min active users"
             />
           </td>
           <td>
             <v-text-field
-              v-model="amusementParkSearch.minKnownVisitors"
+              v-model="amusementParkSearch.minKnownUsers"
               class="ma-1"
               density="compact"
-              placeholder="Min known visitors"
+              placeholder="Min known users"
             />
           </td>
         </tr>
@@ -131,18 +131,18 @@
           </td>
           <td>
             <v-text-field
-              v-model="amusementParkSearch.maxActiveVisitors"
+              v-model="amusementParkSearch.maxActiveUsers"
               class="ma-1"
               density="compact"
-              placeholder="Max active visitors"
+              placeholder="Max active users"
             />
           </td>
           <td>
             <v-text-field
-              v-model="amusementParkSearch.maxKnownVisitors"
+              v-model="amusementParkSearch.maxKnownUsers"
               class="ma-1"
               density="compact"
-              placeholder="Max known visitors"
+              placeholder="Max known users"
             />
           </td>
         </tr>
@@ -228,10 +228,10 @@
     maxMachines: '',
     minGuestBookRegistries: '',
     maxGuestBookRegistries: '',
-    minActiveVisitors: '',
-    maxActiveVisitors: '',
-    minKnownVisitors: '',
-    maxKnownVisitors: '',
+    minActiveUsers: '',
+    maxActiveUsers: '',
+    minKnownUsers: '',
+    maxKnownUsers: '',
   })
   const amusementParkTableItems = ref([])
   const amusementParkTableHeaders = [
@@ -239,8 +239,8 @@
     { title: 'Entrance fee', key: 'entranceFee' },
     { title: 'Machines', key: 'numberOfMachines' },
     { title: 'Guest Book Registries', key: 'numberOfGuestBookRegistries' },
-    { title: 'Active Visitors', key: 'numberOfActiveVisitors' },
-    { title: 'Known Visitors', key: 'numberOfKnownVisitors' },
+    { title: 'Active Users', key: 'numberOfActiveUsers' },
+    { title: 'Known Users', key: 'numberOfKnownUsers' },
   ]
   const amusementParkCreateForm = ref()
   const amusementParkCreateFormIsInvalid = ref(false)
@@ -306,13 +306,13 @@
   }
 
   function enterPark (amusementPark: any) {
-    fetch('/api/amusement-parks/' + amusementPark.id + '/visitors/enter-park', {
+    fetch('/api/amusement-parks/' + amusementPark.id + '/enter-park', {
       method: 'PUT',
     }).then(async response => {
       if (response.ok) {
-        const visitor = await response.json()
-        store.getVisitor.money = visitor.money
-        store.getVisitor.coupon = visitor.coupon
+        const user = await response.json()
+        store.getUser.money = user.money
+        store.getUser.coupon = user.coupon
         store.setAmusementParkId(amusementPark.id)
         store.setAmusementParkOwner(amusementPark.ownerEmail)
         router.push('/machines')

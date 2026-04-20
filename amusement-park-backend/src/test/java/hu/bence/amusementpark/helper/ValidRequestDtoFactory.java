@@ -2,7 +2,7 @@ package hu.bence.amusementpark.helper;
 
 import hu.bence.amusementpark.dto.request.AmusementParkCreateRequestDto;
 import hu.bence.amusementpark.dto.request.MachineCreateRequestDto;
-import hu.bence.amusementpark.dto.request.VisitorSignUpRequestDto;
+import hu.bence.amusementpark.dto.request.UserSignUpRequestDto;
 
 import java.time.LocalDate;
 
@@ -28,8 +28,8 @@ public class ValidRequestDtoFactory {
                 .videoLengthInSeconds(5).build();
     }
 
-    public static VisitorSignUpRequestDto createVisitor() {
-        return VisitorSignUpRequestDto
+    public static UserSignUpRequestDto createUser() {
+        return UserSignUpRequestDto
                 .builder()
                 .email(EMAIL + "m")
                 .password(VALID_PASSWORD)

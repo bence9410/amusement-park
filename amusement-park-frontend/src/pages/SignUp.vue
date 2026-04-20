@@ -1,6 +1,6 @@
 <template>
   <div class="text-center py-5" style="background-color: #e9ecef">
-    <h1>Welcome Visitor</h1>
+    <h1>Welcome</h1>
   </div>
   <v-row>
     <v-col md="4" offset-md="4" sm="12">
@@ -136,7 +136,7 @@
     }).then(async response => {
       signUpFormIsLoading.value = false
       if (response.ok) {
-        store.setVisitor(await response.json())
+        store.setUser(await response.json())
         store.addMessage('success', 'Successfull sign up.')
         router.push('/amusement-parks')
       } else {

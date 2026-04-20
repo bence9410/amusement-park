@@ -3,7 +3,6 @@ package hu.bence.amusementpark.repository.custom.impl;
 import hu.bence.amusementpark.dto.request.AmusementParkSearchRequestDto;
 import hu.bence.amusementpark.dto.response.AmusementParkSearchResponseDto;
 import hu.bence.amusementpark.entity.*;
-import hu.beni.amusementpark.entity.*;
 import hu.bence.amusementpark.repository.custom.AmusementParkRepositoryCustom;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
@@ -66,15 +65,15 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
         SetJoin<Root<AmusementPark>, GuestBookRegistry> guestBookRegistrySetJoin = correlatedRoot.joinSet(AmusementPark_.guestBookRegistries.getName());
         countGuestBookRegistries.select(cb.count(guestBookRegistrySetJoin));
 
-        Subquery<Long> countActiveVisitors = cq.subquery(Long.class);
-        correlatedRoot = countActiveVisitors.correlate(root);
-        SetJoin<Root<AmusementPark>, Visitor> activeVisitorSetJoin = correlatedRoot.joinSet(AmusementPark_.activeVisitors.getName());
-        countActiveVisitors.select(cb.count(activeVisitorSetJoin));
+        Subquery<Long> countActiveUsers = cq.subquery(Long.class);
+        correlatedRoot = countActiveUsers.correlate(root);
+        SetJoin<Root<AmusementPark>, Users> activeUserSetJoin = correlatedRoot.joinSet(AmusementPark_.activeUsers.getName());
+        countActiveUsers.select(cb.count(activeUserSetJoin));
 
-        Subquery<Long> countKnownVisitors = cq.subquery(Long.class);
-        correlatedRoot = countKnownVisitors.correlate(root);
-        SetJoin<Root<AmusementPark>, Visitor> knownVisitorSetJoin = correlatedRoot.joinSet(AmusementPark_.knownVisitors.getName());
-        countKnownVisitors.select(cb.count(knownVisitorSetJoin));
+        Subquery<Long> countKnownUsers = cq.subquery(Long.class);
+        correlatedRoot = countKnownUsers.correlate(root);
+        SetJoin<Root<AmusementPark>, Users> knownUserSetJoin = correlatedRoot.joinSet(AmusementPark_.knownUsers.getName());
+        countKnownUsers.select(cb.count(knownUserSetJoin));
 
         List<Predicate> predicates = createPredicates(cb, root, dto);
 
@@ -88,14 +87,14 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
         ofNullable(dto.getMaxGuestBookRegistries()).map(maxGuestBookRegistries -> cb.le(countGuestBookRegistries, maxGuestBookRegistries))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getMinActiveVisitors()).map(minActiveVisitors -> cb.ge(countActiveVisitors, minActiveVisitors))
+        ofNullable(dto.getMinActiveUsers()).map(minActiveUsers -> cb.ge(countActiveUsers, minActiveUsers))
                 .ifPresent(predicates::add);
-        ofNullable(dto.getMaxActiveVisitors()).map(maxActiveVisitors -> cb.le(countActiveVisitors, maxActiveVisitors))
+        ofNullable(dto.getMaxActiveUsers()).map(maxActiveUsers -> cb.le(countActiveUsers, maxActiveUsers))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getMinKnownVisitors()).map(minKnownVisitors -> cb.ge(countKnownVisitors, minKnownVisitors))
+        ofNullable(dto.getMinKnownUsers()).map(minKnownUsers -> cb.ge(countKnownUsers, minKnownUsers))
                 .ifPresent(predicates::add);
-        ofNullable(dto.getMaxKnownVisitors()).map(maxKnownVisitors -> cb.le(countKnownVisitors, maxKnownVisitors))
+        ofNullable(dto.getMaxKnownUsers()).map(maxKnownUsers -> cb.le(countKnownUsers, maxKnownUsers))
                 .ifPresent(predicates::add);
 
         return entityManager
@@ -119,15 +118,15 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
         SetJoin<Root<AmusementPark>, GuestBookRegistry> guestBookRegistrySetJoin = correlatedRoot.joinSet(AmusementPark_.guestBookRegistries.getName());
         countGuestBookRegistries.select(cb.count(guestBookRegistrySetJoin));
 
-        Subquery<Long> countActiveVisitors = cq.subquery(Long.class);
-        correlatedRoot = countActiveVisitors.correlate(root);
-        SetJoin<Root<AmusementPark>, Visitor> activeVisitorSetJoin = correlatedRoot.joinSet(AmusementPark_.activeVisitors.getName());
-        countActiveVisitors.select(cb.count(activeVisitorSetJoin));
+        Subquery<Long> countActiveUsers = cq.subquery(Long.class);
+        correlatedRoot = countActiveUsers.correlate(root);
+        SetJoin<Root<AmusementPark>, Users> activeUserSetJoin = correlatedRoot.joinSet(AmusementPark_.activeUsers.getName());
+        countActiveUsers.select(cb.count(activeUserSetJoin));
 
-        Subquery<Long> countKnownVisitors = cq.subquery(Long.class);
-        correlatedRoot = countKnownVisitors.correlate(root);
-        SetJoin<Root<AmusementPark>, Visitor> knownVisitorSetJoin = correlatedRoot.joinSet(AmusementPark_.knownVisitors.getName());
-        countKnownVisitors.select(cb.count(knownVisitorSetJoin));
+        Subquery<Long> countKnownUsers = cq.subquery(Long.class);
+        correlatedRoot = countKnownUsers.correlate(root);
+        SetJoin<Root<AmusementPark>, Users> knownUserSetJoin = correlatedRoot.joinSet(AmusementPark_.knownUsers.getName());
+        countKnownUsers.select(cb.count(knownUserSetJoin));
 
         Order order = pageable.getSortOr(Sort.by(Direction.ASC, "id")).stream().findFirst().get();
         if (order.getProperty().equals("numberOfMachines")) {
@@ -142,17 +141,17 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
             } else {
                 cq.orderBy(cb.desc(countGuestBookRegistries));
             }
-        } else if (order.getProperty().equals("numberOfActiveVisitors")) {
+        } else if (order.getProperty().equals("numberOfActiveUsers")) {
             if (order.getDirection().isAscending()) {
-                cq.orderBy(cb.asc(countActiveVisitors));
+                cq.orderBy(cb.asc(countActiveUsers));
             } else {
-                cq.orderBy(cb.desc(countActiveVisitors));
+                cq.orderBy(cb.desc(countActiveUsers));
             }
-        } else if (order.getProperty().equals("numberOfKnownVisitors")) {
+        } else if (order.getProperty().equals("numberOfKnownUsers")) {
             if (order.getDirection().isAscending()) {
-                cq.orderBy(cb.asc(countKnownVisitors));
+                cq.orderBy(cb.asc(countKnownUsers));
             } else {
-                cq.orderBy(cb.desc(countKnownVisitors));
+                cq.orderBy(cb.desc(countKnownUsers));
             }
         } else {
             if (order.getDirection().isAscending()) {
@@ -174,19 +173,19 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
         ofNullable(dto.getMaxGuestBookRegistries()).map(maxGuestBookRegistries -> cb.le(countGuestBookRegistries, maxGuestBookRegistries))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getMinActiveVisitors()).map(minActiveVisitors -> cb.ge(countActiveVisitors, minActiveVisitors))
+        ofNullable(dto.getMinActiveUsers()).map(minActiveUsers -> cb.ge(countActiveUsers, minActiveUsers))
                 .ifPresent(predicates::add);
-        ofNullable(dto.getMaxActiveVisitors()).map(maxActiveVisitors -> cb.le(countActiveVisitors, maxActiveVisitors))
+        ofNullable(dto.getMaxActiveUsers()).map(maxActiveUsers -> cb.le(countActiveUsers, maxActiveUsers))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getMinKnownVisitors()).map(minKnownVisitors -> cb.ge(countKnownVisitors, minKnownVisitors))
+        ofNullable(dto.getMinKnownUsers()).map(minKnownUsers -> cb.ge(countKnownUsers, minKnownUsers))
                 .ifPresent(predicates::add);
-        ofNullable(dto.getMaxKnownVisitors()).map(maxKnownVisitors -> cb.le(countKnownVisitors, maxKnownVisitors))
+        ofNullable(dto.getMaxKnownUsers()).map(maxKnownUsers -> cb.le(countKnownUsers, maxKnownUsers))
                 .ifPresent(predicates::add);
 
         cq.select(cb.construct(AmusementParkSearchResponseDto.class, root.get(AmusementPark_.id), root.get(AmusementPark_.name),
-                        root.get(AmusementPark_.entranceFee), root.get(AmusementPark_.owner).get(Visitor_.email), countMachines,
-                        countGuestBookRegistries, countActiveVisitors, countKnownVisitors))
+                        root.get(AmusementPark_.entranceFee), root.get(AmusementPark_.owner).get(Users_.email), countMachines,
+                        countGuestBookRegistries, countActiveUsers, countKnownUsers))
                 .where(predicates.toArray(new Predicate[0]));
         return entityManager.createQuery(cq).setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize()).getResultList();

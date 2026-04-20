@@ -31,7 +31,7 @@ public class AmusementPark {
     private Integer entranceFee;
 
     @ManyToOne
-    private Visitor owner;
+    private Users owner;
 
     @OneToMany(mappedBy = "amusementPark")
     private Set<GuestBookRegistry> guestBookRegistries;
@@ -40,9 +40,9 @@ public class AmusementPark {
     private Set<Machine> machines;
 
     @OneToMany(mappedBy = "amusementPark")
-    private Set<Visitor> activeVisitors;
+    private Set<Users> activeUsers;
 
     @OneToMany(mappedBy = "amusementPark")
-    private Set<AmusementParkKnowVisitor> knownVisitors;
+    private Set<AmusementParkKnowUser> knownUsers;
 
 }

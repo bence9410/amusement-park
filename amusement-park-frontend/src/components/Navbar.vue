@@ -1,17 +1,17 @@
 <template>
-  <v-app-bar v-if="store.getVisitor" color="green">
+  <v-app-bar v-if="store.getUser" color="green">
     <v-avatar class="mr-4 ml-5">
-      <v-img alt="Profile picture" :src="store.getVisitor.photo" />
+      <v-img alt="Profile picture" :src="store.getUser.photo" />
     </v-avatar>
     <span>
-      {{ store.getVisitor.email }}
+      {{ store.getUser.email }}
     </span>
     <span class="ml-3">
-      {{ store.getVisitor.money }}
+      {{ store.getUser.money }}
     </span>
     <v-icon icon="mdi-currency-eur" />
     <span class="ml-2">
-      {{ store.getVisitor.coupon }}
+      {{ store.getUser.coupon }}
     </span>
     <v-icon icon="mdi-ticket-percent" />
     <v-spacer />
@@ -107,9 +107,9 @@
 
   const showCreate = computed(() => {
     if (route.path === '/amusement-parks') {
-      return 'ROLE_ADMIN' === store.getVisitor.authority
+      return 'ROLE_ADMIN' === store.getUser.authority
     } else if (route.path === '/machines') {
-      return 'ROLE_ADMIN' === store.getVisitor.authority && store.getAmusementParkOwner === store.getVisitor.email
+      return 'ROLE_ADMIN' === store.getUser.authority && store.getAmusementParkOwner === store.getUser.email
     }
     return false
   })
@@ -122,7 +122,7 @@
       logoutIsLoading.value = false
       if (response.ok) {
         router.push('/')
-        store.setVisitor(null)
+        store.setUser(null)
         store.addMessage('success', 'Successfull logout.')
       } else {
         store.addMessage('error', await response.text())
@@ -131,7 +131,7 @@
   }
   async function uploadMoney () {
     uploadMoneyFormIsLoading.value = true
-    fetch('/api/visitors/uploadMoney', {
+    fetch('/api/uploadMoney', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -140,7 +140,7 @@
     }).then(async response => {
       uploadMoneyFormIsLoading.value = false
       if (response.ok) {
-        store.getVisitor.spendingMoney = store.getVisitor.spendingMoney + Number(uploadMoneyValue.value)
+        store.getUser.spendingMoney = store.getUser.spendingMoney + Number(uploadMoneyValue.value)
         store.addMessage('success', 'Successfully uploaded ' + uploadMoneyValue.value + ' money.')
         uploadMoneyDialogShow.value = false
       } else {
@@ -150,7 +150,7 @@
   }
 
   function leavePark () {
-    fetch('/api/amusement-parks/' + store.getAmusementParkId + '/visitors/leave-park', {
+    fetch('/api/amusement-parks/' + store.getAmusementParkId + '/leave-park', {
       method: 'PUT',
     }).then(async response => {
       if (response.ok) {

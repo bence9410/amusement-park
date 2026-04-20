@@ -22,7 +22,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @AllArgsConstructor
 @Entity
 @EqualsAndHashCode(of = "email")
-public class Visitor {
+public class Users {
 
     @Id
     @NotNull
@@ -64,10 +64,10 @@ public class Visitor {
     @OneToMany(mappedBy = "owner")
     private Set<AmusementPark> ownedAmusementParks;
 
-    @OneToMany(mappedBy = "visitor")
+    @OneToMany(mappedBy = "user")
     private Set<GuestBookRegistry> guestBookRegistries;
 
-    @OneToMany(mappedBy = "visitor")
-    private Set<AmusementParkKnowVisitor> knownAmusementParks;
+    @OneToMany(mappedBy = "user")
+    private Set<AmusementParkKnowUser> knownAmusementParks;
 
 }

@@ -35,7 +35,7 @@ public class GuestBookRegistry {
 
     @NotNull
     @ManyToOne(fetch = LAZY)
-    private Visitor visitor;
+    private Users user;
 
     @NotNull
     @ManyToOne(fetch = LAZY)
