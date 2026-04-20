@@ -8,15 +8,15 @@
         <v-container>
           <v-form v-model="signUpFormIsInvalid" @submit.prevent="signUp">
             <v-text-field
-              v-model="signUpData.email"
+              v-model="signUpData.name"
               :counter="50"
-              label="Email*"
+              label="Name*"
               :readonly="signUpFormIsLoading"
               required
               :rules="[
                 (v) =>
-                  (!!v && emailRegexp.test(v)) ||
-                  'Email must be a well-formed email for example: email@example.com',
+                  (!!v && v.length >= 3 && v.length <= 50) ||
+                  'Name length must be between 3 and 50.',
               ]"
             />
             <v-text-field
@@ -112,12 +112,11 @@
   const router = useRouter()
   const signUpFormIsInvalid = ref(false)
   const signUpFormIsLoading = ref(false)
-  const emailRegexp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   const passwordRegexp = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,25}$/
   const passwordShow = ref(false)
   const confirmPasswordShow = ref(false)
   const signUpData = ref({
-    email: '',
+    name: '',
     password: '',
     confirmPassword: '',
     dateOfBirth: '',

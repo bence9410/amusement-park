@@ -314,7 +314,7 @@
         store.getUser.money = user.money
         store.getUser.coupon = user.coupon
         store.setAmusementParkId(amusementPark.id)
-        store.setAmusementParkOwner(amusementPark.ownerEmail)
+        store.setAmusementParkOwner(amusementPark.ownerName)
         router.push('/machines')
         store.addMessage('success', 'Successfully entered park ' + amusementPark.name + '.')
       } else {

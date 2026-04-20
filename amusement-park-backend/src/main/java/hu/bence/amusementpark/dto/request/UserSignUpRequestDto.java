@@ -2,7 +2,10 @@ package hu.bence.amusementpark.dto.request;
 
 import hu.bence.amusementpark.constants.Constants;
 import hu.bence.amusementpark.validation.constraint.PasswordConfirmPasswordSameConstraint;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

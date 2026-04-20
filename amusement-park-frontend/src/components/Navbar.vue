@@ -4,7 +4,7 @@
       <v-img alt="Profile picture" :src="store.getUser.photo" />
     </v-avatar>
     <span>
-      {{ store.getUser.email }}
+      {{ store.getUser.name }}
     </span>
     <span class="ml-3">
       {{ store.getUser.money }}
@@ -109,7 +109,7 @@
     if (route.path === '/amusement-parks') {
       return 'ROLE_ADMIN' === store.getUser.authority
     } else if (route.path === '/machines') {
-      return 'ROLE_ADMIN' === store.getUser.authority && store.getAmusementParkOwner === store.getUser.email
+      return 'ROLE_ADMIN' === store.getUser.authority && store.getAmusementParkOwner === store.getUser.name
     }
     return false
   })
@@ -140,7 +140,7 @@
     }).then(async response => {
       uploadMoneyFormIsLoading.value = false
       if (response.ok) {
-        store.getUser.spendingMoney = store.getUser.spendingMoney + Number(uploadMoneyValue.value)
+        store.getUser.money = store.getUser.money + Number(uploadMoneyValue.value)
         store.addMessage('success', 'Successfully uploaded ' + uploadMoneyValue.value + ' money.')
         uploadMoneyDialogShow.value = false
       } else {

@@ -52,7 +52,7 @@ values ('inPark', 'ROLE_VISITOR', '1994-10-22', '2020-05-06 15:33:03.894',
         (select id from amusement_park where name = 'test park 100'));
 
 insert into users(name, authority, date_of_birth, date_of_sign_up, password, money, coupon, amusement_park_id,
-                    machine_id)
+                  machine_id)
 values ('onMachine', 'ROLE_VISITOR', '1994-10-22', '2020-05-06 15:33:03.894',
         '$2a$10$kySxWnr0wtD6KKV59TKHIO/N3G58IpSfRn7a7cvZ.5TpaWUXaHus6', 1000, 0,
         (select id from amusement_park where name = 'test park 100'),

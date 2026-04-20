@@ -1,6 +1,5 @@
 package hu.bence.amusementpark.controller;
 
-import hu.bence.amusementpark.constants.Constants;
 import hu.bence.amusementpark.dto.request.UserSignUpRequestDto;
 import hu.bence.amusementpark.dto.response.UserResponseDto;
 import hu.bence.amusementpark.entity.Users;

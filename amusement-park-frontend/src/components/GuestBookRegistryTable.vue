@@ -40,10 +40,10 @@
         </td>
         <td>
           <v-text-field
-            v-model="guestBookRegistrySearch.userEmail"
+            v-model="guestBookRegistrySearch.userName"
             class="ma-1"
             density="compact"
-            placeholder="Like email"
+            placeholder="Like name"
           />
         </td>
       </tr>
@@ -76,7 +76,7 @@
   const guestBookRegistryTableHeaders = [
     { title: 'Date', key: 'dateOfRegistry' },
     { title: 'Content', key: 'textOfRegistry' },
-    { title: 'User email', key: 'userEmail' },
+    { title: 'User name', key: 'userName' },
   ]
   const guestBookRegistryTableItems = ref([])
   const guestBookRegistryTableTotalItems = ref(0)
@@ -86,7 +86,7 @@
     minDateOfRegistry: '',
     maxDateOfRegistry: '',
     textOfRegistry: '',
-    userEmail: '',
+    userName: '',
   })
   let guestBookRegistryTimer: number
 
