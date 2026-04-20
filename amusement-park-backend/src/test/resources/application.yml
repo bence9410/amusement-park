@@ -1,5 +1,4 @@
 amusement-park:
-  ai: false
   transaction-logging: true
 spring:
   jmx.enabled: false
