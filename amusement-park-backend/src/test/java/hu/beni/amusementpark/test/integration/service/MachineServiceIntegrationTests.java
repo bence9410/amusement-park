@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import static hu.beni.amusementpark.constants.StringParamConstants.EMAIL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -23,7 +24,7 @@ public class MachineServiceIntegrationTests extends AbstractStatementCounterTest
     public void addMachineTest() {
         Machine machine = ValidEntityFactory.createMachine();
 
-        machineService.addMachine(amusementParkId, machine);
+        machineService.addMachine(amusementParkId, machine, EMAIL);
 
         assertNotNull(machine.getId());
         assertNotNull(machine.getAmusementPark());

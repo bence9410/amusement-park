@@ -28,6 +28,10 @@ export const useAppStore = defineStore('app', () => {
   const getAmusementParkId = computed(() => amusementParkId.value)
   const setAmusementParkId = (v: number) => amusementParkId.value = v
 
+  const amusementParkOwner = ref('')
+  const getAmusementParkOwner = computed(() => amusementParkOwner.value)
+  const setAmusementParkOwner = (v: string) => amusementParkOwner.value = v
+
   const createShow = ref(false)
   const getCreateShow = computed(() => createShow.value)
   const setCreateShow = (v: boolean) => createShow.value = v
@@ -38,6 +42,6 @@ export const useAppStore = defineStore('app', () => {
 
   return {
     getVisitor, setVisitor, getMessages, addMessage, removeMessage, getAmusementParkId, setAmusementParkId,
-    getCreateShow, setCreateShow, getGuestBookWritingShow, setGuestBookWritingShow,
+    getAmusementParkOwner, setAmusementParkOwner, getCreateShow, setCreateShow, getGuestBookWritingShow, setGuestBookWritingShow,
   }
 })

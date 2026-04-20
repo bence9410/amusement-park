@@ -164,7 +164,7 @@
             />
             <img src="../assets/videoHint.png">
             <iframe
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure 'none'"
               allowfullscreen
               frameborder="0"
               :src="'https://www.youtube.com/embed/' + machineCreate.video"
@@ -209,7 +209,7 @@
         </v-toolbar-items>
       </v-toolbar>
       <iframe
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure 'none'"
         allowfullscreen
         frameborder="0"
         height="100%"
@@ -380,7 +380,9 @@
         onMachineFantasyName.value = machine.fantasyName
         video.value = 'https://www.youtube.com/embed/' + machine.video
         onMachineDialog.value = true
-        store.getVisitor.spendingMoney = store.getVisitor.spendingMoney - machine.ticketPrice
+        const visitor = await response.json()
+        store.getVisitor.money = visitor.money
+        store.getVisitor.coupon = visitor.coupon
         getOffMachineId = machine.id
         getOffMachineTimer = setTimeout(() => {
           onMachineDialog.value = false

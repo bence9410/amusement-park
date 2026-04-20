@@ -15,16 +15,8 @@ import org.hibernate.validator.constraints.Range;
 public class AmusementParkCreateRequestDto {
 
     @NotNull
-    @Size(min = 5, max = 20)
+    @Size(min = 5, max = 50)
     private String name;
-
-    @NotNull
-    @Range(min = 500, max = 50000)
-    private Integer capital;
-
-    @NotNull
-    @Range(min = 50, max = 5000)
-    private Integer totalArea;
 
     @NotNull
     @Range(min = 5, max = 200)

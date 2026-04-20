@@ -8,6 +8,7 @@ import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
+import hu.beni.amusementpark.repository.VisitorRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,8 +25,9 @@ public abstract class AbstractStatementCounterTests {
 
     @Autowired
     protected AmusementParkRepository amusementParkRepository;
+    @Autowired
+    protected VisitorRepository visitorRepository;
     protected long amusementParkId;
-    protected int amusementParkCapital;
     protected int amusementParkEntranceFee;
     protected long anotherAmusementParkId;
     protected long machineId;
@@ -46,7 +48,6 @@ public abstract class AbstractStatementCounterTests {
         AmusementPark amusementPark = amusementParkRepository
                 .findOne(Example.of(AmusementPark.builder().name("test park 100").build())).get();
         amusementParkId = amusementPark.getId();
-        amusementParkCapital = amusementPark.getCapital();
         amusementParkEntranceFee = amusementPark.getEntranceFee();
 
         anotherAmusementParkId = amusementParkRepository

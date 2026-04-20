@@ -2,6 +2,7 @@ package hu.beni.amusementpark.test.integration.service;
 
 import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
 import hu.beni.amusementpark.dto.response.AmusementParkSearchResponseDto;
+import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
 import org.junit.jupiter.api.Test;
@@ -9,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import static hu.beni.amusementpark.constants.StringParamConstants.EMAIL;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementPark;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class AmusementParkServiceIntegrationTests extends AbstractStatementCounterTests {
 
@@ -19,7 +22,12 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
 
     @Test
     public void saveTest() {
-        amusementParkService.save(createAmusementPark());
+        AmusementPark amusementPark = createAmusementPark();
+
+        amusementParkService.save(amusementPark, EMAIL);
+
+        assertNotNull(amusementPark.getOwner());
+        select++;
         insert++;
         assertStatements();
     }

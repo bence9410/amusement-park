@@ -13,7 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.AMUSEMENT_PARK_NOT_OWNED_BY_YOU;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
+import static hu.beni.amusementpark.exception.ExceptionUtil.ifNotEquals;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifNull;
 
 @Service
@@ -25,10 +27,9 @@ public class MachineServiceImpl implements MachineService {
     private final MachineRepository machineRepository;
 
     @Override
-    public void addMachine(Long amusementParkId, Machine machine) {
-        AmusementPark amusementPark = ifNull(
-                amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId),
-                NO_AMUSEMENT_PARK_WITH_ID);
+    public void addMachine(Long amusementParkId, Machine machine, String visitorEmail) {
+        AmusementPark amusementPark = ifNull(amusementParkRepository.findById(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
+        ifNotEquals(visitorEmail, amusementPark.getOwner().getEmail(), AMUSEMENT_PARK_NOT_OWNED_BY_YOU);
         machine.setAmusementPark(amusementPark);
         machineRepository.save(machine);
     }

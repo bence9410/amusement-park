@@ -1,13 +1,14 @@
 package hu.beni.amusementpark.test.integration.service;
 
 import hu.beni.amusementpark.entity.Visitor;
-import hu.beni.amusementpark.helper.ValidEntityFactory;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.VisitorService;
 import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static hu.beni.amusementpark.constants.StringParamConstants.EMAIL;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class VisitorServiceIntegrationTests extends AbstractStatementCounterTests {
@@ -27,9 +28,9 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 
     @Test
     public void signUpTest() {
-        Visitor visitor = visitorService.signUp(ValidEntityFactory.createVisitor());
+        Visitor visitor = visitorService.signUp(createVisitor());
         assertEquals("ROLE_VISITOR", visitor.getAuthority());
-        assertEquals(250, visitor.getSpendingMoney());
+        assertEquals(250, visitor.getMoney());
 
         select += 2;
         insert++;
@@ -44,7 +45,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
         assertStatements();
 
         assertEquals(visitorSpendingMoney + amountToUpload,
-                visitorService.findByEmailMakeFreshlyLoggedIn(testVisitorEmail).getSpendingMoney());
+                visitorRepository.findById(testVisitorEmail).get().getMoney());
         select++;
         assertStatements();
     }
@@ -62,6 +63,9 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 
     @Test
     public void enterParkTest() {
+        Integer ownerMoney = visitorRepository.findById(EMAIL).get().getMoney();
+        reset();
+
         visitorService.enterPark(amusementParkId, testVisitorEmail);
         select += 4;
         insert++;
@@ -69,23 +73,26 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
         assertStatements();
 
         Visitor visitor = visitorRepository.findById(testVisitorEmail).get();
-        assertEquals(amusementParkCapital + amusementParkEntranceFee,
-                amusementParkRepository.findById(amusementParkId).get().getCapital());
-        assertEquals(visitorSpendingMoney - amusementParkEntranceFee, visitor.getSpendingMoney());
+        assertEquals(ownerMoney + amusementParkEntranceFee,
+                visitorRepository.findById(EMAIL).get().getMoney());
+        assertEquals(visitorSpendingMoney - amusementParkEntranceFee, visitor.getMoney());
         assertNotNull(visitor.getAmusementPark());
     }
 
     @Test
     public void getOnMachineTest() {
+        Integer ownerMoney = visitorRepository.findById(EMAIL).get().getMoney();
+        reset();
+
         visitorService.getOnMachine(amusementParkId, machineId, inParkVisitorEmail);
-        select += 2;
+        select += 3;
         update += 2;
         assertStatements();
 
         Visitor visitor = visitorRepository.findById(inParkVisitorEmail).get();
-        assertEquals(amusementParkCapital + machineTicketPrice,
-                amusementParkRepository.findById(amusementParkId).get().getCapital());
-        assertEquals(visitorSpendingMoney - machineTicketPrice, visitor.getSpendingMoney());
+        assertEquals(ownerMoney + machineTicketPrice,
+                visitorRepository.findById(EMAIL).get().getMoney());
+        assertEquals(visitorSpendingMoney - machineTicketPrice, visitor.getMoney());
         assertNotNull(visitor.getMachine());
     }
 

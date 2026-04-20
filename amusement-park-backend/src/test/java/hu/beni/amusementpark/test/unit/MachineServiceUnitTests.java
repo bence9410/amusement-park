@@ -4,6 +4,7 @@ import hu.beni.amusementpark.dto.request.MachineSearchRequestDto;
 import hu.beni.amusementpark.dto.response.MachineSearchResponseDto;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
+import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
@@ -20,7 +21,9 @@ import org.springframework.data.domain.Pageable;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.AMUSEMENT_PARK_NOT_OWNED_BY_YOU;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
+import static hu.beni.amusementpark.constants.StringParamConstants.EMAIL;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -50,25 +53,39 @@ public class MachineServiceUnitTests {
         Long amusementParkId = 0L;
         Machine machine = Machine.builder().build();
 
-        assertThatThrownBy(() -> machineService.addMachine(amusementParkId, machine))
+        assertThatThrownBy(() -> machineService.addMachine(amusementParkId, machine, EMAIL))
                 .isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
 
-        verify(amusementParkRepository).findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
+        verify(amusementParkRepository).findById(amusementParkId);
+    }
+
+    @Test
+    public void addMachineNegativeNotOwned() {
+        Visitor visitor = Visitor.builder().email(EMAIL).build();
+        AmusementPark amusementPark = AmusementPark.builder().id(10L).owner(visitor).build();
+        Long amusementParkId = amusementPark.getId();
+        Machine machine = Machine.builder().build();
+        when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
+
+        assertThatThrownBy(() -> machineService.addMachine(amusementParkId, machine, "wrong"))
+                .isInstanceOf(AmusementParkException.class).hasMessage(AMUSEMENT_PARK_NOT_OWNED_BY_YOU);
+
+        verify(amusementParkRepository).findById(amusementParkId);
     }
 
     @Test
     public void addMachinePositive() {
-        AmusementPark amusementPark = AmusementPark.builder().id(10L).capital(300).totalArea(100).build();
+        Visitor visitor = Visitor.builder().email(EMAIL).build();
+        AmusementPark amusementPark = AmusementPark.builder().id(10L).owner(visitor).build();
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().build();
-        when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId))
-                .thenReturn(Optional.of(amusementPark));
+        when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(machineRepository.save(machine)).thenReturn(machine);
 
-        machineService.addMachine(amusementPark.getId(), machine);
+        machineService.addMachine(amusementPark.getId(), machine, EMAIL);
 
         assertEquals(amusementPark, machine.getAmusementPark());
-        verify(amusementParkRepository).findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
+        verify(amusementParkRepository).findById(amusementParkId);
         verify(machineRepository).save(machine);
     }
 

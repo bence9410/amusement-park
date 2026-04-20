@@ -7,9 +7,13 @@
       {{ store.getVisitor.email }}
     </span>
     <span class="ml-3">
-      {{ store.getVisitor.spendingMoney }}
+      {{ store.getVisitor.money }}
     </span>
     <v-icon icon="mdi-currency-eur" />
+    <span class="ml-2">
+      {{ store.getVisitor.coupon }}
+    </span>
+    <v-icon icon="mdi-ticket-percent" />
     <v-spacer />
     <v-btn
       v-if="route.path === '/machines'"
@@ -28,7 +32,7 @@
       @click="leavePark"
     />
     <v-btn
-      v-if="isAdmin"
+      v-if="showCreate"
       class="ma-1"
       color="black"
       text="Create"
@@ -101,7 +105,14 @@
   const uploadMoneyDialogShow = ref(false)
   const uploadMoneyValue = ref('')
 
-  const isAdmin = computed(() => 'ROLE_ADMIN' == store.getVisitor.authority)
+  const showCreate = computed(() => {
+    if (route.path === '/amusement-parks') {
+      return 'ROLE_ADMIN' === store.getVisitor.authority
+    } else if (route.path === '/machines') {
+      return 'ROLE_ADMIN' === store.getVisitor.authority && store.getAmusementParkOwner === store.getVisitor.email
+    }
+    return false
+  })
 
   function logout () {
     logoutIsLoading.value = true

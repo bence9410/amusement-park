@@ -15,7 +15,9 @@ public class VisitorResponseDto {
 
     private String authority;
 
-    private Integer spendingMoney;
+    private Integer money;
+
+    private Integer coupon;
 
     private String photo;
 

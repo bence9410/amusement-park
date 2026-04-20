@@ -9,8 +9,6 @@ public class AmusementParkMapper {
         return AmusementPark
                 .builder()
                 .name(dto.getName())
-                .capital(dto.getCapital())
-                .totalArea(dto.getTotalArea())
                 .entranceFee(dto.getEntranceFee()).build();
     }
 }

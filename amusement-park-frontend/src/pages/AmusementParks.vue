@@ -64,22 +64,6 @@
           </td>
           <td>
             <v-text-field
-              v-model="amusementParkSearch.minCapital"
-              class="ma-1"
-              density="compact"
-              placeholder="Min capital"
-            />
-          </td>
-          <td>
-            <v-text-field
-              v-model="amusementParkSearch.minTotalArea"
-              class="ma-1"
-              density="compact"
-              placeholder="Min total area"
-            />
-          </td>
-          <td>
-            <v-text-field
               v-model="amusementParkSearch.minEntranceFee"
               class="ma-1"
               density="compact"
@@ -121,22 +105,6 @@
         </tr>
         <tr>
           <td />
-          <td>
-            <v-text-field
-              v-model="amusementParkSearch.maxCapital"
-              class="ma-1"
-              density="compact"
-              placeholder="Max capital"
-            />
-          </td>
-          <td>
-            <v-text-field
-              v-model="amusementParkSearch.maxTotalArea"
-              class="ma-1"
-              density="compact"
-              placeholder="Max total area"
-            />
-          </td>
           <td>
             <v-text-field
               v-model="amusementParkSearch.maxEntranceFee"
@@ -204,30 +172,8 @@
               required
               :rules="[
                 (v) =>
-                  (!!v && v.length >= 5 && v.length <= 20) ||
-                  'Name size must be between 5 and 20.',
-              ]"
-            />
-            <v-text-field
-              v-model="amusementParkCreate.capital"
-              label="Capital"
-              :readonly="amusementParkCreateFormIsLoading"
-              required
-              :rules="[
-                (v) =>
-                  (!!v && Number(v) >= 500 && Number(v) <= 50000) ||
-                  'Capital must be between 500 and 50000.',
-              ]"
-            />
-            <v-text-field
-              v-model="amusementParkCreate.totalArea"
-              label="Total area"
-              :readonly="amusementParkCreateFormIsLoading"
-              required
-              :rules="[
-                (v) =>
-                  (!!v && Number(v) >= 50 && Number(v) <= 5000) ||
-                  'TotalArea must be between 50 and 5000. ',
+                  (!!v && v.length >= 5 && v.length <= 50) ||
+                  'Name length must be between 5 and 50.',
               ]"
             />
             <v-text-field
@@ -276,10 +222,6 @@
   const amusementParkTableExpandedRows: any = ref([])
   const amusementParkSearch = ref({
     name: '',
-    minCapital: '',
-    maxCapital: '',
-    minTotalArea: '',
-    maxTotalArea: '',
     minEntranceFee: '',
     maxEntranceFee: '',
     minMachines: '',
@@ -294,8 +236,6 @@
   const amusementParkTableItems = ref([])
   const amusementParkTableHeaders = [
     { title: 'Name', key: 'name' },
-    { title: 'Capital', key: 'capital' },
-    { title: 'Total area', key: 'totalArea' },
     { title: 'Entrance fee', key: 'entranceFee' },
     { title: 'Machines', key: 'numberOfMachines' },
     { title: 'Guest Book Registries', key: 'numberOfGuestBookRegistries' },
@@ -307,8 +247,6 @@
   const amusementParkCreateFormIsLoading = ref(false)
   const amusementParkCreate = ref({
     name: '',
-    capital: '',
-    totalArea: '',
     entranceFee: '',
   })
   let amusementParkTimer: number
@@ -372,8 +310,11 @@
       method: 'PUT',
     }).then(async response => {
       if (response.ok) {
-        store.getVisitor.spendingMoney = store.getVisitor.spendingMoney - amusementPark.entranceFee
+        const visitor = await response.json()
+        store.getVisitor.money = visitor.money
+        store.getVisitor.coupon = visitor.coupon
         store.setAmusementParkId(amusementPark.id)
+        store.setAmusementParkOwner(amusementPark.ownerEmail)
         router.push('/machines')
         store.addMessage('success', 'Successfully entered park ' + amusementPark.name + '.')
       } else {

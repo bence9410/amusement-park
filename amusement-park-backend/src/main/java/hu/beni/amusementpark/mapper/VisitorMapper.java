@@ -11,8 +11,17 @@ public class VisitorMapper {
         return VisitorResponseDto.builder()
                 .email(entity.getEmail())
                 .authority(entity.getAuthority())
-                .spendingMoney(entity.getSpendingMoney())
+                .money(entity.getMoney())
+                .coupon(entity.getCoupon())
                 .photo(entity.getPhoto().getPhoto()).build();
+    }
+
+    public static VisitorResponseDto toDtoWithoutPhoto(Visitor entity) {
+        return VisitorResponseDto.builder()
+                .email(entity.getEmail())
+                .authority(entity.getAuthority())
+                .money(entity.getMoney())
+                .coupon(entity.getCoupon()).build();
     }
 
     public static Visitor toEntity(VisitorSignUpRequestDto dto) {

@@ -43,16 +43,6 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
         ofNullable(dto.getName()).map(name -> cb.like(root.get(AmusementPark_.name), "%" + name + "%"))
                 .ifPresent(predicates::add);
 
-        ofNullable(dto.getMinCapital()).map(minCapital -> cb.ge(root.get(AmusementPark_.capital), minCapital))
-                .ifPresent(predicates::add);
-        ofNullable(dto.getMaxCapital()).map(maxCapital -> cb.le(root.get(AmusementPark_.capital), maxCapital))
-                .ifPresent(predicates::add);
-
-        ofNullable(dto.getMinTotalArea()).map(minTotalArea -> cb.ge(root.get(AmusementPark_.totalArea), minTotalArea))
-                .ifPresent(predicates::add);
-        ofNullable(dto.getMaxTotalArea()).map(maxTotalArea -> cb.le(root.get(AmusementPark_.totalArea), maxTotalArea))
-                .ifPresent(predicates::add);
-
         ofNullable(dto.getMinEntranceFee()).map(minEntranceFee -> cb.ge(root.get(AmusementPark_.entranceFee), minEntranceFee))
                 .ifPresent(predicates::add);
         ofNullable(dto.getMaxEntranceFee()).map(maxEntranceFee -> cb.le(root.get(AmusementPark_.entranceFee), maxEntranceFee))
@@ -193,10 +183,10 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
         ofNullable(dto.getMaxKnownVisitors()).map(maxKnownVisitors -> cb.le(countKnownVisitors, maxKnownVisitors))
                 .ifPresent(predicates::add);
 
-        cq.select(cb.construct(AmusementParkSearchResponseDto.class, root.get(AmusementPark_.id), root.get(AmusementPark_.name), root.get(AmusementPark_.capital),
-                        root.get(AmusementPark_.totalArea), root.get(AmusementPark_.entranceFee), countMachines,
+        cq.select(cb.construct(AmusementParkSearchResponseDto.class, root.get(AmusementPark_.id), root.get(AmusementPark_.name),
+                        root.get(AmusementPark_.entranceFee), root.get(AmusementPark_.owner).get(Visitor_.email), countMachines,
                         countGuestBookRegistries, countActiveVisitors, countKnownVisitors))
-                .where(predicates.toArray(new Predicate[predicates.size()]));
+                .where(predicates.toArray(new Predicate[0]));
         return entityManager.createQuery(cq).setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize()).getResultList();
     }

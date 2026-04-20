@@ -21,6 +21,7 @@ import java.beans.PropertyEditorSupport;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/amusement-parks/{amusementParkId}/machines")
@@ -49,8 +50,8 @@ public class MachineController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public void addMachine(@PathVariable Long amusementParkId,
-                           @Valid @RequestBody MachineCreateRequestDto machineResource) {
-        machineService.addMachine(amusementParkId, MachineMapper.toEntity(machineResource));
+                           @Valid @RequestBody MachineCreateRequestDto machineCreateRequestDto, Principal principal) {
+        machineService.addMachine(amusementParkId, MachineMapper.toEntity(machineCreateRequestDto), principal.getName());
     }
 
     @GetMapping

@@ -13,9 +13,9 @@ public interface VisitorService extends UserDetailsService {
 
     void leavePark(Long amusementParkId, String visitorEmail);
 
-    void enterPark(Long amusementParkId, String visitorEmail);
+    Visitor enterPark(Long amusementParkId, String visitorEmail);
 
-    void getOnMachine(Long amusementParkId, Long machineId, String visitorEmail);
+    Visitor getOnMachine(Long amusementParkId, Long machineId, String visitorEmail);
 
     void getOffMachine(Long amusementParkId, Long machineId, String visitorEmail);
 

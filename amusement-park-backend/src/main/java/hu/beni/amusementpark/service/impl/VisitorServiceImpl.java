@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
@@ -39,8 +39,7 @@ public class VisitorServiceImpl implements VisitorService {
     public UserDetails loadUserByUsername(@NonNull String email) {
         Visitor visitor = visitorRepository.findById(email)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(COULD_NOT_FIND_USER, email)));
-        return new User(email, visitor.getPassword(),
-                Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority())));
+        return new User(email, visitor.getPassword(), List.of(new SimpleGrantedAuthority(visitor.getAuthority())));
     }
 
     @Override
@@ -58,7 +57,8 @@ public class VisitorServiceImpl implements VisitorService {
         ifNotZero(visitorRepository.countByEmail(visitor.getEmail()),
                 String.format(EMAIL_ALREADY_TAKEN, visitor.getEmail()));
         visitor.setAuthority("ROLE_VISITOR");
-        visitor.setSpendingMoney(250);
+        visitor.setMoney(250);
+        visitor.setCoupon(0);
         visitor.setPassword(passwordEncoder.encode(visitor.getPassword()));
         return visitorRepository.save(visitor);
     }
@@ -69,17 +69,18 @@ public class VisitorServiceImpl implements VisitorService {
     }
 
     @Override
-    public void enterPark(Long amusementParkId, String visitorEmail) {
-        AmusementPark amusementPark = ifNull(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId),
-                NO_AMUSEMENT_PARK_WITH_ID);
+    public Visitor enterPark(Long amusementParkId, String visitorEmail) {
+        AmusementPark amusementPark = ifNull(amusementParkRepository.findById(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
         Visitor visitor = ifNull(visitorRepository.findById(visitorEmail), VISITOR_NOT_SIGNED_UP);
         checkIfVisitorAbleToEnterPark(amusementPark.getEntranceFee(), visitor);
         addToKnownVisitorsIfFirstEnter(amusementPark, visitor);
-        incrementCaitalAndDecreaseSpendingMoneyAndSetPark(amusementPark, visitor);
+        incrementOwnerMoneyAndDecreaseMoney(amusementPark, visitor, amusementPark.getEntranceFee());
+        visitor.setAmusementPark(amusementPark);
+        return visitor;
     }
 
     private void checkIfVisitorAbleToEnterPark(Integer entranceFee, Visitor visitor) {
-        ifFirstLessThanSecond(visitor.getSpendingMoney(), entranceFee, NOT_ENOUGH_MONEY);
+        ifFirstLessThanSecond(visitor.getMoney() + visitor.getCoupon(), entranceFee, NOT_ENOUGH_MONEY);
         ifNotNull(visitor.getAmusementPark(), VISITOR_IS_IN_A_PARK);
     }
 
@@ -90,39 +91,48 @@ public class VisitorServiceImpl implements VisitorService {
         }
     }
 
-    private void incrementCaitalAndDecreaseSpendingMoneyAndSetPark(AmusementPark amusementPark, Visitor visitor) {
-        amusementParkRepository.incrementCapitalById(amusementPark.getEntranceFee(), amusementPark.getId());
-        visitor.setSpendingMoney(visitor.getSpendingMoney() - amusementPark.getEntranceFee());
-        visitor.setAmusementPark(amusementPark);
+    private void incrementOwnerMoneyAndDecreaseMoney(AmusementPark amusementPark, Visitor visitor, Integer amount) {
+        if (!amusementPark.getOwner().equals(visitor)) {
+            if (visitor.getCoupon() >= amount) {
+                amusementPark.getOwner().setCoupon(amusementPark.getOwner().getCoupon() + amount);
+                visitor.setCoupon(visitor.getCoupon() - amount);
+            } else if (visitor.getCoupon() > 0) {
+                amusementPark.getOwner().setCoupon(amusementPark.getOwner().getCoupon() + visitor.getCoupon());
+                Integer leftOver = amount - visitor.getCoupon();
+                visitor.setCoupon(0);
+                amusementPark.getOwner().setMoney(amusementPark.getOwner().getMoney() + leftOver);
+                visitor.setMoney(visitor.getMoney() - leftOver);
+            } else {
+                amusementPark.getOwner().setMoney(amusementPark.getOwner().getMoney() + amount);
+                visitor.setMoney(visitor.getMoney() - amount);
+            }
+        }
     }
 
     @Override
-    public void getOnMachine(Long amusementParkId, Long machineId, String visitorEmail) {
+    public Visitor getOnMachine(Long amusementParkId, Long machineId, String visitorEmail) {
+        AmusementPark amusementPark = ifNull(amusementParkRepository.findById(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
         Machine machine = ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId),
                 NO_MACHINE_IN_PARK_WITH_ID);
         Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail),
                 NO_VISITOR_IN_PARK_WITH_ID);
         checkIfVisitorAbleToGetOnMachine(machine, visitor);
-        incrementCapitalAndDecreaseSpendingMoneyAndSetMachine(amusementParkId, machine, visitor);
+        incrementOwnerMoneyAndDecreaseMoney(amusementPark, visitor, machine.getTicketPrice());
+        visitor.setMachine(machine);
+        return visitor;
     }
 
     private void checkIfVisitorAbleToGetOnMachine(Machine machine, Visitor visitor) {
         ifNotNull(visitor.getMachine(), VISITOR_IS_ON_A_MACHINE);
-        ifFirstLessThanSecond(visitor.getSpendingMoney(), machine.getTicketPrice(), NOT_ENOUGH_MONEY);
+        ifFirstLessThanSecond(visitor.getMoney() + visitor.getCoupon(), machine.getTicketPrice(), NOT_ENOUGH_MONEY);
         ifFirstLessThanSecond(Period.between(visitor.getDateOfBirth(), LocalDate.now()).getYears(),
                 machine.getMinimumRequiredAge(), VISITOR_IS_TOO_YOUNG);
     }
 
-    private void incrementCapitalAndDecreaseSpendingMoneyAndSetMachine(Long amusementParkId, Machine machine,
-                                                                       Visitor visitor) {
-        amusementParkRepository.incrementCapitalById(machine.getTicketPrice(), amusementParkId);
-        visitor.setSpendingMoney(visitor.getSpendingMoney() - machine.getTicketPrice());
-        visitor.setMachine(machine);
-    }
-
     @Override
     public void getOffMachine(Long amusementParkId, Long machineId, String visitorEmail) {
-        Visitor visitor = ifNull(visitorRepository.findByMachineIdAndVisitorEmail(machineId, visitorEmail),
+        Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndMachineIdAndVisitorEmail(
+                        amusementParkId, machineId, visitorEmail),
                 NO_VISITOR_ON_MACHINE_WITH_ID);
         visitor.setMachine(null);
     }

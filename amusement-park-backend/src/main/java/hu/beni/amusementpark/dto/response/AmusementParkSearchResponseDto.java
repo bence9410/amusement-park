@@ -15,11 +15,9 @@ public class AmusementParkSearchResponseDto {
 
     private String name;
 
-    private Integer capital;
-
-    private Integer totalArea;
-
     private Integer entranceFee;
+
+    private String ownerEmail;
 
     private Long numberOfMachines;
 

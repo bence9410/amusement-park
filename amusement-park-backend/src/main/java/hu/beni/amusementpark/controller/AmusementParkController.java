@@ -21,6 +21,7 @@ import java.beans.PropertyEditorSupport;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/amusement-parks")
@@ -48,8 +49,8 @@ public class AmusementParkController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public void save(@Valid @RequestBody AmusementParkCreateRequestDto amusementParkResource) {
-        amusementParkService.save(AmusementParkMapper.toEntity(amusementParkResource));
+    public void save(@Valid @RequestBody AmusementParkCreateRequestDto amusementParkCreateRequestDto, Principal principal) {
+        amusementParkService.save(AmusementParkMapper.toEntity(amusementParkCreateRequestDto), principal.getName());
     }
 
     @GetMapping

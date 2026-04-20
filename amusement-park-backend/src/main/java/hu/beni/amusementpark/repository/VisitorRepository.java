@@ -13,13 +13,13 @@ public interface VisitorRepository extends JpaRepository<Visitor, String> {
     Long countByEmail(String visitorEmail);
 
     @Modifying
-    @Query("Update Visitor v set v.spendingMoney = v.spendingMoney + :amount where v.email = :visitorEmail")
+    @Query("Update Visitor v set v.money = v.money + :amount where v.email = :visitorEmail")
     void incrementSpendingMoneyByEmail(Integer amount, String visitorEmail);
-
-    @Query("Select v from Visitor v where v.machine.id = :machineId and v.email = :visitorEmail")
-    Optional<Visitor> findByMachineIdAndVisitorEmail(Long machineId, String visitorEmail);
 
     @Query("Select v from Visitor v where v.amusementPark.id = :amusementParkId and v.email = :visitorEmail")
     Optional<Visitor> findByAmusementParkIdAndVisitorEmail(Long amusementParkId, String visitorEmail);
+
+    @Query("Select v from Visitor v where v.amusementPark.id = :amusementParkId and v.machine.id = :machineId and v.email = :visitorEmail")
+    Optional<Visitor> findByAmusementParkIdAndMachineIdAndVisitorEmail(Long amusementParkId, Long machineId, String visitorEmail);
 
 }

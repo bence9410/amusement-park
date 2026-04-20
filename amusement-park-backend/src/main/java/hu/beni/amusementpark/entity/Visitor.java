@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.Range;
 
 import java.time.LocalDate;
@@ -16,16 +15,13 @@ import java.util.Set;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
-import static java.lang.Integer.MAX_VALUE;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@DynamicUpdate
 @EqualsAndHashCode(of = "email")
-@ToString(of = "email")
 public class Visitor {
 
     @Id
@@ -49,8 +45,12 @@ public class Visitor {
     private LocalDateTime dateOfSignUp;
 
     @NotNull
-    @Range(min = 0, max = MAX_VALUE)
-    private Integer spendingMoney;
+    @Range(min = 0)
+    private Integer money;
+
+    @NotNull
+    @Range(min = 0)
+    private Integer coupon;
 
     @OneToOne(fetch = LAZY, cascade = ALL)
     private Photo photo;
@@ -60,6 +60,9 @@ public class Visitor {
 
     @ManyToOne(fetch = LAZY)
     private Machine machine;
+
+    @OneToMany(mappedBy = "owner")
+    private Set<AmusementPark> ownedAmusementParks;
 
     @OneToMany(mappedBy = "visitor")
     private Set<GuestBookRegistry> guestBookRegistries;

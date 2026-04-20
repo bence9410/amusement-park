@@ -81,8 +81,8 @@ public class VisitorController {
     }
 
     @PutMapping("amusement-parks/{amusementParkId}/visitors/enter-park")
-    public void enterPark(@PathVariable Long amusementParkId, Principal principal) {
-        visitorService.enterPark(amusementParkId, principal.getName());
+    public VisitorResponseDto enterPark(@PathVariable Long amusementParkId, Principal principal) {
+        return VisitorMapper.toDtoWithoutPhoto(visitorService.enterPark(amusementParkId, principal.getName()));
     }
 
     @PutMapping("amusement-parks/{amusementParkId}/visitors/leave-park")
@@ -91,9 +91,9 @@ public class VisitorController {
     }
 
     @PutMapping("amusement-parks/{amusementParkId}/machines/{machineId}/visitors/get-on-machine")
-    public void getOnMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
-                             Principal principal) {
-        visitorService.getOnMachine(amusementParkId, machineId, principal.getName());
+    public VisitorResponseDto getOnMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
+                                           Principal principal) {
+        return VisitorMapper.toDtoWithoutPhoto(visitorService.getOnMachine(amusementParkId, machineId, principal.getName()));
     }
 
     @PutMapping("amusement-parks/{amusementParkId}/machines/{machineId}/visitors/get-off-machine")

@@ -68,13 +68,13 @@ public class AmusementParkApplicationTests {
 
         assertEquals(visitorSignUpRequestDto.getEmail(), visitorResponseDto.getEmail());
         assertEquals(visitorSignUpRequestDto.getPhoto(), visitorResponseDto.getPhoto());
-        assertEquals(250, visitorResponseDto.getSpendingMoney());
+        assertEquals(250, visitorResponseDto.getMoney());
         assertEquals("ROLE_VISITOR", visitorResponseDto.getAuthority());
 
         uploadMoney500();
 
         visitorResponseDto = restTemplate.exchange("http://localhost:" + port + "/api/me", HttpMethod.GET, HttpEntity.EMPTY, VisitorResponseDto.class).getBody();
-        assertEquals(750, visitorResponseDto.getSpendingMoney());
+        assertEquals(750, visitorResponseDto.getMoney());
 
         getAmusementParksWorks();
 
@@ -203,7 +203,6 @@ public class AmusementParkApplicationTests {
                 HttpClientErrorException.class, teaPotStatusAndEntranceFeeInvalidMessage());
 
         amusementParkCreateRequestDto.setEntranceFee(50);
-        amusementParkCreateRequestDto.setCapital(500);
         ResponseEntity<Void> response = restTemplate.exchange("http://localhost:" + port + "/api/amusement-parks", HttpMethod.POST,
                 new HttpEntity<>(amusementParkCreateRequestDto), Void.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
