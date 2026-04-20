@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static hu.bence.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
-import static hu.bence.amusementpark.constants.StringParamConstants.EMAIL;
+import static hu.bence.amusementpark.constants.StringParamConstants.NAME;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -50,24 +50,24 @@ public class AmusementParkServiceUnitTests {
     public void saveNegativeNoUser() {
         AmusementPark amusementPark = AmusementPark.builder().build();
 
-        assertThatThrownBy(() -> amusementParkService.save(amusementPark, EMAIL))
+        assertThatThrownBy(() -> amusementParkService.save(amusementPark, NAME))
                 .isInstanceOf(AmusementParkException.class)
-                .hasMessage(String.format(COULD_NOT_FIND_USER, EMAIL));
+                .hasMessage(String.format(COULD_NOT_FIND_USER, NAME));
 
-        verify(userRepository).findById(EMAIL);
+        verify(userRepository).findById(NAME);
     }
 
     @Test
     public void savePositive() {
         AmusementPark amusementPark = AmusementPark.builder().build();
-        Users user = Users.builder().email(EMAIL).build();
-        when(userRepository.findById(EMAIL)).thenReturn(Optional.of(user));
+        Users user = Users.builder().name(NAME).build();
+        when(userRepository.findById(NAME)).thenReturn(Optional.of(user));
         when(amusementParkRepository.save(amusementPark)).thenReturn(amusementPark);
 
-        amusementParkService.save(amusementPark, EMAIL);
+        amusementParkService.save(amusementPark, NAME);
 
         assertNotNull(amusementPark.getOwner());
-        verify(userRepository).findById(EMAIL);
+        verify(userRepository).findById(NAME);
         verify(amusementParkRepository).save(amusementPark);
     }
 

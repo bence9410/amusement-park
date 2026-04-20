@@ -35,16 +35,16 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(@NonNull String email) {
-        Users user = userRepository.findById(email)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format(COULD_NOT_FIND_USER, email)));
-        return new org.springframework.security.core.userdetails.User(email, user.getPassword(), List.of(new SimpleGrantedAuthority(user.getAuthority())));
+    public UserDetails loadUserByUsername(@NonNull String name) {
+        Users user = userRepository.findById(name)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format(COULD_NOT_FIND_USER, name)));
+        return new org.springframework.security.core.userdetails.User(name, user.getPassword(), List.of(new SimpleGrantedAuthority(user.getAuthority())));
     }
 
     @Override
-    public Users findByEmailMakeFreshlyLoggedIn(String userEmail) {
-        Users user = ifNull(userRepository.findById(userEmail),
-                String.format(COULD_NOT_FIND_USER, userEmail));
+    public Users findByNameMakeFreshlyLoggedIn(String userName) {
+        Users user = ifNull(userRepository.findById(userName),
+                String.format(COULD_NOT_FIND_USER, userName));
         Optional.ofNullable(user.getPhoto()).map(Photo::getPhoto);
         user.setAmusementPark(null);
         user.setMachine(null);
@@ -53,8 +53,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Users signUp(Users user) {
-        ifNotZero(userRepository.countByEmail(user.getEmail()),
-                String.format(EMAIL_ALREADY_TAKEN, user.getEmail()));
+        ifNotZero(userRepository.countByName(user.getName()),
+                String.format(NAME_ALREADY_TAKEN, user.getName()));
         user.setAuthority("ROLE_VISITOR");
         user.setMoney(250);
         user.setCoupon(0);
@@ -63,14 +63,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void uploadMoney(Integer amount, String userEmail) {
-        userRepository.incrementSpendingMoneyByEmail(amount, userEmail);
+    public void uploadMoney(Integer amount, String userName) {
+        userRepository.incrementSpendingMoneyByName(amount, userName);
     }
 
     @Override
-    public Users enterPark(Long amusementParkId, String userEmail) {
+    public Users enterPark(Long amusementParkId, String userName) {
         AmusementPark amusementPark = ifNull(amusementParkRepository.findById(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
-        Users user = ifNull(userRepository.findById(userEmail), USER_NOT_SIGNED_UP);
+        Users user = ifNull(userRepository.findById(userName), USER_NOT_SIGNED_UP);
         checkIfUserAbleToEnterPark(amusementPark.getEntranceFee(), user);
         addToKnownUsersIfFirstEnter(amusementPark, user);
         incrementOwnerMoneyAndDecreaseMoney(amusementPark, user, amusementPark.getEntranceFee());
@@ -84,8 +84,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private void addToKnownUsersIfFirstEnter(AmusementPark amusementPark, Users user) {
-        if (amusementParkKnowUserRepository.countByAmusementParkIdAndUserEmail(amusementPark.getId(),
-                user.getEmail()) == 0) {
+        if (amusementParkKnowUserRepository.countByAmusementParkIdAndUserName(amusementPark.getId(),
+                user.getName()) == 0) {
             amusementParkKnowUserRepository.save(new AmusementParkKnowUser(amusementPark, user));
         }
     }
@@ -109,11 +109,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Users getOnMachine(Long amusementParkId, Long machineId, String userEmail) {
+    public Users getOnMachine(Long amusementParkId, Long machineId, String userName) {
         AmusementPark amusementPark = ifNull(amusementParkRepository.findById(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
         Machine machine = ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId),
                 NO_MACHINE_IN_PARK_WITH_ID);
-        Users user = ifNull(userRepository.findByAmusementParkIdAndUserEmail(amusementParkId, userEmail),
+        Users user = ifNull(userRepository.findByAmusementParkIdAndUserName(amusementParkId, userName),
                 NO_USER_IN_PARK_WITH_ID);
         checkIfUserAbleToGetOnMachine(machine, user);
         incrementOwnerMoneyAndDecreaseMoney(amusementPark, user, machine.getTicketPrice());
@@ -129,16 +129,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void getOffMachine(Long amusementParkId, Long machineId, String userEmail) {
-        Users user = ifNull(userRepository.findByAmusementParkIdAndMachineIdAndUserEmail(
-                        amusementParkId, machineId, userEmail),
+    public void getOffMachine(Long amusementParkId, Long machineId, String userName) {
+        Users user = ifNull(userRepository.findByAmusementParkIdAndMachineIdAndUserName(
+                        amusementParkId, machineId, userName),
                 NO_USER_ON_MACHINE_WITH_ID);
         user.setMachine(null);
     }
 
     @Override
-    public void leavePark(Long amusementParkId, String userEmail) {
-        Users user = ifNull(userRepository.findByAmusementParkIdAndUserEmail(amusementParkId, userEmail),
+    public void leavePark(Long amusementParkId, String userName) {
+        Users user = ifNull(userRepository.findByAmusementParkIdAndUserName(amusementParkId, userName),
                 NO_USER_IN_PARK_WITH_ID);
         user.setAmusementPark(null);
     }

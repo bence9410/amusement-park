@@ -6,7 +6,7 @@ import hu.bence.amusementpark.dto.request.UserSignUpRequestDto;
 
 import java.time.LocalDate;
 
-import static hu.bence.amusementpark.constants.StringParamConstants.EMAIL;
+import static hu.bence.amusementpark.constants.StringParamConstants.NAME;
 import static hu.bence.amusementpark.constants.StringParamConstants.VALID_PASSWORD;
 
 public class ValidRequestDtoFactory {
@@ -31,7 +31,7 @@ public class ValidRequestDtoFactory {
     public static UserSignUpRequestDto createUser() {
         return UserSignUpRequestDto
                 .builder()
-                .email(EMAIL + "m")
+                .name(NAME + "e")
                 .password(VALID_PASSWORD)
                 .confirmPassword(VALID_PASSWORD)
                 .dateOfBirth(LocalDate.of(1994, 10, 22))

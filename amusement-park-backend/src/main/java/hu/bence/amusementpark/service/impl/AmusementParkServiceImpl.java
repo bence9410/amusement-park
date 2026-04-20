@@ -25,9 +25,9 @@ public class AmusementParkServiceImpl implements AmusementParkService {
     private final UserRepository userRepository;
 
     @Override
-    public void save(AmusementPark amusementPark, String userEmail) {
-        Users user = ifNull(userRepository.findById(userEmail),
-                String.format(COULD_NOT_FIND_USER, userEmail));
+    public void save(AmusementPark amusementPark, String userName) {
+        Users user = ifNull(userRepository.findById(userName),
+                String.format(COULD_NOT_FIND_USER, userName));
         amusementPark.setOwner(user);
         amusementParkRepository.save(amusementPark);
     }

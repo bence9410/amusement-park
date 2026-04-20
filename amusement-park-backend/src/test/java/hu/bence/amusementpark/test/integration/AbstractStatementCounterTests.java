@@ -32,8 +32,8 @@ public abstract class AbstractStatementCounterTests {
     protected long anotherAmusementParkId;
     protected long machineId;
     protected int machineTicketPrice;
-    protected String testUserEmail = "test@gmail.com";
-    protected String inParkUserEmail = "inPark@gmail.com";
+    protected String testUserName = "test";
+    protected String inParkUserName = "inPark";
     protected int userMoney = 1000;
     protected long guestBookId;
     protected long insert;

@@ -17,7 +17,7 @@ public class AmusementParkSearchResponseDto {
 
     private Integer entranceFee;
 
-    private String ownerEmail;
+    private String ownerName;
 
     private Long numberOfMachines;
 

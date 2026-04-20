@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import static hu.bence.amusementpark.constants.StringParamConstants.EMAIL;
+import static hu.bence.amusementpark.constants.StringParamConstants.NAME;
 import static hu.bence.amusementpark.helper.ValidEntityFactory.createAmusementPark;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,7 +24,7 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
     public void saveTest() {
         AmusementPark amusementPark = createAmusementPark();
 
-        amusementParkService.save(amusementPark, EMAIL);
+        amusementParkService.save(amusementPark, NAME);
 
         assertNotNull(amusementPark.getOwner());
         select++;

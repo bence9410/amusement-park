@@ -19,7 +19,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static hu.bence.amusementpark.constants.ErrorMessageConstants.*;
-import static hu.bence.amusementpark.constants.StringParamConstants.EMAIL;
+import static hu.bence.amusementpark.constants.StringParamConstants.NAME;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -51,51 +51,51 @@ public class UserServiceUnitTests {
     }
 
     @Test
-    public void findByEmailMakeFreshlyLoggedInNegativeNoUserWithEmail() {
-        assertThatThrownBy(() -> userService.findByEmailMakeFreshlyLoggedIn(EMAIL))
+    public void findByNameMakeFreshlyLoggedInNegativeNoUserWithName() {
+        assertThatThrownBy(() -> userService.findByNameMakeFreshlyLoggedIn(NAME))
                 .isInstanceOf(AmusementParkException.class)
-                .hasMessage(String.format(COULD_NOT_FIND_USER, EMAIL));
+                .hasMessage(String.format(COULD_NOT_FIND_USER, NAME));
 
-        verify(userRepository).findById(EMAIL);
+        verify(userRepository).findById(NAME);
     }
 
     @Test
-    public void findByEmailMakeFreshlyLoggedInPositive() {
-        Users userRequest = Users.builder().email(EMAIL).build();
-        Users userInDb = Users.builder().email(EMAIL)
+    public void findByNameMakeFreshlyLoggedInPositive() {
+        Users userRequest = Users.builder().name(NAME).build();
+        Users userInDb = Users.builder().name(NAME)
                 .amusementPark(AmusementPark.builder().id(0L).build())
                 .machine(Machine.builder().build()).build();
         ;
-        when(userRepository.findById(EMAIL)).thenReturn(Optional.of(userInDb));
+        when(userRepository.findById(NAME)).thenReturn(Optional.of(userInDb));
 
-        Users userResponse = userService.findByEmailMakeFreshlyLoggedIn(EMAIL);
+        Users userResponse = userService.findByNameMakeFreshlyLoggedIn(NAME);
 
         assertNull(userResponse.getAmusementPark());
         assertNull(userResponse.getMachine());
-        verify(userRepository).findById(EMAIL);
+        verify(userRepository).findById(NAME);
     }
 
     @Test
-    public void signUpNegativeEmailAlreadyTaken() {
-        Users user = Users.builder().email(EMAIL).build();
-        when(userRepository.countByEmail(user.getEmail())).thenReturn(1L);
+    public void signUpNegativeNameAlreadyTaken() {
+        Users user = Users.builder().name(NAME).build();
+        when(userRepository.countByName(user.getName())).thenReturn(1L);
 
         assertThatThrownBy(() -> userService.signUp(user)).isInstanceOf(AmusementParkException.class)
-                .hasMessage(String.format(EMAIL_ALREADY_TAKEN, user.getEmail()));
+                .hasMessage(String.format(NAME_ALREADY_TAKEN, user.getName()));
 
-        verify(userRepository).countByEmail(user.getEmail());
+        verify(userRepository).countByName(user.getName());
     }
 
     @Test
     public void signUpPositive() {
-        Users user = Users.builder().email(EMAIL).password("Pass1234").build();
+        Users user = Users.builder().name(NAME).password("Pass1234").build();
         when(userRepository.save(user)).thenReturn(user);
 
         assertEquals(user, userService.signUp(user));
 
         assertNotNull(user.getMoney());
         assertNotNull(user.getAuthority());
-        verify(userRepository).countByEmail(user.getEmail());
+        verify(userRepository).countByName(user.getName());
         verify(userRepository).save(user);
     }
 
@@ -103,7 +103,7 @@ public class UserServiceUnitTests {
     public void enterParkNegativeNoPark() {
         Long amusementParkId = 0L;
 
-        assertThatThrownBy(() -> userService.enterPark(amusementParkId, EMAIL))
+        assertThatThrownBy(() -> userService.enterPark(amusementParkId, NAME))
                 .isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
 
         verify(amusementParkRepository).findById(amusementParkId);
@@ -116,43 +116,43 @@ public class UserServiceUnitTests {
         when(amusementParkRepository.findById(amusementParkId))
                 .thenReturn(Optional.of(amusementPark));
 
-        assertThatThrownBy(() -> userService.enterPark(amusementParkId, EMAIL))
+        assertThatThrownBy(() -> userService.enterPark(amusementParkId, NAME))
                 .isInstanceOf(AmusementParkException.class).hasMessage(USER_NOT_SIGNED_UP);
 
         verify(amusementParkRepository).findById(amusementParkId);
-        verify(userRepository).findById(EMAIL);
+        verify(userRepository).findById(NAME);
     }
 
     @Test
     public void enterParkNegativeNotEnoughMoney() {
         AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).build();
         Long amusementParkId = amusementPark.getId();
-        Users user = Users.builder().email(EMAIL).money(20).coupon(20).build();
+        Users user = Users.builder().name(NAME).money(20).coupon(20).build();
         when(amusementParkRepository.findById(amusementParkId))
                 .thenReturn(Optional.of(amusementPark));
-        when(userRepository.findById(EMAIL)).thenReturn(Optional.of(user));
+        when(userRepository.findById(NAME)).thenReturn(Optional.of(user));
 
-        assertThatThrownBy(() -> userService.enterPark(amusementParkId, EMAIL))
+        assertThatThrownBy(() -> userService.enterPark(amusementParkId, NAME))
                 .isInstanceOf(AmusementParkException.class).hasMessage(NOT_ENOUGH_MONEY);
 
         verify(amusementParkRepository).findById(amusementParkId);
-        verify(userRepository).findById(EMAIL);
+        verify(userRepository).findById(NAME);
     }
 
     @Test
     public void enterParkNegativeUserIsInAPark() {
         AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).build();
         Long amusementParkId = amusementPark.getId();
-        Users user = Users.builder().email(EMAIL).money(100).coupon(0).amusementPark(amusementPark).build();
+        Users user = Users.builder().name(NAME).money(100).coupon(0).amusementPark(amusementPark).build();
         when(amusementParkRepository.findById(amusementParkId))
                 .thenReturn(Optional.of(amusementPark));
-        when(userRepository.findById(EMAIL)).thenReturn(Optional.of(user));
+        when(userRepository.findById(NAME)).thenReturn(Optional.of(user));
 
-        assertThatThrownBy(() -> userService.enterPark(amusementParkId, EMAIL))
+        assertThatThrownBy(() -> userService.enterPark(amusementParkId, NAME))
                 .isInstanceOf(AmusementParkException.class).hasMessage(USER_IS_IN_A_PARK);
 
         verify(amusementParkRepository).findById(amusementParkId);
-        verify(userRepository).findById(EMAIL);
+        verify(userRepository).findById(NAME);
     }
 
     @Test
@@ -160,12 +160,12 @@ public class UserServiceUnitTests {
         Users ownerUser = Users.builder().coupon(10).money(10).build();
         AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).owner(ownerUser).build();
         Long amusementParkId = amusementPark.getId();
-        Users user = Users.builder().email(EMAIL).money(100).coupon(0).build();
+        Users user = Users.builder().name(NAME).money(100).coupon(0).build();
         when(amusementParkRepository.findById(amusementParkId))
                 .thenReturn(Optional.of(amusementPark));
-        when(userRepository.findById(EMAIL)).thenReturn(Optional.of(user));
+        when(userRepository.findById(NAME)).thenReturn(Optional.of(user));
 
-        userService.enterPark(amusementParkId, EMAIL);
+        userService.enterPark(amusementParkId, NAME);
 
         assertEquals(50, user.getMoney());
         assertEquals(0, user.getCoupon());
@@ -173,8 +173,8 @@ public class UserServiceUnitTests {
         assertEquals(10, ownerUser.getCoupon());
         assertEquals(amusementPark, user.getAmusementPark());
         verify(amusementParkRepository).findById(amusementParkId);
-        verify(userRepository).findById(EMAIL);
-        verify(amusementParkKnowUserRepository).countByAmusementParkIdAndUserEmail(amusementParkId, EMAIL);
+        verify(userRepository).findById(NAME);
+        verify(amusementParkKnowUserRepository).countByAmusementParkIdAndUserName(amusementParkId, NAME);
         verify(amusementParkKnowUserRepository).save(any());
     }
 
@@ -183,14 +183,14 @@ public class UserServiceUnitTests {
         Users ownerUser = Users.builder().coupon(10).money(10).build();
         AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).owner(ownerUser).build();
         Long amusementParkId = amusementPark.getId();
-        Users user = Users.builder().email(EMAIL).money(100).coupon(0).build();
+        Users user = Users.builder().name(NAME).money(100).coupon(0).build();
         when(amusementParkRepository.findById(amusementParkId))
                 .thenReturn(Optional.of(amusementPark));
-        when(userRepository.findById(EMAIL)).thenReturn(Optional.of(user));
-        when(amusementParkKnowUserRepository.countByAmusementParkIdAndUserEmail(amusementParkId, EMAIL))
+        when(userRepository.findById(NAME)).thenReturn(Optional.of(user));
+        when(amusementParkKnowUserRepository.countByAmusementParkIdAndUserName(amusementParkId, NAME))
                 .thenReturn(1L);
 
-        userService.enterPark(amusementParkId, EMAIL);
+        userService.enterPark(amusementParkId, NAME);
 
         assertEquals(50, user.getMoney());
         assertEquals(0, user.getCoupon());
@@ -198,8 +198,8 @@ public class UserServiceUnitTests {
         assertEquals(10, ownerUser.getCoupon());
         assertEquals(amusementPark, user.getAmusementPark());
         verify(amusementParkRepository).findById(amusementParkId);
-        verify(userRepository).findById(EMAIL);
-        verify(amusementParkKnowUserRepository).countByAmusementParkIdAndUserEmail(amusementParkId, EMAIL);
+        verify(userRepository).findById(NAME);
+        verify(amusementParkKnowUserRepository).countByAmusementParkIdAndUserName(amusementParkId, NAME);
     }
 
     @Test
@@ -207,14 +207,14 @@ public class UserServiceUnitTests {
         Users ownerUser = Users.builder().coupon(10).money(10).build();
         AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).owner(ownerUser).build();
         Long amusementParkId = amusementPark.getId();
-        Users user = Users.builder().email(EMAIL).coupon(50).money(100).build();
+        Users user = Users.builder().name(NAME).coupon(50).money(100).build();
         when(amusementParkRepository.findById(amusementParkId))
                 .thenReturn(Optional.of(amusementPark));
-        when(userRepository.findById(EMAIL)).thenReturn(Optional.of(user));
-        when(amusementParkKnowUserRepository.countByAmusementParkIdAndUserEmail(amusementParkId, EMAIL))
+        when(userRepository.findById(NAME)).thenReturn(Optional.of(user));
+        when(amusementParkKnowUserRepository.countByAmusementParkIdAndUserName(amusementParkId, NAME))
                 .thenReturn(1L);
 
-        userService.enterPark(amusementParkId, EMAIL);
+        userService.enterPark(amusementParkId, NAME);
 
         assertEquals(100, user.getMoney());
         assertEquals(0, user.getCoupon());
@@ -222,8 +222,8 @@ public class UserServiceUnitTests {
         assertEquals(60, ownerUser.getCoupon());
         assertEquals(amusementPark, user.getAmusementPark());
         verify(amusementParkRepository).findById(amusementParkId);
-        verify(userRepository).findById(EMAIL);
-        verify(amusementParkKnowUserRepository).countByAmusementParkIdAndUserEmail(amusementParkId, EMAIL);
+        verify(userRepository).findById(NAME);
+        verify(amusementParkKnowUserRepository).countByAmusementParkIdAndUserName(amusementParkId, NAME);
     }
 
     @Test
@@ -231,14 +231,14 @@ public class UserServiceUnitTests {
         Users ownerUser = Users.builder().coupon(10).money(10).build();
         AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).owner(ownerUser).build();
         Long amusementParkId = amusementPark.getId();
-        Users user = Users.builder().email(EMAIL).coupon(40).money(100).build();
+        Users user = Users.builder().name(NAME).coupon(40).money(100).build();
         when(amusementParkRepository.findById(amusementParkId))
                 .thenReturn(Optional.of(amusementPark));
-        when(userRepository.findById(EMAIL)).thenReturn(Optional.of(user));
-        when(amusementParkKnowUserRepository.countByAmusementParkIdAndUserEmail(amusementParkId, EMAIL))
+        when(userRepository.findById(NAME)).thenReturn(Optional.of(user));
+        when(amusementParkKnowUserRepository.countByAmusementParkIdAndUserName(amusementParkId, NAME))
                 .thenReturn(1L);
 
-        userService.enterPark(amusementParkId, EMAIL);
+        userService.enterPark(amusementParkId, NAME);
 
         assertEquals(90, user.getMoney());
         assertEquals(0, user.getCoupon());
@@ -246,8 +246,8 @@ public class UserServiceUnitTests {
         assertEquals(50, ownerUser.getCoupon());
         assertEquals(amusementPark, user.getAmusementPark());
         verify(amusementParkRepository).findById(amusementParkId);
-        verify(userRepository).findById(EMAIL);
-        verify(amusementParkKnowUserRepository).countByAmusementParkIdAndUserEmail(amusementParkId, EMAIL);
+        verify(userRepository).findById(NAME);
+        verify(amusementParkKnowUserRepository).countByAmusementParkIdAndUserName(amusementParkId, NAME);
     }
 
     @Test
@@ -255,7 +255,7 @@ public class UserServiceUnitTests {
         Long amusementParkId = 0L;
         Long machineId = 1L;
 
-        assertThatThrownBy(() -> userService.getOnMachine(amusementParkId, machineId, EMAIL))
+        assertThatThrownBy(() -> userService.getOnMachine(amusementParkId, machineId, NAME))
                 .isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
 
         verify(amusementParkRepository).findById(amusementParkId);
@@ -268,7 +268,7 @@ public class UserServiceUnitTests {
         Long machineId = 1L;
         when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
 
-        assertThatThrownBy(() -> userService.getOnMachine(amusementParkId, machineId, EMAIL))
+        assertThatThrownBy(() -> userService.getOnMachine(amusementParkId, machineId, NAME))
                 .isInstanceOf(AmusementParkException.class).hasMessage(NO_MACHINE_IN_PARK_WITH_ID);
 
         verify(amusementParkRepository).findById(amusementParkId);
@@ -285,12 +285,12 @@ public class UserServiceUnitTests {
         when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
                 .thenReturn(Optional.of(machine));
 
-        assertThatThrownBy(() -> userService.getOnMachine(amusementParkId, machineId, EMAIL))
+        assertThatThrownBy(() -> userService.getOnMachine(amusementParkId, machineId, NAME))
                 .isInstanceOf(AmusementParkException.class).hasMessage(NO_USER_IN_PARK_WITH_ID);
 
         verify(amusementParkRepository).findById(amusementParkId);
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-        verify(userRepository).findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL);
+        verify(userRepository).findByAmusementParkIdAndUserName(amusementParkId, NAME);
     }
 
     @Test
@@ -299,21 +299,21 @@ public class UserServiceUnitTests {
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().id(1L).build();
         Long machineId = machine.getId();
-        Users user = Users.builder().email(EMAIL).machine(machine).build();
+        Users user = Users.builder().name(NAME).machine(machine).build();
         when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(amusementParkRepository.findById(amusementParkId))
                 .thenReturn(Optional.of(AmusementPark.builder().id(amusementParkId).build()));
         when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
                 .thenReturn(Optional.of(machine));
-        when(userRepository.findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL))
+        when(userRepository.findByAmusementParkIdAndUserName(amusementParkId, NAME))
                 .thenReturn(Optional.of(user));
 
-        assertThatThrownBy(() -> userService.getOnMachine(amusementParkId, machineId, EMAIL))
+        assertThatThrownBy(() -> userService.getOnMachine(amusementParkId, machineId, NAME))
                 .isInstanceOf(AmusementParkException.class).hasMessage(USER_IS_ON_A_MACHINE);
 
         verify(amusementParkRepository).findById(amusementParkId);
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-        verify(userRepository).findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL);
+        verify(userRepository).findByAmusementParkIdAndUserName(amusementParkId, NAME);
     }
 
     @Test
@@ -322,19 +322,19 @@ public class UserServiceUnitTests {
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().id(1L).ticketPrice(50).build();
         Long machineId = machine.getId();
-        Users user = Users.builder().email(EMAIL).money(30).coupon(10).build();
+        Users user = Users.builder().name(NAME).money(30).coupon(10).build();
         when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
                 .thenReturn(Optional.of(machine));
-        when(userRepository.findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL))
+        when(userRepository.findByAmusementParkIdAndUserName(amusementParkId, NAME))
                 .thenReturn(Optional.of(user));
 
-        assertThatThrownBy(() -> userService.getOnMachine(amusementParkId, machineId, EMAIL))
+        assertThatThrownBy(() -> userService.getOnMachine(amusementParkId, machineId, NAME))
                 .isInstanceOf(AmusementParkException.class).hasMessage(NOT_ENOUGH_MONEY);
 
         verify(amusementParkRepository).findById(amusementParkId);
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-        verify(userRepository).findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL);
+        verify(userRepository).findByAmusementParkIdAndUserName(amusementParkId, NAME);
     }
 
     @Test
@@ -343,19 +343,19 @@ public class UserServiceUnitTests {
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().id(1L).ticketPrice(20).minimumRequiredAge(20).build();
         Long machineId = machine.getId();
-        Users user = Users.builder().email(EMAIL).money(10).coupon(10).dateOfBirth(LocalDate.now()).build();
+        Users user = Users.builder().name(NAME).money(10).coupon(10).dateOfBirth(LocalDate.now()).build();
         when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
                 .thenReturn(Optional.of(machine));
-        when(userRepository.findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL))
+        when(userRepository.findByAmusementParkIdAndUserName(amusementParkId, NAME))
                 .thenReturn(Optional.of(user));
 
-        assertThatThrownBy(() -> userService.getOnMachine(amusementParkId, machineId, EMAIL))
+        assertThatThrownBy(() -> userService.getOnMachine(amusementParkId, machineId, NAME))
                 .isInstanceOf(AmusementParkException.class).hasMessage(USER_IS_TOO_YOUNG);
 
         verify(amusementParkRepository).findById(amusementParkId);
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-        verify(userRepository).findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL);
+        verify(userRepository).findByAmusementParkIdAndUserName(amusementParkId, NAME);
     }
 
     @Test
@@ -365,15 +365,15 @@ public class UserServiceUnitTests {
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().id(1L).ticketPrice(20).minimumRequiredAge(20).build();
         Long machineId = machine.getId();
-        Users user = Users.builder().email(EMAIL).money(40).coupon(0)
+        Users user = Users.builder().name(NAME).money(40).coupon(0)
                 .dateOfBirth(LocalDate.of(1990, 10, 20)).build();
         when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
                 .thenReturn(Optional.of(machine));
-        when(userRepository.findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL))
+        when(userRepository.findByAmusementParkIdAndUserName(amusementParkId, NAME))
                 .thenReturn(Optional.of(user));
 
-        userService.getOnMachine(amusementParkId, machineId, EMAIL);
+        userService.getOnMachine(amusementParkId, machineId, NAME);
 
         assertEquals(20, user.getMoney());
         assertEquals(0, user.getCoupon());
@@ -382,7 +382,7 @@ public class UserServiceUnitTests {
         assertEquals(machine, user.getMachine());
         verify(amusementParkRepository).findById(amusementParkId);
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-        verify(userRepository).findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL);
+        verify(userRepository).findByAmusementParkIdAndUserName(amusementParkId, NAME);
     }
 
     @Test
@@ -392,15 +392,15 @@ public class UserServiceUnitTests {
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().id(1L).ticketPrice(20).minimumRequiredAge(20).build();
         Long machineId = machine.getId();
-        Users user = Users.builder().email(EMAIL).money(40).coupon(20)
+        Users user = Users.builder().name(NAME).money(40).coupon(20)
                 .dateOfBirth(LocalDate.of(1990, 10, 20)).build();
         when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
                 .thenReturn(Optional.of(machine));
-        when(userRepository.findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL))
+        when(userRepository.findByAmusementParkIdAndUserName(amusementParkId, NAME))
                 .thenReturn(Optional.of(user));
 
-        userService.getOnMachine(amusementParkId, machineId, EMAIL);
+        userService.getOnMachine(amusementParkId, machineId, NAME);
 
         assertEquals(40, user.getMoney());
         assertEquals(0, user.getCoupon());
@@ -409,7 +409,7 @@ public class UserServiceUnitTests {
         assertEquals(machine, user.getMachine());
         verify(amusementParkRepository).findById(amusementParkId);
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-        verify(userRepository).findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL);
+        verify(userRepository).findByAmusementParkIdAndUserName(amusementParkId, NAME);
     }
 
     @Test
@@ -419,15 +419,15 @@ public class UserServiceUnitTests {
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().id(1L).ticketPrice(20).minimumRequiredAge(20).build();
         Long machineId = machine.getId();
-        Users user = Users.builder().email(EMAIL).money(40).coupon(10)
+        Users user = Users.builder().name(NAME).money(40).coupon(10)
                 .dateOfBirth(LocalDate.of(1990, 10, 20)).build();
         when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
                 .thenReturn(Optional.of(machine));
-        when(userRepository.findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL))
+        when(userRepository.findByAmusementParkIdAndUserName(amusementParkId, NAME))
                 .thenReturn(Optional.of(user));
 
-        userService.getOnMachine(amusementParkId, machineId, EMAIL);
+        userService.getOnMachine(amusementParkId, machineId, NAME);
 
         assertEquals(30, user.getMoney());
         assertEquals(0, user.getCoupon());
@@ -436,7 +436,7 @@ public class UserServiceUnitTests {
         assertEquals(machine, user.getMachine());
         verify(amusementParkRepository).findById(amusementParkId);
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-        verify(userRepository).findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL);
+        verify(userRepository).findByAmusementParkIdAndUserName(amusementParkId, NAME);
     }
 
     @Test
@@ -444,47 +444,47 @@ public class UserServiceUnitTests {
         Long amusementParkId = 10L;
         Long machineId = 0L;
 
-        assertThatThrownBy(() -> userService.getOffMachine(amusementParkId, machineId, EMAIL))
+        assertThatThrownBy(() -> userService.getOffMachine(amusementParkId, machineId, NAME))
                 .isInstanceOf(AmusementParkException.class).hasMessage(NO_USER_ON_MACHINE_WITH_ID);
 
-        verify(userRepository).findByAmusementParkIdAndMachineIdAndUserEmail(amusementParkId, machineId, EMAIL);
+        verify(userRepository).findByAmusementParkIdAndMachineIdAndUserName(amusementParkId, machineId, NAME);
     }
 
     @Test
     public void getOffMachinePositive() {
         Long amusementParkId = 10L;
         Long machineId = 0L;
-        Users user = Users.builder().email(EMAIL).machine(Machine.builder().id(machineId).build()).build();
-        when(userRepository.findByAmusementParkIdAndMachineIdAndUserEmail(amusementParkId, machineId, EMAIL))
+        Users user = Users.builder().name(NAME).machine(Machine.builder().id(machineId).build()).build();
+        when(userRepository.findByAmusementParkIdAndMachineIdAndUserName(amusementParkId, machineId, NAME))
                 .thenReturn(Optional.of(user));
 
-        userService.getOffMachine(amusementParkId, machineId, EMAIL);
+        userService.getOffMachine(amusementParkId, machineId, NAME);
 
         assertNull(user.getMachine());
-        verify(userRepository).findByAmusementParkIdAndMachineIdAndUserEmail(amusementParkId, machineId, EMAIL);
+        verify(userRepository).findByAmusementParkIdAndMachineIdAndUserName(amusementParkId, machineId, NAME);
     }
 
     @Test
     public void leaveParkNegativeNoUserInPark() {
         Long amusementParkId = 0L;
 
-        assertThatThrownBy(() -> userService.leavePark(amusementParkId, EMAIL))
+        assertThatThrownBy(() -> userService.leavePark(amusementParkId, NAME))
                 .isInstanceOf(AmusementParkException.class).hasMessage(NO_USER_IN_PARK_WITH_ID);
 
-        verify(userRepository).findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL);
+        verify(userRepository).findByAmusementParkIdAndUserName(amusementParkId, NAME);
     }
 
     @Test
     public void leaveParkPositive() {
         Long amusementParkId = 0L;
-        Users user = Users.builder().email(EMAIL).amusementPark(AmusementPark.builder().build())
+        Users user = Users.builder().name(NAME).amusementPark(AmusementPark.builder().build())
                 .money(100).build();
-        when(userRepository.findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL))
+        when(userRepository.findByAmusementParkIdAndUserName(amusementParkId, NAME))
                 .thenReturn(Optional.of(user));
 
-        userService.leavePark(amusementParkId, EMAIL);
+        userService.leavePark(amusementParkId, NAME);
 
         assertNull(user.getAmusementPark());
-        verify(userRepository).findByAmusementParkIdAndUserEmail(amusementParkId, EMAIL);
+        verify(userRepository).findByAmusementParkIdAndUserName(amusementParkId, NAME);
     }
 }

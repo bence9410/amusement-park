@@ -1,7 +1,6 @@
 package hu.bence.amusementpark.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
@@ -21,13 +20,13 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@EqualsAndHashCode(of = "email")
+@EqualsAndHashCode(of = "name")
 public class Users {
 
     @Id
     @NotNull
-    @Email(regexp = ".+@.+\\..+")
-    private String email;
+    @Size(min = 3, max = 50)
+    private String name;
 
     @NotNull
     @Size(min = 60, max = 60)

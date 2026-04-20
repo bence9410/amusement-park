@@ -23,7 +23,7 @@ import static jakarta.persistence.FetchType.LAZY;
 public class AmusementParkKnowUser {
 
     @EmbeddedId
-    private AmusementParkIdUserEmail id = new AmusementParkIdUserEmail();
+    private AmusementParkIdUserName id = new AmusementParkIdUserName();
 
     @CreationTimestamp
     private LocalDateTime dateOfFirstEnter;
@@ -32,7 +32,7 @@ public class AmusementParkKnowUser {
     @ManyToOne(fetch = LAZY)
     private AmusementPark amusementPark;
 
-    @MapsId("userEmail")
+    @MapsId("userName")
     @ManyToOne(fetch = LAZY)
     private Users user;
 

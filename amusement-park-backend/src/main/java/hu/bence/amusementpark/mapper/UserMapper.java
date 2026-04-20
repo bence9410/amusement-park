@@ -9,7 +9,7 @@ public class UserMapper {
 
     public static UserResponseDto toDto(Users entity) {
         return UserResponseDto.builder()
-                .email(entity.getEmail())
+                .name(entity.getName())
                 .authority(entity.getAuthority())
                 .money(entity.getMoney())
                 .coupon(entity.getCoupon())
@@ -18,7 +18,7 @@ public class UserMapper {
 
     public static UserResponseDto toDtoWithoutPhoto(Users entity) {
         return UserResponseDto.builder()
-                .email(entity.getEmail())
+                .name(entity.getName())
                 .authority(entity.getAuthority())
                 .money(entity.getMoney())
                 .coupon(entity.getCoupon()).build();
@@ -26,7 +26,7 @@ public class UserMapper {
 
     public static Users toEntity(UserSignUpRequestDto dto) {
         return Users.builder()
-                .email(dto.getEmail())
+                .name(dto.getName())
                 .password(dto.getPassword())
                 .dateOfBirth(dto.getDateOfBirth())
                 .photo(Photo.builder().photo(dto.getPhoto()).build()).build();

@@ -184,7 +184,7 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
                 .ifPresent(predicates::add);
 
         cq.select(cb.construct(AmusementParkSearchResponseDto.class, root.get(AmusementPark_.id), root.get(AmusementPark_.name),
-                        root.get(AmusementPark_.entranceFee), root.get(AmusementPark_.owner).get(Users_.email), countMachines,
+                        root.get(AmusementPark_.entranceFee), root.get(AmusementPark_.owner).get(Users_.name), countMachines,
                         countGuestBookRegistries, countActiveUsers, countKnownUsers))
                 .where(predicates.toArray(new Predicate[0]));
         return entityManager.createQuery(cq).setFirstResult((int) pageable.getOffset())

@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import static hu.bence.amusementpark.constants.ErrorMessageConstants.AMUSEMENT_PARK_NOT_OWNED_BY_YOU;
 import static hu.bence.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
-import static hu.bence.amusementpark.constants.StringParamConstants.EMAIL;
+import static hu.bence.amusementpark.constants.StringParamConstants.NAME;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -53,7 +53,7 @@ public class MachineServiceUnitTests {
         Long amusementParkId = 0L;
         Machine machine = Machine.builder().build();
 
-        assertThatThrownBy(() -> machineService.addMachine(amusementParkId, machine, EMAIL))
+        assertThatThrownBy(() -> machineService.addMachine(amusementParkId, machine, NAME))
                 .isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
 
         verify(amusementParkRepository).findById(amusementParkId);
@@ -61,7 +61,7 @@ public class MachineServiceUnitTests {
 
     @Test
     public void addMachineNegativeNotOwned() {
-        Users user = Users.builder().email(EMAIL).build();
+        Users user = Users.builder().name(NAME).build();
         AmusementPark amusementPark = AmusementPark.builder().id(10L).owner(user).build();
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().build();
@@ -75,14 +75,14 @@ public class MachineServiceUnitTests {
 
     @Test
     public void addMachinePositive() {
-        Users user = Users.builder().email(EMAIL).build();
+        Users user = Users.builder().name(NAME).build();
         AmusementPark amusementPark = AmusementPark.builder().id(10L).owner(user).build();
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().build();
         when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(machineRepository.save(machine)).thenReturn(machine);
 
-        machineService.addMachine(amusementPark.getId(), machine, EMAIL);
+        machineService.addMachine(amusementPark.getId(), machine, NAME);
 
         assertEquals(amusementPark, machine.getAmusementPark());
         verify(amusementParkRepository).findById(amusementParkId);

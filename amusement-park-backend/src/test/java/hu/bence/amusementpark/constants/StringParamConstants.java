@@ -4,7 +4,7 @@ import java.util.stream.IntStream;
 
 public class StringParamConstants {
 
-    public static final String EMAIL = "nembence1994@gmail.com";
+    public static final String NAME = "Bence";
     public static final String OPINION_ON_THE_PARK = "Amazing";
 
     public static final String STRING_EMPTY = "";

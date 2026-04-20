@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface GuestBookRegistryService {
 
-    void addRegistry(Long amusementParkId, String userEmail, String textOfRegistry);
+    void addRegistry(Long amusementParkId, String userName, String textOfRegistry);
 
     Page<GuestBookRegistrySearchResponseDto> findAll(GuestBookRegistrySearchRequestDto dto, Pageable pageable);
 

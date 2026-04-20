@@ -9,17 +9,17 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<Users, String> {
 
-    @Query("Select count(*) from Users u where u.email = :userEmail")
-    Long countByEmail(String userEmail);
+    @Query("Select count(*) from Users u where u.name = :userName")
+    Long countByName(String userName);
 
     @Modifying
-    @Query("Update Users u set u.money = u.money + :amount where u.email = :userEmail")
-    void incrementSpendingMoneyByEmail(Integer amount, String userEmail);
+    @Query("Update Users u set u.money = u.money + :amount where u.name = :userName")
+    void incrementSpendingMoneyByName(Integer amount, String userName);
 
-    @Query("Select u from Users u where u.amusementPark.id = :amusementParkId and u.email = :userEmail")
-    Optional<Users> findByAmusementParkIdAndUserEmail(Long amusementParkId, String userEmail);
+    @Query("Select u from Users u where u.amusementPark.id = :amusementParkId and u.name = :userName")
+    Optional<Users> findByAmusementParkIdAndUserName(Long amusementParkId, String userName);
 
-    @Query("Select u from Users u where u.amusementPark.id = :amusementParkId and u.machine.id = :machineId and u.email = :userEmail")
-    Optional<Users> findByAmusementParkIdAndMachineIdAndUserEmail(Long amusementParkId, Long machineId, String userEmail);
+    @Query("Select u from Users u where u.amusementPark.id = :amusementParkId and u.machine.id = :machineId and u.name = :userName")
+    Optional<Users> findByAmusementParkIdAndMachineIdAndUserName(Long amusementParkId, Long machineId, String userName);
 
 }

@@ -6,7 +6,7 @@ import hu.bence.amusementpark.entity.Users;
 
 import java.time.LocalDate;
 
-import static hu.bence.amusementpark.constants.StringParamConstants.EMAIL;
+import static hu.bence.amusementpark.constants.StringParamConstants.NAME;
 import static hu.bence.amusementpark.constants.StringParamConstants.VALID_PASSWORD;
 
 public class ValidEntityFactory {
@@ -28,7 +28,7 @@ public class ValidEntityFactory {
 
     public static Users createUser() {
         return Users.builder()
-                .email(EMAIL + "m")
+                .name(NAME + "e")
                 .password(VALID_PASSWORD)
                 .authority("ROLE_ADMIN")
                 .dateOfBirth(LocalDate.of(1994, 10, 22))

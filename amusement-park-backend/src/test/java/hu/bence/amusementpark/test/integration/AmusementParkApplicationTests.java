@@ -66,7 +66,7 @@ public class AmusementParkApplicationTests {
 
         UserResponseDto userResponseDto = signUp(userSignUpRequestDto);
 
-        assertEquals(userSignUpRequestDto.getEmail(), userResponseDto.getEmail());
+        assertEquals(userSignUpRequestDto.getName(), userResponseDto.getName());
         assertEquals(userSignUpRequestDto.getPhoto(), userResponseDto.getPhoto());
         assertEquals(250, userResponseDto.getMoney());
         assertEquals("ROLE_VISITOR", userResponseDto.getAuthority());
@@ -159,19 +159,19 @@ public class AmusementParkApplicationTests {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         ResponseEntity<UserResponseDto> response = restTemplate.exchange("http://localhost:" + port + "/api/login", HttpMethod.POST,
-                new HttpEntity<>(createMap("nembence1994@gmail.com", StringParamConstants.VALID_PASSWORD), headers), UserResponseDto.class);
+                new HttpEntity<>(createMap("Bence", StringParamConstants.VALID_PASSWORD), headers), UserResponseDto.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getHeaders().getFirst("Set-Cookie").contains("SESSION="));
         UserResponseDto userResponseDto = response.getBody();
-        assertEquals("nembence1994@gmail.com", userResponseDto.getEmail());
+        assertEquals("Bence", userResponseDto.getName());
         assertEquals("ROLE_ADMIN", userResponseDto.getAuthority());
         return userResponseDto;
     }
 
-    private MultiValueMap<String, String> createMap(String username, String password) {
+    private MultiValueMap<String, String> createMap(String name, String password) {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("email", username);
+        map.add("name", name);
         map.add("password", password);
         return map;
     }

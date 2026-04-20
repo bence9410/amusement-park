@@ -41,21 +41,21 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<UserResponseDto> me(Principal principal) {
         Optional<Users> user = Optional.ofNullable(principal).map(Principal::getName)
-                .map(userService::findByEmailMakeFreshlyLoggedIn);
+                .map(userService::findByNameMakeFreshlyLoggedIn);
         return user.map(UserMapper::toDto).map(ResponseEntity::ok)
                 .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
     }
 
     @PostMapping("/login")
     public UserResponseDto login(HttpServletRequest request, HttpServletResponse response) {
-        String username = request.getParameter("email");
+        String username = request.getParameter("name");
         String password = request.getParameter("password");
 
-        Optional.ofNullable(username).filter(email -> email.matches(Constants.EMAIL_REGEXP)).orElseThrow(
-                () -> new BadCredentialsException("Email must be well-formed, for example: somebody@example.com"));
+        Optional.ofNullable(username).filter(name -> name.length() >= 3 && name.length() <= 50).orElseThrow(
+                () -> new BadCredentialsException("Name length must be between 3 and 50."));
 
         saveSecurityContext(username, password, request, response);
-        return UserMapper.toDto(userService.findByEmailMakeFreshlyLoggedIn(username));
+        return UserMapper.toDto(userService.findByNameMakeFreshlyLoggedIn(username));
     }
 
     @PostMapping("/signUp")
@@ -63,7 +63,7 @@ public class UserController {
                                   HttpServletRequest request, HttpServletResponse response) {
         UserResponseDto userResponseDto = UserMapper
                 .toDto(userService.signUp(UserMapper.toEntity(userSignUpRequestDto)));
-        saveSecurityContext(userSignUpRequestDto.getEmail(), userSignUpRequestDto.getPassword(), request, response);
+        saveSecurityContext(userSignUpRequestDto.getName(), userSignUpRequestDto.getPassword(), request, response);
         return userResponseDto;
     }
 

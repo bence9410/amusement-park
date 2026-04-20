@@ -5,18 +5,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends UserDetailsService {
 
-    Users findByEmailMakeFreshlyLoggedIn(String userEmail);
+    Users findByNameMakeFreshlyLoggedIn(String userName);
 
     Users signUp(Users user);
 
-    void uploadMoney(Integer amount, String userEmail);
+    void uploadMoney(Integer amount, String userName);
 
-    void leavePark(Long amusementParkId, String userEmail);
+    void leavePark(Long amusementParkId, String userName);
 
-    Users enterPark(Long amusementParkId, String userEmail);
+    Users enterPark(Long amusementParkId, String userName);
 
-    Users getOnMachine(Long amusementParkId, Long machineId, String userEmail);
+    Users getOnMachine(Long amusementParkId, Long machineId, String userName);
 
-    void getOffMachine(Long amusementParkId, Long machineId, String userEmail);
+    void getOffMachine(Long amusementParkId, Long machineId, String userName);
 
 }

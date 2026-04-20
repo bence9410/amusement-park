@@ -49,8 +49,8 @@ public class GuestBookRegistryRepositoryCustomImpl implements GuestBookRegistryR
         predicates.add(
                 cb.equal(root.get(GuestBookRegistry_.amusementPark).get(AmusementPark_.id), dto.getAmusementParkId()));
 
-        ofNullable(dto.getUserEmail()).map(userEmail -> cb
-                        .like(root.get(GuestBookRegistry_.user).get(Users_.email), "%" + userEmail + "%"))
+        ofNullable(dto.getUserName()).map(userName -> cb
+                        .like(root.get(GuestBookRegistry_.user).get(Users_.name), "%" + userName + "%"))
                 .ifPresent(predicates::add);
 
         ofNullable(dto.getTextOfRegistry()).map(textOfRegistry -> cb
@@ -89,7 +89,7 @@ public class GuestBookRegistryRepositoryCustomImpl implements GuestBookRegistryR
             cq.orderBy(cb.desc(root.get(order.getProperty())));
         }
 
-        cq.multiselect(root.get(GuestBookRegistry_.user).get(Users_.email),
+        cq.multiselect(root.get(GuestBookRegistry_.user).get(Users_.name),
                         root.get(GuestBookRegistry_.textOfRegistry), root.get(GuestBookRegistry_.dateOfRegistry))
                 .where(createPredicates(cb, root, dto));
         return entityManager.createQuery(cq).setFirstResult((int) pageable.getOffset())

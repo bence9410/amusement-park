@@ -18,8 +18,8 @@ import java.time.LocalDate;
 public class UserSignUpRequestDto {
 
     @NotNull
-    @Email(regexp = Constants.EMAIL_REGEXP)
-    private String email;
+    @Size(min = 3, max = 50)
+    private String name;
 
     @NotNull
     @Pattern(regexp = Constants.PASSWORD_REGEXP)

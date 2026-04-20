@@ -17,7 +17,7 @@ public class GuestBookRegistrySearchRequestDto {
     @JsonIgnore
     private Long amusementParkId;
 
-    private String userEmail;
+    private String userName;
 
     private String textOfRegistry;
 
