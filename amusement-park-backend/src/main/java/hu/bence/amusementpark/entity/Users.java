@@ -51,6 +51,8 @@ public class Users {
     @Range(min = 0)
     private Integer coupon;
 
+    private boolean isActivatedCoupon;
+
     @OneToOne(fetch = LAZY, cascade = ALL)
     private Photo photo;
 

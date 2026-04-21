@@ -40,6 +40,14 @@
       @click="store.setCreateShow(true)"
     />
     <v-btn
+      v-if="!store.getUser.isActivatedCoupon"
+      class="ma-1"
+      color="black"
+      text="Activate coupon"
+      variant="flat"
+      @click="activateCouponForm.reset(), activateCouponDialogShow = true"
+    />
+    <v-btn
       class="ma-1"
       color="black"
       text="Upload money"
@@ -89,6 +97,39 @@
       </v-form>
     </v-card>
   </v-dialog>
+  <v-dialog v-model="activateCouponDialogShow" eager persistent width="50%">
+    <v-card>
+      <div class="text-right" style="width: 100%">
+        <v-btn class="ma-2" icon="mdi-close" @click="activateCouponDialogShow = false" />
+      </div>
+      <v-card-title class="text-h5">Activate coupon</v-card-title>
+      <v-form ref="activateCouponForm" v-model="activateCouponFormIsInvalid" @submit.prevent="activateCoupon">
+        <v-card-text>
+          <v-text-field
+            v-model="activateCouponValue"
+            label="Coupon code"
+            :readonly="activateCouponFormIsLoading"
+            required
+            :rules="[
+              (v) =>
+                (!!v) || 'Coupon code is required.',
+            ]"
+          />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            color="green"
+            :disabled="!activateCouponFormIsInvalid"
+            :loading="activateCouponFormIsLoading"
+            text="Upload"
+            type="submit"
+            variant="flat"
+          />
+        </v-card-actions>
+      </v-form>
+    </v-card>
+  </v-dialog>
 </template>
 <script setup lang="ts">
   import { computed, ref } from 'vue'
@@ -104,6 +145,12 @@
   const logoutIsLoading = ref(false)
   const uploadMoneyDialogShow = ref(false)
   const uploadMoneyValue = ref('')
+
+  const activateCouponForm = ref()
+  const activateCouponFormIsInvalid = ref(false)
+  const activateCouponFormIsLoading = ref(false)
+  const activateCouponDialogShow = ref(false)
+  const activateCouponValue = ref('')
 
   const showCreate = computed(() => {
     if (route.path === '/amusement-parks') {
@@ -143,6 +190,28 @@
         store.getUser.money = store.getUser.money + Number(uploadMoneyValue.value)
         store.addMessage('success', 'Successfully uploaded ' + uploadMoneyValue.value + ' money.')
         uploadMoneyDialogShow.value = false
+      } else {
+        store.addMessage('error', await response.text())
+      }
+    })
+  }
+
+  function activateCoupon () {
+    activateCouponFormIsLoading.value = true
+    fetch('/api/activate-coupon', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: activateCouponValue.value,
+    }).then(async response => {
+      activateCouponFormIsLoading.value = false
+      activateCouponDialogShow.value = false
+      if (response.ok) {
+        const user = await response.json()
+        store.getUser.coupon = user.coupon
+        store.getUser.isActivatedCoupon = user.isActivatedCoupon
+        store.addMessage('success', 'Successfully activated coupone ' + activateCouponValue.value + '.')
       } else {
         store.addMessage('error', await response.text())
       }

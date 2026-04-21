@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserService {
         if (Objects.nonNull(couponCode) && !couponCode.isEmpty()) {
             ifNotEquals(couponCode, "EMPLOY_ME", WRONG_COUPON_CODE);
             user.setCoupon(10);
+            user.setActivatedCoupon(true);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
@@ -70,6 +71,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void uploadMoney(Integer amount, String userName) {
         userRepository.incrementSpendingMoneyByName(amount, userName);
+    }
+
+    @Override
+    public Users activateCoupon(String userName, String couponCode) {
+        Users user = ifNull(userRepository.findById(userName),
+                String.format(COULD_NOT_FIND_USER, userName));
+        ifNotEquals(couponCode, "EMPLOY_ME", WRONG_COUPON_CODE);
+        ifTrue(user.isActivatedCoupon(), ALREADY_ACTIVATED_COUPON_CODE);
+        user.setCoupon(user.getCoupon() + 10);
+        user.setActivatedCoupon(true);
+        return user;
     }
 
     @Override

@@ -21,4 +21,6 @@ public class UserResponseDto {
 
     private String photo;
 
+    private Boolean isActivatedCoupon;
+
 }

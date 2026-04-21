@@ -13,6 +13,7 @@ public class UserMapper {
                 .authority(entity.getAuthority())
                 .money(entity.getMoney())
                 .coupon(entity.getCoupon())
+                .isActivatedCoupon(entity.isActivatedCoupon())
                 .photo(entity.getPhoto().getPhoto()).build();
     }
 
@@ -21,7 +22,8 @@ public class UserMapper {
                 .name(entity.getName())
                 .authority(entity.getAuthority())
                 .money(entity.getMoney())
-                .coupon(entity.getCoupon()).build();
+                .coupon(entity.getCoupon())
+                .isActivatedCoupon(entity.isActivatedCoupon()).build();
     }
 
     public static Users toEntity(UserSignUpRequestDto dto) {

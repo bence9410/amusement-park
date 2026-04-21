@@ -22,8 +22,7 @@ import static hu.bence.amusementpark.constants.ErrorMessageConstants.*;
 import static hu.bence.amusementpark.constants.StringParamConstants.NAME;
 import static hu.bence.amusementpark.constants.StringParamConstants.VALID_PASSWORD;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -63,11 +62,9 @@ public class UserServiceUnitTests {
 
     @Test
     public void findByNameMakeFreshlyLoggedInPositive() {
-        Users userRequest = Users.builder().name(NAME).build();
         Users userInDb = Users.builder().name(NAME)
                 .amusementPark(AmusementPark.builder().id(0L).build())
                 .machine(Machine.builder().build()).build();
-        ;
         when(userRepository.findById(NAME)).thenReturn(Optional.of(userInDb));
 
         Users userResponse = userService.findByNameMakeFreshlyLoggedIn(NAME);
@@ -126,6 +123,58 @@ public class UserServiceUnitTests {
         assertEquals(10, user.getCoupon());
         verify(userRepository).countByName(user.getName());
         verify(userRepository).save(user);
+    }
+
+    @Test
+    public void uploadMoneyPositive() {
+        userService.uploadMoney(500, NAME);
+
+        verify(userRepository).incrementSpendingMoneyByName(500, NAME);
+    }
+
+    @Test
+    public void activateCouponNegativeNoUserWithName() {
+        assertThatThrownBy(() -> userService.activateCoupon(NAME, ""))
+                .isInstanceOf(AmusementParkException.class)
+                .hasMessage(String.format(COULD_NOT_FIND_USER, NAME));
+
+        verify(userRepository).findById(NAME);
+    }
+
+    @Test
+    public void activateCouponNegativeWrongCoupon() {
+        Users user = Users.builder().name(NAME).build();
+        when(userRepository.findById(NAME)).thenReturn(Optional.of(user));
+
+        assertThatThrownBy(() -> userService.activateCoupon(NAME, "wrong"))
+                .isInstanceOf(AmusementParkException.class)
+                .hasMessage(WRONG_COUPON_CODE);
+
+        verify(userRepository).findById(NAME);
+    }
+
+    @Test
+    public void activateCouponNegativeAlreadyActivated() {
+        Users user = Users.builder().name(NAME).isActivatedCoupon(true).build();
+        when(userRepository.findById(NAME)).thenReturn(Optional.of(user));
+
+        assertThatThrownBy(() -> userService.activateCoupon(NAME, "EMPLOY_ME"))
+                .isInstanceOf(AmusementParkException.class)
+                .hasMessage(ALREADY_ACTIVATED_COUPON_CODE);
+
+        verify(userRepository).findById(NAME);
+    }
+
+    @Test
+    public void activateCouponPositive() {
+        Users user = Users.builder().name(NAME).coupon(0).build();
+        when(userRepository.findById(NAME)).thenReturn(Optional.of(user));
+
+        user = userService.activateCoupon(NAME, "EMPLOY_ME");
+
+        assertEquals(10, user.getCoupon());
+        assertTrue(user.isActivatedCoupon());
+        verify(userRepository).findById(NAME);
     }
 
     @Test

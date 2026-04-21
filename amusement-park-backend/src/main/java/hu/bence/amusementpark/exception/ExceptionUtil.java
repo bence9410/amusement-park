@@ -19,12 +19,6 @@ public class ExceptionUtil {
         return t;
     }
 
-    public static void ifEquals(Object o1, Object o2, String message) {
-        if (o1.equals(o2)) {
-            throw new AmusementParkException(message);
-        }
-    }
-
     public static void ifNotEquals(Object o1, Object o2, String message) {
         if (!o1.equals(o2)) {
             throw new AmusementParkException(message);
@@ -43,8 +37,8 @@ public class ExceptionUtil {
         }
     }
 
-    public static void ifPrimitivesEquals(long l1, long l2, String message) {
-        if (l1 == l2) {
+    public static void ifTrue(boolean value, String message) {
+        if (value) {
             throw new AmusementParkException(message);
         }
     }

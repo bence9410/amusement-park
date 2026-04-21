@@ -1,7 +1,6 @@
 package hu.bence.amusementpark.test.integration.service;
 
 import hu.bence.amusementpark.entity.Users;
-import hu.bence.amusementpark.repository.UserRepository;
 import hu.bence.amusementpark.service.UserService;
 import hu.bence.amusementpark.test.integration.AbstractStatementCounterTests;
 import org.junit.jupiter.api.Test;
@@ -15,9 +14,6 @@ public class UserServiceIntegrationTests extends AbstractStatementCounterTests {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Test
     public void findByNameMakeFreshlyLoggedInTest() {
@@ -49,6 +45,17 @@ public class UserServiceIntegrationTests extends AbstractStatementCounterTests {
                 userRepository.findById(testUserName).get().getMoney());
         select++;
         assertStatements();
+    }
+
+    @Test
+    public void activateCouponTest() {
+        Users user = userService.activateCoupon(NAME, "EMPLOY_ME");
+        select++;
+        update++;
+        assertStatements();
+
+        assertEquals(10, user.getCoupon());
+        assertTrue(user.isActivatedCoupon());
     }
 
     @Test

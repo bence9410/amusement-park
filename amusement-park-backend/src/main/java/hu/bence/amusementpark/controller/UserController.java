@@ -8,6 +8,8 @@ import hu.bence.amusementpark.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -77,6 +79,11 @@ public class UserController {
     @PostMapping("/uploadMoney")
     public void uploadMoney(@Range(min = 1) @RequestBody Integer amount, Principal principal) {
         userService.uploadMoney(amount, principal.getName());
+    }
+
+    @PostMapping("/activate-coupon")
+    public UserResponseDto activateCoupon(@NotNull @Size(min = 1) @RequestBody String couponCode, Principal principal) {
+        return UserMapper.toDtoWithoutPhoto(userService.activateCoupon(principal.getName(), couponCode));
     }
 
     @PutMapping("amusement-parks/{amusementParkId}/enter-park")

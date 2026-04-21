@@ -11,6 +11,8 @@ public interface UserService extends UserDetailsService {
 
     void uploadMoney(Integer amount, String userName);
 
+    Users activateCoupon(String userName, String couponCode);
+
     void leavePark(Long amusementParkId, String userName);
 
     Users enterPark(Long amusementParkId, String userName);
