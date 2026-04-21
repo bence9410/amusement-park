@@ -84,11 +84,11 @@ public class AmusementParkApplicationTests {
     }
 
     private UserResponseDto signUp(UserSignUpRequestDto userSignUpRequestDto) {
-        return restTemplate.exchange("http://localhost:" + port + "/api/signUp", HttpMethod.POST, new HttpEntity<>(userSignUpRequestDto), UserResponseDto.class).getBody();
+        return restTemplate.exchange("http://localhost:" + port + "/api/sign-up", HttpMethod.POST, new HttpEntity<>(userSignUpRequestDto), UserResponseDto.class).getBody();
     }
 
     private void uploadMoney500() {
-        restTemplate.postForObject("http://localhost:" + port + "/api/uploadMoney", 500, Void.class);
+        restTemplate.postForObject("http://localhost:" + port + "/api/upload-money", 500, Void.class);
     }
 
     private void getAmusementParksWorks() {

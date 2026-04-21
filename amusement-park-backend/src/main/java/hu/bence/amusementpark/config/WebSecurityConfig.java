@@ -34,8 +34,8 @@ public class WebSecurityConfig {
         return http
                 .authorizeHttpRequests(auth -> {
                     auth
-                            .requestMatchers("/", "/index.html", "/favicon.ico", "/assets/*", "/api/links",
-                                    "/api/me", "/api/login", "/api/signUp")
+                            .requestMatchers("/", "/index.html", "/favicon.ico", "/assets/*",
+                                    "/api/me", "/api/login", "/api/sign-up")
                             .permitAll()
                             .anyRequest()
                             .authenticated();

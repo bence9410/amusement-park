@@ -59,7 +59,7 @@ public class UserController {
         return UserMapper.toDto(userService.findByNameMakeFreshlyLoggedIn(username));
     }
 
-    @PostMapping("/signUp")
+    @PostMapping("/sign-up")
     public UserResponseDto signUp(@Valid @RequestBody UserSignUpRequestDto userSignUpRequestDto,
                                   HttpServletRequest request, HttpServletResponse response) {
         UserResponseDto userResponseDto = UserMapper
@@ -76,7 +76,7 @@ public class UserController {
         securityContextRepository.saveContext(securityContext, request, response);
     }
 
-    @PostMapping("/uploadMoney")
+    @PostMapping("/upload-money")
     public void uploadMoney(@Range(min = 1) @RequestBody Integer amount, Principal principal) {
         userService.uploadMoney(amount, principal.getName());
     }

@@ -132,7 +132,7 @@
 
   async function signUp () {
     signUpFormIsLoading.value = true
-    fetch('/api/signUp', {
+    fetch('/api/sign-up', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

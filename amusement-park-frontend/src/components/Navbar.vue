@@ -178,7 +178,7 @@
   }
   async function uploadMoney () {
     uploadMoneyFormIsLoading.value = true
-    fetch('/api/uploadMoney', {
+    fetch('/api/upload-money', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
