@@ -40,4 +40,6 @@ public class UserSignUpRequestDto {
     @Size(min = 5, max = 1400000)
     private String photo;
 
+    private String couponCode;
+
 }

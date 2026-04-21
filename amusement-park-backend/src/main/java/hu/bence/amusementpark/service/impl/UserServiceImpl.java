@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static hu.bence.amusementpark.constants.ErrorMessageConstants.*;
@@ -52,12 +53,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Users signUp(Users user) {
+    public Users signUp(Users user, String couponCode) {
         ifNotZero(userRepository.countByName(user.getName()),
                 String.format(NAME_ALREADY_TAKEN, user.getName()));
         user.setAuthority("ROLE_VISITOR");
-        user.setMoney(250);
+        user.setMoney(0);
         user.setCoupon(0);
+        if (Objects.nonNull(couponCode) && !couponCode.isEmpty()) {
+            ifNotEquals(couponCode, "EMPLOY_ME", WRONG_COUPON_CODE);
+            user.setCoupon(10);
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }

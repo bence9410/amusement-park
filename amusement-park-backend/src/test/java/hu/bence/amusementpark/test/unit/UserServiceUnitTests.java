@@ -20,8 +20,10 @@ import java.util.Optional;
 
 import static hu.bence.amusementpark.constants.ErrorMessageConstants.*;
 import static hu.bence.amusementpark.constants.StringParamConstants.NAME;
+import static hu.bence.amusementpark.constants.StringParamConstants.VALID_PASSWORD;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -80,21 +82,48 @@ public class UserServiceUnitTests {
         Users user = Users.builder().name(NAME).build();
         when(userRepository.countByName(user.getName())).thenReturn(1L);
 
-        assertThatThrownBy(() -> userService.signUp(user)).isInstanceOf(AmusementParkException.class)
+        assertThatThrownBy(() -> userService.signUp(user, ""))
+                .isInstanceOf(AmusementParkException.class)
                 .hasMessage(String.format(NAME_ALREADY_TAKEN, user.getName()));
 
         verify(userRepository).countByName(user.getName());
     }
 
     @Test
+    public void signUpNegativeWrongCoupon() {
+        Users user = Users.builder().name(NAME).password(VALID_PASSWORD).build();
+
+        assertThatThrownBy(() -> userService.signUp(user, "wrong"))
+                .isInstanceOf(AmusementParkException.class)
+                .hasMessage(WRONG_COUPON_CODE);
+
+        verify(userRepository).countByName(user.getName());
+    }
+
+    @Test
     public void signUpPositive() {
-        Users user = Users.builder().name(NAME).password("Pass1234").build();
+        Users user = Users.builder().name(NAME).password(VALID_PASSWORD).build();
         when(userRepository.save(user)).thenReturn(user);
 
-        assertEquals(user, userService.signUp(user));
+        assertEquals(user, userService.signUp(user, ""));
 
-        assertNotNull(user.getMoney());
-        assertNotNull(user.getAuthority());
+        assertEquals("ROLE_VISITOR", user.getAuthority());
+        assertEquals(0, user.getMoney());
+        assertEquals(0, user.getCoupon());
+        verify(userRepository).countByName(user.getName());
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    public void signUpPositiveWithCoupon() {
+        Users user = Users.builder().name(NAME).password(VALID_PASSWORD).build();
+        when(userRepository.save(user)).thenReturn(user);
+
+        assertEquals(user, userService.signUp(user, "EMPLOY_ME"));
+
+        assertEquals("ROLE_VISITOR", user.getAuthority());
+        assertEquals(0, user.getMoney());
+        assertEquals(10, user.getCoupon());
         verify(userRepository).countByName(user.getName());
         verify(userRepository).save(user);
     }

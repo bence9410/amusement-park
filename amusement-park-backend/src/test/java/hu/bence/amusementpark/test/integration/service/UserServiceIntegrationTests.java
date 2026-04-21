@@ -28,9 +28,10 @@ public class UserServiceIntegrationTests extends AbstractStatementCounterTests {
 
     @Test
     public void signUpTest() {
-        Users user = userService.signUp(createUser());
+        Users user = userService.signUp(createUser(), "");
         assertEquals("ROLE_VISITOR", user.getAuthority());
-        assertEquals(250, user.getMoney());
+        assertEquals(0, user.getMoney());
+        assertEquals(0, user.getCoupon());
 
         select += 2;
         insert++;

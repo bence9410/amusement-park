@@ -7,6 +7,7 @@ public class ErrorMessageConstants {
     public static final String COULD_NOT_GET_VALIDATION_MESSAGE = "Validation error occurred, but could not get error message.";
     public static final String COULD_NOT_FIND_USER = "Could not find user with name: %s.";
     public static final String NAME_ALREADY_TAKEN = "Name %s is already taken.";
+    public static final String WRONG_COUPON_CODE = "Wrong coupon code.";
     public static final String AMUSEMENT_PARK_NOT_OWNED_BY_YOU = "The amusement park not owned by you!";
     public static final String NO_AMUSEMENT_PARK_WITH_ID = "No amusement park with the given id!";
     public static final String NO_MACHINE_IN_PARK_WITH_ID = "No machine in the park with the given id!";

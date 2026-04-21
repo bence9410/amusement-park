@@ -63,6 +63,11 @@
               required
               :rules="[(v) => !!v || 'Cannot be empty.']"
             />
+            <v-text-field
+              v-model="signUpData.couponCode"
+              label="Coupon code"
+              :readonly="signUpFormIsLoading"
+            />
             <v-file-input
               v-model="image"
               accept="image/png,image/jpeg,image/bmp"
@@ -120,6 +125,7 @@
     password: '',
     confirmPassword: '',
     dateOfBirth: '',
+    couponCode: '',
     photo: '',
   })
   const image = ref()

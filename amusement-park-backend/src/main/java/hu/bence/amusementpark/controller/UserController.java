@@ -61,7 +61,7 @@ public class UserController {
     public UserResponseDto signUp(@Valid @RequestBody UserSignUpRequestDto userSignUpRequestDto,
                                   HttpServletRequest request, HttpServletResponse response) {
         UserResponseDto userResponseDto = UserMapper
-                .toDto(userService.signUp(UserMapper.toEntity(userSignUpRequestDto)));
+                .toDto(userService.signUp(UserMapper.toEntity(userSignUpRequestDto), userSignUpRequestDto.getCouponCode()));
         saveSecurityContext(userSignUpRequestDto.getName(), userSignUpRequestDto.getPassword(), request, response);
         return userResponseDto;
     }

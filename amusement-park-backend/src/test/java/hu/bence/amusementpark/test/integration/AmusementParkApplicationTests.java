@@ -68,13 +68,13 @@ public class AmusementParkApplicationTests {
 
         assertEquals(userSignUpRequestDto.getName(), userResponseDto.getName());
         assertEquals(userSignUpRequestDto.getPhoto(), userResponseDto.getPhoto());
-        assertEquals(250, userResponseDto.getMoney());
+        assertEquals(0, userResponseDto.getMoney());
         assertEquals("ROLE_VISITOR", userResponseDto.getAuthority());
 
         uploadMoney500();
 
         userResponseDto = restTemplate.exchange("http://localhost:" + port + "/api/me", HttpMethod.GET, HttpEntity.EMPTY, UserResponseDto.class).getBody();
-        assertEquals(750, userResponseDto.getMoney());
+        assertEquals(500, userResponseDto.getMoney());
 
         getAmusementParksWorks();
 

@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -83,7 +84,7 @@ public class TransactionLoggerConfig {
             long start = System.currentTimeMillis();
             log.info(transactionId + ": " + methodInvocation.getThis().getClass().getSimpleName() + "."
                     + methodInvocation.getMethod().getName() + " started with parameters: "
-                    + Stream.of(methodInvocation.getArguments()).map(Object::toString).collect(Collectors.toList()));
+                    + Stream.of(methodInvocation.getArguments()).filter(Objects::nonNull).map(Object::toString).toList());
             try {
                 Object obj = methodInvocation.proceed();
                 logResult(transactionId, methodInvocation, start, "successfully");

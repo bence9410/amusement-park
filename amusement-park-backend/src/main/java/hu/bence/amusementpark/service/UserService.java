@@ -7,7 +7,7 @@ public interface UserService extends UserDetailsService {
 
     Users findByNameMakeFreshlyLoggedIn(String userName);
 
-    Users signUp(Users user);
+    Users signUp(Users user, String couponCode);
 
     void uploadMoney(Integer amount, String userName);
 
