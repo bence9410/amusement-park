@@ -50,9 +50,9 @@
     <v-btn
       class="ma-1"
       color="black"
-      text="Upload money"
+      text="Info"
       variant="flat"
-      @click="uploadMoneyForm.reset(), uploadMoneyDialogShow = true"
+      @click="infoDialogShow = true"
     />
     <v-btn
       class="ma-1 mr-3"
@@ -64,37 +64,32 @@
     />
   </v-app-bar>
 
-  <v-dialog v-model="uploadMoneyDialogShow" eager persistent width="50%">
+  <v-dialog v-model="infoDialogShow" eager persistent width="50%">
     <v-card>
       <div class="text-right" style="width: 100%">
-        <v-btn class="ma-2" icon="mdi-close" @click="uploadMoneyDialogShow = false" />
+        <v-btn class="ma-2" icon="mdi-close" @click="infoDialogShow = false" />
       </div>
       <v-card-title class="text-h5">Upload money</v-card-title>
-      <v-form ref="uploadMoneyForm" v-model="uploadMoneyFormIsInvalid" @submit.prevent="uploadMoney">
-        <v-card-text>
-          <v-text-field
-            v-model="uploadMoneyValue"
-            label="Money"
-            :readonly="uploadMoneyFormIsLoading"
-            required
-            :rules="[
-              (v) =>
-                (!!v && Number(v) > 0) || 'Value must be greater than 0.',
-            ]"
-          />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="green"
-            :disabled="!uploadMoneyFormIsInvalid"
-            :loading="uploadMoneyFormIsLoading"
-            text="Upload"
-            type="submit"
-            variant="flat"
-          />
-        </v-card-actions>
-      </v-form>
+      <v-card-text>
+        Send money on Revolut in euros to @bence1022 or send an email to nembence1994@gmail.com to discuss bank transfer.
+      </v-card-text>
+      <v-card-title class="text-h5">Withdraw money</v-card-title>
+      <v-card-text>
+        Send mesage on Revolut to @bence1022 or send an email to nembence1994@gmail.com to discuss bank transfer.
+      </v-card-text>
+      <v-card-title class="text-h5">Become an amusement park creator</v-card-title>
+      <v-card-text>
+        Send 100 euro on Revolut to @bence1022 or send an email to nembence1994@gmail.com to discuss bank transfer.
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn
+          color="green"
+          text="Close"
+          variant="flat"
+          @click="infoDialogShow = false"
+        />
+      </v-card-actions>
     </v-card>
   </v-dialog>
   <v-dialog v-model="activateCouponDialogShow" eager persistent width="50%">
@@ -139,12 +134,8 @@
   const store = useAppStore()
   const route = useRoute()
   const router = useRouter()
-  const uploadMoneyForm = ref()
-  const uploadMoneyFormIsInvalid = ref(false)
-  const uploadMoneyFormIsLoading = ref(false)
   const logoutIsLoading = ref(false)
-  const uploadMoneyDialogShow = ref(false)
-  const uploadMoneyValue = ref('')
+  const infoDialogShow = ref(false)
 
   const activateCouponForm = ref()
   const activateCouponFormIsInvalid = ref(false)
@@ -171,25 +162,6 @@
         router.push('/')
         store.setUser(null)
         store.addMessage('success', 'Successfull logout.')
-      } else {
-        store.addMessage('error', await response.text())
-      }
-    })
-  }
-  async function uploadMoney () {
-    uploadMoneyFormIsLoading.value = true
-    fetch('/api/upload-money', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: uploadMoneyValue.value,
-    }).then(async response => {
-      uploadMoneyFormIsLoading.value = false
-      if (response.ok) {
-        store.getUser.money = store.getUser.money + Number(uploadMoneyValue.value)
-        store.addMessage('success', 'Successfully uploaded ' + uploadMoneyValue.value + ' money.')
-        uploadMoneyDialogShow.value = false
       } else {
         store.addMessage('error', await response.text())
       }
