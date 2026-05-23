@@ -20,28 +20,31 @@ import static hu.bence.amusementpark.constants.ErrorMessageConstants.*;
 
 @Slf4j
 @RestControllerAdvice
-@ResponseStatus(HttpStatus.I_AM_A_TEAPOT)
 public class AmusementParkRestAdvice {
 
     @ExceptionHandler(Throwable.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleException(Throwable throwable) {
         log.error(ERROR, throwable);
         return UNEXPECTED_ERROR_OCCURRED;
     }
 
     @ExceptionHandler(AmusementParkException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleAmusementParkException(AmusementParkException amusementParkException) {
         log.error(ERROR, amusementParkException);
         return amusementParkException.getMessage();
     }
 
     @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleBadCredentialsException(BadCredentialsException badCredentialsException) {
         log.error(ERROR, badCredentialsException);
         return badCredentialsException.getMessage();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleMethodArgumentNotValidException(
             MethodArgumentNotValidException methodArgumentNotValidException) {
         log.error(ERROR, methodArgumentNotValidException);
@@ -53,12 +56,14 @@ public class AmusementParkRestAdvice {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleConstraintViolationException(ConstraintViolationException constraintViolationException) {
         log.error(ERROR, constraintViolationException);
         return constraintViolationException.getMessage();
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleHttpMessageNotReadableException(
             HttpMessageNotReadableException httpMessageNotReadableException) {
         log.error(ERROR, httpMessageNotReadableException);
@@ -74,6 +79,7 @@ public class AmusementParkRestAdvice {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public String handleAccessDeniedException(AccessDeniedException accessDeniedException) {
         log.error(ERROR, accessDeniedException);
         return accessDeniedException.getMessage();

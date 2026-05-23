@@ -38,7 +38,7 @@ public class AmusementParkController {
             @Override
             public void setAsText(String text) throws IllegalArgumentException {
                 try {
-                    setValue(objectMapper.readValue(URLDecoder.decode(text, StandardCharsets.UTF_8.toString()),
+                    setValue(objectMapper.readValue(URLDecoder.decode(text, StandardCharsets.UTF_8),
                             AmusementParkSearchRequestDto.class));
                 } catch (IOException e) {
                     throw new AmusementParkException("Wrong input!", e);
@@ -48,7 +48,7 @@ public class AmusementParkController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','CREATOR')")
     public void save(@Valid @RequestBody AmusementParkCreateRequestDto amusementParkCreateRequestDto, Principal principal) {
         amusementParkService.save(AmusementParkMapper.toEntity(amusementParkCreateRequestDto), principal.getName());
     }

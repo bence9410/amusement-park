@@ -23,11 +23,12 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
     @Test
     public void saveTest() {
         AmusementPark amusementPark = createAmusementPark();
+        amusementPark.setName(amusementPark.getName() + "0");
 
         amusementParkService.save(amusementPark, NAME);
 
         assertNotNull(amusementPark.getOwner());
-        select++;
+        select+=2;
         insert++;
         assertStatements();
     }

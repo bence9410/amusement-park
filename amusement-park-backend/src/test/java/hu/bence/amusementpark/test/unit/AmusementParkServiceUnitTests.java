@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static hu.bence.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
+import static hu.bence.amusementpark.constants.ErrorMessageConstants.NAME_ALREADY_TAKEN;
 import static hu.bence.amusementpark.constants.StringParamConstants.NAME;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,8 +59,23 @@ public class AmusementParkServiceUnitTests {
     }
 
     @Test
+    public void saveNegativeNameTaken() {
+        AmusementPark amusementPark = AmusementPark.builder().name("Bence's park").build();
+        Users user = Users.builder().name(NAME).build();
+        when(userRepository.findById(NAME)).thenReturn(Optional.of(user));
+        when(amusementParkRepository.countByName(amusementPark.getName())).thenReturn(1L);
+
+        assertThatThrownBy(() -> amusementParkService.save(amusementPark, NAME))
+                .isInstanceOf(AmusementParkException.class)
+                .hasMessage(String.format(NAME_ALREADY_TAKEN, amusementPark.getName()));
+
+        verify(userRepository).findById(NAME);
+        verify(amusementParkRepository).countByName(amusementPark.getName());
+    }
+
+    @Test
     public void savePositive() {
-        AmusementPark amusementPark = AmusementPark.builder().build();
+        AmusementPark amusementPark = AmusementPark.builder().name("Bence's park").build();
         Users user = Users.builder().name(NAME).build();
         when(userRepository.findById(NAME)).thenReturn(Optional.of(user));
         when(amusementParkRepository.save(amusementPark)).thenReturn(amusementPark);
@@ -68,6 +84,7 @@ public class AmusementParkServiceUnitTests {
 
         assertNotNull(amusementPark.getOwner());
         verify(userRepository).findById(NAME);
+        verify(amusementParkRepository).countByName(amusementPark.getName());
         verify(amusementParkRepository).save(amusementPark);
     }
 

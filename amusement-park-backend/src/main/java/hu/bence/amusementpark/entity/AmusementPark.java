@@ -24,6 +24,7 @@ public class AmusementPark {
 
     @NotNull
     @Size(min = 5, max = 50)
+    @Column(unique = true)
     private String name;
 
     @NotNull

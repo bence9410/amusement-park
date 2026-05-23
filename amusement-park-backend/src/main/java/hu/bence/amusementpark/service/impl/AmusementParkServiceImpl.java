@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static hu.bence.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
+import static hu.bence.amusementpark.constants.ErrorMessageConstants.NAME_ALREADY_TAKEN;
+import static hu.bence.amusementpark.exception.ExceptionUtil.ifNotZero;
 import static hu.bence.amusementpark.exception.ExceptionUtil.ifNull;
 
 @Service
@@ -28,6 +30,8 @@ public class AmusementParkServiceImpl implements AmusementParkService {
     public void save(AmusementPark amusementPark, String userName) {
         Users user = ifNull(userRepository.findById(userName),
                 String.format(COULD_NOT_FIND_USER, userName));
+        ifNotZero(amusementParkRepository.countByName(amusementPark.getName()),
+                String.format(NAME_ALREADY_TAKEN, amusementPark.getName()));
         amusementPark.setOwner(user);
         amusementParkRepository.save(amusementPark);
     }

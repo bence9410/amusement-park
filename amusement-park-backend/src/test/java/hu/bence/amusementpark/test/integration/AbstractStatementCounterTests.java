@@ -19,8 +19,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-@SpringBootTest(webEnvironment = WebEnvironment.NONE, classes = {AmusementParkApplication.class,
-        DataSourceConfig.class, DataSourceInitializator.class})
+@SpringBootTest(webEnvironment = WebEnvironment.NONE,
+        classes = {AmusementParkApplication.class, DataSourceConfig.class, DataSourceInitializator.class})
 public abstract class AbstractStatementCounterTests {
 
     @Autowired
@@ -32,8 +32,8 @@ public abstract class AbstractStatementCounterTests {
     protected long anotherAmusementParkId;
     protected long machineId;
     protected int machineTicketPrice;
-    protected String testUserName = "test";
-    protected String inParkUserName = "inPark";
+    protected String testVisitorName = "visitor";
+    protected String inParkVisitorName = "inPark";
     protected int userMoney = 1000;
     protected long guestBookId;
     protected long insert;

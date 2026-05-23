@@ -16,7 +16,7 @@
     <v-icon icon="mdi-ticket-percent" />
     <v-spacer />
     <v-btn
-      v-if="route.path === '/machines'"
+      v-if="isMachinePage"
       class="ma-1"
       color="black"
       text="Guest book writing"
@@ -24,7 +24,7 @@
       @click="store.setGuestBookWritingShow(true)"
     />
     <v-btn
-      v-if="route.path === '/machines'"
+      v-if="isMachinePage"
       class="ma-1"
       color="black"
       text="Leave park"
@@ -40,7 +40,7 @@
       @click="store.setCreateShow(true)"
     />
     <v-btn
-      v-if="!store.getUser.isActivatedCoupon"
+      v-if="showCoupon"
       class="ma-1"
       color="black"
       text="Activate coupon"
@@ -53,6 +53,22 @@
       text="Info"
       variant="flat"
       @click="infoDialogShow = true"
+    />
+    <v-btn
+      v-if="isAdmin"
+      class="ma-1"
+      color="black"
+      text="Admin"
+      variant="flat"
+      @click="router.push('/admin')"
+    />
+    <v-btn
+      v-if="isAdminPage"
+      class="ma-1"
+      color="black"
+      text="Back"
+      variant="flat"
+      @click="router.push('/amusement-parks')"
     />
     <v-btn
       class="ma-1 mr-3"
@@ -143,13 +159,29 @@
   const activateCouponDialogShow = ref(false)
   const activateCouponValue = ref('')
 
+  const isMachinePage = computed(() => {
+    return route.path === '/machines'
+  })
+
+  const isAdminPage = computed(() => {
+    return route.path === '/admin'
+  })
+
   const showCreate = computed(() => {
     if (route.path === '/amusement-parks') {
-      return 'ROLE_ADMIN' === store.getUser.authority
+      return 'ROLE_ADMIN' === store.getUser.authority || 'ROLE_CREATOR' === store.getUser.authority
     } else if (route.path === '/machines') {
-      return 'ROLE_ADMIN' === store.getUser.authority && store.getAmusementParkOwner === store.getUser.name
+      return ('ROLE_ADMIN' === store.getUser.authority || 'ROLE_CREATOR' === store.getUser.authority) && store.getAmusementParkOwner === store.getUser.name
     }
     return false
+  })
+
+  const showCoupon = computed(() => {
+    return !store.getUser.isActivatedCoupon
+  })
+
+  const isAdmin = computed(() => {
+    return 'ROLE_ADMIN' === store.getUser.authority
   })
 
   function logout () {

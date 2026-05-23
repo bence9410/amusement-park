@@ -1,5 +1,8 @@
 package hu.bence.amusementpark.test.unit;
 
+import hu.bence.amusementpark.dto.request.ModifyMoneyRequestDto;
+import hu.bence.amusementpark.dto.request.UserSearchRequestDto;
+import hu.bence.amusementpark.dto.response.UserResponseDto;
 import hu.bence.amusementpark.entity.AmusementPark;
 import hu.bence.amusementpark.entity.Machine;
 import hu.bence.amusementpark.entity.Users;
@@ -13,9 +16,14 @@ import hu.bence.amusementpark.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Optional;
 
 import static hu.bence.amusementpark.constants.ErrorMessageConstants.*;
@@ -123,13 +131,6 @@ public class UserServiceUnitTests {
         assertEquals(10, user.getCoupon());
         verify(userRepository).countByName(user.getName());
         verify(userRepository).save(user);
-    }
-
-    @Test
-    public void uploadMoneyPositive() {
-        userService.uploadMoney(500, NAME);
-
-        verify(userRepository).incrementSpendingMoneyByName(500, NAME);
     }
 
     @Test
@@ -564,5 +565,72 @@ public class UserServiceUnitTests {
 
         assertNull(user.getAmusementPark());
         verify(userRepository).findByAmusementParkIdAndUserName(amusementParkId, NAME);
+    }
+
+    @Test
+    public void findAllPositive() {
+        Page<UserResponseDto> page = new PageImpl<>(
+                Collections.singletonList(UserResponseDto.builder().name("Bence").build()));
+        Pageable pageable = PageRequest.of(0, 10);
+        UserSearchRequestDto dto = new UserSearchRequestDto();
+        when(userRepository.findAll(dto, pageable)).thenReturn(page);
+
+        assertEquals(page, userService.findAll(dto, pageable));
+
+        verify(userRepository).findAll(dto, pageable);
+    }
+
+    @Test
+    public void modifyMoneyNegativeNoUserWithName() {
+        ModifyMoneyRequestDto dto = ModifyMoneyRequestDto.builder().userName(NAME).build();
+        assertThatThrownBy(() -> userService.modifyMoney(dto))
+                .isInstanceOf(AmusementParkException.class)
+                .hasMessage(String.format(COULD_NOT_FIND_USER, NAME));
+
+        verify(userRepository).findById(NAME);
+    }
+
+    @Test
+    public void modifyMoneyPositive() {
+        ModifyMoneyRequestDto dto = ModifyMoneyRequestDto.builder().userName(NAME).value(-100).build();
+        Users userInDb = Users.builder().name(NAME).money(1000).build();
+        when(userRepository.findById(NAME)).thenReturn(Optional.of(userInDb));
+
+        userService.modifyMoney(dto);
+
+        assertEquals(900, userInDb.getMoney());
+        verify(userRepository).findById(NAME);
+    }
+
+    @Test
+    public void makeCreatorNegativeNoUserWithName() {
+        assertThatThrownBy(() -> userService.makeCreator(NAME))
+                .isInstanceOf(AmusementParkException.class)
+                .hasMessage(String.format(COULD_NOT_FIND_USER, NAME));
+
+        verify(userRepository).findById(NAME);
+    }
+
+    @Test
+    public void makeCreatorNegativeNotVisitor() {
+        when(userRepository.findById(NAME)).thenReturn(Optional.of(
+                Users.builder().name(NAME).authority("ROLE_ADMIN").build()));
+
+        assertThatThrownBy(() -> userService.makeCreator(NAME))
+                .isInstanceOf(AmusementParkException.class)
+                .hasMessage(String.format(NOT_VISITOR, NAME));
+
+        verify(userRepository).findById(NAME);
+    }
+
+    @Test
+    public void makeCreatorPositive() {
+        Users userInDb = Users.builder().name(NAME).authority("ROLE_VISITOR").build();
+        when(userRepository.findById(NAME)).thenReturn(Optional.of(userInDb));
+
+        userService.makeCreator(NAME);
+
+        assertEquals("ROLE_CREATOR", userInDb.getAuthority());
+        verify(userRepository).findById(NAME);
     }
 }

@@ -22,7 +22,7 @@ import static hu.bence.amusementpark.constants.StringParamConstants.OPINION_ON_T
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-public class GuestBookServiceUnitTests {
+public class GuestBookRegistryServiceUnitTests {
 
     private AmusementParkRepository amusementParkRepository;
     private UserRepository userRepository;
@@ -64,7 +64,7 @@ public class GuestBookServiceUnitTests {
                 .isInstanceOf(AmusementParkException.class).hasMessage(NO_USER_IN_PARK_WITH_ID);
 
         verify(amusementParkRepository).findById(amusementParkId);
-        verify(userRepository).findById(NAME);
+        verify(userRepository).findByAmusementParkIdAndUserName(amusementParkId, NAME);
     }
 
     @Test
@@ -75,14 +75,13 @@ public class GuestBookServiceUnitTests {
         String textOfRegistry = OPINION_ON_THE_PARK;
 
         when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
-        when(userRepository.findById(NAME)).thenReturn(Optional.of(user));
+        when(userRepository.findByAmusementParkIdAndUserName(amusementParkId, NAME)).thenReturn(Optional.of(user));
 
         guestBookService.addRegistry(amusementParkId, NAME, textOfRegistry);
 
         verify(amusementParkRepository).findById(amusementParkId);
-        verify(userRepository).findById(NAME);
+        verify(userRepository).findByAmusementParkIdAndUserName(amusementParkId, NAME);
         verify(guestBookRegistryRepository).save(GuestBookRegistry.builder()
                 .amusementPark(amusementPark).textOfRegistry(textOfRegistry).user(user).build());
     }
-
 }

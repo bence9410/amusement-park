@@ -85,7 +85,7 @@
               @change="showImg"
             />
             <v-col v-if="signUpData.photo != ''" align="center">
-              <v-img class="rounded-circle" height="100" :src="signUpData.photo" width="100" />
+              <v-img class="rounded-circle mb-2" height="100" :src="signUpData.photo" width="100" />
             </v-col>
             <v-row>
               <v-col cols="6">

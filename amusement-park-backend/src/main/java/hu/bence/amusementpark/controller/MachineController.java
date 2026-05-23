@@ -38,7 +38,7 @@ public class MachineController {
             @Override
             public void setAsText(String text) throws IllegalArgumentException {
                 try {
-                    setValue(objectMapper.readValue(URLDecoder.decode(text, StandardCharsets.UTF_8.toString()),
+                    setValue(objectMapper.readValue(URLDecoder.decode(text, StandardCharsets.UTF_8),
                             MachineSearchRequestDto.class));
                 } catch (IOException e) {
                     throw new AmusementParkException("Wrong input!", e);
@@ -48,7 +48,7 @@ public class MachineController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','CREATOR')")
     public void addMachine(@PathVariable Long amusementParkId,
                            @Valid @RequestBody MachineCreateRequestDto machineCreateRequestDto, Principal principal) {
         machineService.addMachine(amusementParkId, MachineMapper.toEntity(machineCreateRequestDto), principal.getName());

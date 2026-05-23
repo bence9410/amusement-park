@@ -12,4 +12,6 @@ public interface MachineRepository extends JpaRepository<Machine, Long>, Machine
     @Query("Select m from Machine m where m.amusementPark.id = :amusementParkId and m.id = :machineId")
     Optional<Machine> findByAmusementParkIdAndMachineId(Long amusementParkId, Long machineId);
 
+    Long countByFantasyName(String fantasyName);
+
 }

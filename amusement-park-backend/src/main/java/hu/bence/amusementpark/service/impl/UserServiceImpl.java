@@ -1,5 +1,8 @@
 package hu.bence.amusementpark.service.impl;
 
+import hu.bence.amusementpark.dto.request.ModifyMoneyRequestDto;
+import hu.bence.amusementpark.dto.request.UserSearchRequestDto;
+import hu.bence.amusementpark.dto.response.UserResponseDto;
 import hu.bence.amusementpark.entity.*;
 import hu.bence.amusementpark.repository.AmusementParkKnowUserRepository;
 import hu.bence.amusementpark.repository.AmusementParkRepository;
@@ -8,6 +11,8 @@ import hu.bence.amusementpark.repository.UserRepository;
 import hu.bence.amusementpark.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -66,11 +71,6 @@ public class UserServiceImpl implements UserService {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
-    }
-
-    @Override
-    public void uploadMoney(Integer amount, String userName) {
-        userRepository.incrementSpendingMoneyByName(amount, userName);
     }
 
     @Override
@@ -158,5 +158,25 @@ public class UserServiceImpl implements UserService {
         Users user = ifNull(userRepository.findByAmusementParkIdAndUserName(amusementParkId, userName),
                 NO_USER_IN_PARK_WITH_ID);
         user.setAmusementPark(null);
+    }
+
+    @Override
+    public Page<UserResponseDto> findAll(UserSearchRequestDto dto, Pageable pageable) {
+        return userRepository.findAll(dto, pageable);
+    }
+
+    @Override
+    public void modifyMoney(ModifyMoneyRequestDto dto) {
+        Users user = ifNull(userRepository.findById(dto.getUserName()),
+                String.format(COULD_NOT_FIND_USER, dto.getUserName()));
+        user.setMoney(user.getMoney() + dto.getValue());
+    }
+
+    @Override
+    public void makeCreator(String userName) {
+        Users user = ifNull(userRepository.findById(userName),
+                String.format(COULD_NOT_FIND_USER, userName));
+        ifNotEquals(user.getAuthority(), "ROLE_VISITOR", String.format(NOT_VISITOR, userName));
+        user.setAuthority("ROLE_CREATOR");
     }
 }

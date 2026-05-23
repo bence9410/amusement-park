@@ -12,14 +12,14 @@ import org.springframework.data.domain.PageRequest;
 import static hu.bence.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GuestBookServiceIntegrationTests extends AbstractStatementCounterTests {
+public class GuestBookRegistryServiceIntegrationTests extends AbstractStatementCounterTests {
 
     @Autowired
     private GuestBookRegistryService guestBookService;
 
     @Test
     public void addRegistryTest() {
-        guestBookService.addRegistry(amusementParkId, inParkUserName, OPINION_ON_THE_PARK);
+        guestBookService.addRegistry(amusementParkId, inParkVisitorName, OPINION_ON_THE_PARK);
         select += 2;
         insert++;
         assertStatements();

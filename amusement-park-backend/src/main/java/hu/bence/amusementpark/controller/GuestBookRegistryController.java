@@ -37,7 +37,7 @@ public class GuestBookRegistryController {
             @Override
             public void setAsText(String text) throws IllegalArgumentException {
                 try {
-                    setValue(objectMapper.readValue(URLDecoder.decode(text, StandardCharsets.UTF_8.toString()),
+                    setValue(objectMapper.readValue(URLDecoder.decode(text, StandardCharsets.UTF_8),
                             GuestBookRegistrySearchRequestDto.class));
                 } catch (IOException e) {
                     throw new AmusementParkException("Wrong input!", e);

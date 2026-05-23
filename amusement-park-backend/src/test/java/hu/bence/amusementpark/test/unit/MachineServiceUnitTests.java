@@ -21,8 +21,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static hu.bence.amusementpark.constants.ErrorMessageConstants.AMUSEMENT_PARK_NOT_OWNED_BY_YOU;
-import static hu.bence.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
+import static hu.bence.amusementpark.constants.ErrorMessageConstants.*;
 import static hu.bence.amusementpark.constants.StringParamConstants.NAME;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,11 +73,28 @@ public class MachineServiceUnitTests {
     }
 
     @Test
+    public void addMachineNegativeNameTaken() {
+        Users user = Users.builder().name(NAME).build();
+        AmusementPark amusementPark = AmusementPark.builder().id(10L).owner(user).build();
+        Long amusementParkId = amusementPark.getId();
+        Machine machine = Machine.builder().fantasyName("Titanic").build();
+        when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
+        when(machineRepository.countByFantasyName(machine.getFantasyName())).thenReturn(1L);
+
+        assertThatThrownBy(() -> machineService.addMachine(amusementParkId, machine, NAME))
+                .isInstanceOf(AmusementParkException.class)
+                .hasMessage(String.format(NAME_ALREADY_TAKEN, machine.getFantasyName()));
+
+        verify(amusementParkRepository).findById(amusementParkId);
+        verify(machineRepository).countByFantasyName(machine.getFantasyName());
+    }
+
+    @Test
     public void addMachinePositive() {
         Users user = Users.builder().name(NAME).build();
         AmusementPark amusementPark = AmusementPark.builder().id(10L).owner(user).build();
         Long amusementParkId = amusementPark.getId();
-        Machine machine = Machine.builder().build();
+        Machine machine = Machine.builder().fantasyName("Titanic").build();
         when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(machineRepository.save(machine)).thenReturn(machine);
 
@@ -86,6 +102,7 @@ public class MachineServiceUnitTests {
 
         assertEquals(amusementPark, machine.getAmusementPark());
         verify(amusementParkRepository).findById(amusementParkId);
+        verify(machineRepository).countByFantasyName(machine.getFantasyName());
         verify(machineRepository).save(machine);
     }
 
