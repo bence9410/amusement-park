@@ -110,20 +110,20 @@ CREATE TABLE SPRING_SESSION_ATTRIBUTES (
 
 
 
-insert into visitor(email, password, authority, date_of_birth, date_of_sign_up, spending_money) values
-('admin0@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000),
-('admin1@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000),
-('admin2@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000),
-('admin3@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000),
-('admin4@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000);
-('admin5@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000);
-('admin6@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000);
-('admin7@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000);
-('admin8@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000);
-('admin9@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000);
-('admin10@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000);
-('admin11@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000);
-('admin12@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000);
-('admin13@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000);
-('admin14@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000);
-('admin15@gmail.com', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000);
+insert into users(name, password, authority, date_of_birth, date_of_sign_up, money, coupon, is_activated_coupon) values
+('admin0', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
+('admin1', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
+('admin2', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
+('admin3', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
+('admin4', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
+('admin5', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
+('admin6', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
+('admin7', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
+('admin8', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
+('admin9', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
+('admin10', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
+('admin11', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
+('admin12', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
+('admin13', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
+('admin14', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
+('admin15', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false);
