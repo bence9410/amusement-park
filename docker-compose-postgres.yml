@@ -4,6 +4,8 @@ services:
     image: bence/postgres-normal
     ports:
       - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=admin
   db-admin:
     image: dpage/pgadmin4
     ports:
