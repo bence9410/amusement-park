@@ -1,3 +1,4 @@
+server.poer: 5000
 amusement-park:
   transaction-logging: true
 spring:
