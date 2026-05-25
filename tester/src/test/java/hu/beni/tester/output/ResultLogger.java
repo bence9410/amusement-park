@@ -1,6 +1,5 @@
 package hu.beni.tester.output;
 
-import hu.beni.tester.dto.DeleteTime;
 import hu.beni.tester.dto.TimeTo;
 import hu.beni.tester.properties.ApplicationProperties;
 import hu.beni.tester.properties.NumberOfProperties;
@@ -18,40 +17,20 @@ import static hu.beni.tester.constants.Constants.SEMICOLON;
 @Slf4j
 public class ResultLogger {
 
-    private static final File RESULT_FILE = new File("results.csv");
     private static final String NEW_LINE = "\n";
-    private static final String GIT_COMMIT_ID;
 
-    static {
-        String gitCommitId = "";
-        try {
-            Properties p = new Properties();
-            p.load(ResultLogger.class.getResourceAsStream("/git.properties"));
-            gitCommitId = p.getProperty("git.commit.id");
-        } catch (Throwable e) {
-            log.error("Error: ", e);
-        }
-        GIT_COMMIT_ID = gitCommitId;
-    }
-
-    private final String[] header = {"", "fullRun", "createAmusementParksWithMachines",
-            "findAllParksPagedBeforeVisitorStuff", "wholeVisitorStuff", "tenParkVisitorStuff", "oneParkVisitorStuff",
-            "findAllParksPagedAfterVisitorStuff", "findAllVisitorsPaged", "wholeDeleteParks", "tenDeleteParks",
-            "gitCommitId"};
-
+    private final String[] header = {"", "fullRun", "wholeVisitorStuff", "tenParkVisitorStuff", "oneParkVisitorStuff"};
     private final String[] result;
 
     public ResultLogger(TimeTo timeTo, ApplicationProperties properties) {
         NumberOfProperties numberOf = properties.getNumberOf();
-        DeleteTime deleteParks = timeTo.getDeleteParks();
         result = new String[]{
                 numberOf.getAdmins() + "a " + numberOf.getVisitors() + "v " + numberOf.getAmusementParksPerAdmin()
                         + "p/a " + numberOf.getMachinesPerPark() + "m/p ",
-                Long.toString(timeTo.getFullRun()), minAvgMax(timeTo.getCreateAmusementParksWithMachines()),
-                minAvgMax(timeTo.getFindAllParksPagedBeforeVisitorStuff()), minAvgMax(timeTo.getWholeVisitorStuff()),
-                minAvgMax(timeTo.getTenParkVisitorStuff()), minAvgMax(timeTo.getOneParkVisitorStuff()),
-                minAvgMax(timeTo.getFindAllParksPagedAfterVisitorStuff()), minAvgMax(timeTo.getFindAllVisitorsPaged()),
-                Long.toString(deleteParks.getWholeTime()), minAvgMax(deleteParks.getTenDeleteTimes()), GIT_COMMIT_ID};
+                Long.toString(timeTo.getFullRun()),
+                minAvgMax(timeTo.getWholeVisitorStuff()),
+                minAvgMax(timeTo.getTenParkVisitorStuff()),
+                minAvgMax(timeTo.getOneParkVisitorStuff())};
     }
 
     public void logToConsole() {
@@ -68,20 +47,8 @@ public class ResultLogger {
         log.info(sb.toString());
     }
 
-    public void writeToFile() {
-        boolean firstWrite = !RESULT_FILE.exists();
-        try (PrintWriter printWriter = new PrintWriter(new FileOutputStream(RESULT_FILE, true))) {
-            if (firstWrite) {
-                printWriter.println(String.join(SEMICOLON, header));
-            }
-            printWriter.println(String.join(SEMICOLON, result));
-        } catch (FileNotFoundException e) {
-            log.error("Could not write results to file", e);
-        }
-    }
-
     private String minAvgMax(List<Long> list) {
-        long first = list.get(0);
+        long first = list.getFirst();
         int size = list.size();
         long min = first;
         long avg = first;

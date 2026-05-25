@@ -49,8 +49,8 @@ public class AmusementParkController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','CREATOR')")
-    public void save(@Valid @RequestBody AmusementParkCreateRequestDto amusementParkCreateRequestDto, Principal principal) {
-        amusementParkService.save(AmusementParkMapper.toEntity(amusementParkCreateRequestDto), principal.getName());
+    public AmusementParkSearchResponseDto save(@Valid @RequestBody AmusementParkCreateRequestDto amusementParkCreateRequestDto, Principal principal) {
+        return AmusementParkMapper.toDto(amusementParkService.save(AmusementParkMapper.toEntity(amusementParkCreateRequestDto), principal.getName()));
     }
 
     @GetMapping

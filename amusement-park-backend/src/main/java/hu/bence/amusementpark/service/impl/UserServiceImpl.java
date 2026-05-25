@@ -110,16 +110,16 @@ public class UserServiceImpl implements UserService {
     private void incrementOwnerMoneyAndDecreaseMoney(AmusementPark amusementPark, Users user, Integer amount) {
         if (!amusementPark.getOwner().equals(user)) {
             if (user.getCoupon() >= amount) {
-                amusementPark.getOwner().setCoupon(amusementPark.getOwner().getCoupon() + amount);
+                userRepository.incrementCouponByEmail(amount, amusementPark.getOwner().getName());
                 user.setCoupon(user.getCoupon() - amount);
             } else if (user.getCoupon() > 0) {
-                amusementPark.getOwner().setCoupon(amusementPark.getOwner().getCoupon() + user.getCoupon());
+                userRepository.incrementCouponByEmail(user.getCoupon(), amusementPark.getOwner().getName());
                 Integer leftOver = amount - user.getCoupon();
                 user.setCoupon(0);
-                amusementPark.getOwner().setMoney(amusementPark.getOwner().getMoney() + leftOver);
+                userRepository.incrementMoneyByEmail(leftOver, amusementPark.getOwner().getName());
                 user.setMoney(user.getMoney() - leftOver);
             } else {
-                amusementPark.getOwner().setMoney(amusementPark.getOwner().getMoney() + amount);
+                userRepository.incrementMoneyByEmail(amount, amusementPark.getOwner().getName());
                 user.setMoney(user.getMoney() - amount);
             }
         }

@@ -74,6 +74,7 @@ public class UserServiceIntegrationTests extends AbstractStatementCounterTests {
         assertStatements();
 
         Users user = userRepository.findById(testVisitorName).get();
+        entityManager.clear();
         assertEquals(ownerMoney + amusementParkEntranceFee,
                 userRepository.findById(CREATOR).get().getMoney());
         assertEquals(userMoney - amusementParkEntranceFee, user.getMoney());
@@ -91,6 +92,7 @@ public class UserServiceIntegrationTests extends AbstractStatementCounterTests {
         assertStatements();
 
         Users user = userRepository.findById(inParkVisitorName).get();
+        entityManager.clear();
         assertEquals(ownerMoney + machineTicketPrice,
                 userRepository.findById(CREATOR).get().getMoney());
         assertEquals(userMoney - machineTicketPrice, user.getMoney());

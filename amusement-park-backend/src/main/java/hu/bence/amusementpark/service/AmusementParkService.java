@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface AmusementParkService {
 
-    void save(AmusementPark amusementPark, String userName);
+    AmusementPark save(AmusementPark amusementPark, String userName);
 
     Page<AmusementParkSearchResponseDto> findAll(AmusementParkSearchRequestDto dto, Pageable pageable);
 

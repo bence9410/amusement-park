@@ -1,10 +1,9 @@
-package hu.beni.tester.resource;
+package hu.beni.tester.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDate;
 
@@ -12,9 +11,9 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class VisitorResource extends RepresentationModel<VisitorResource> {
+public class UserDto {
 
-    private String email;
+    private String name;
 
     private String password;
 
@@ -22,7 +21,9 @@ public class VisitorResource extends RepresentationModel<VisitorResource> {
 
     private LocalDate dateOfBirth;
 
-    private Integer spendingMoney;
+    private String authority;
+
+    private Integer money;
 
     private String photo;
 

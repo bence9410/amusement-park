@@ -89,8 +89,9 @@ public class GuestBookRegistryRepositoryCustomImpl implements GuestBookRegistryR
             cq.orderBy(cb.desc(root.get(order.getProperty())));
         }
 
-        cq.multiselect(root.get(GuestBookRegistry_.user).get(Users_.name),
-                        root.get(GuestBookRegistry_.textOfRegistry), root.get(GuestBookRegistry_.dateOfRegistry))
+        cq.select(cb.construct(GuestBookRegistrySearchResponseDto.class,
+                        root.get(GuestBookRegistry_.user).get(Users_.name),
+                        root.get(GuestBookRegistry_.textOfRegistry), root.get(GuestBookRegistry_.dateOfRegistry)))
                 .where(createPredicates(cb, root, dto));
         return entityManager.createQuery(cq).setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize()).getResultList();

@@ -3,6 +3,7 @@ package hu.bence.amusementpark.repository;
 import hu.bence.amusementpark.entity.Users;
 import hu.bence.amusementpark.repository.custom.UserRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
@@ -18,4 +19,11 @@ public interface UserRepository extends JpaRepository<Users, String>, UserReposi
     @Query("Select u from Users u where u.amusementPark.id = :amusementParkId and u.machine.id = :machineId and u.name = :userName")
     Optional<Users> findByAmusementParkIdAndMachineIdAndUserName(Long amusementParkId, Long machineId, String userName);
 
+    @Modifying
+    @Query("Update Users u set u.money = u.money + :amount where u.name = :name")
+    void incrementMoneyByEmail(Integer amount, String name);
+
+    @Modifying
+    @Query("Update Users u set u.coupon = u.coupon + :amount where u.name = :name")
+    void incrementCouponByEmail(Integer amount, String name);
 }

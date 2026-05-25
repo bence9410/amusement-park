@@ -108,22 +108,16 @@ CREATE TABLE SPRING_SESSION_ATTRIBUTES (
 	CONSTRAINT SPRING_SESSION_ATTRIBUTES_FK FOREIGN KEY (SESSION_PRIMARY_ID) REFERENCES SPRING_SESSION(PRIMARY_ID) ON DELETE CASCADE
 );
 
+insert into photo(photo) values 
+(lo_from_bytea(0, 'data:image/jpeg;base64,test0')),
+(lo_from_bytea(0, 'data:image/jpeg;base64,test1')),
+(lo_from_bytea(0, 'data:image/jpeg;base64,test2')),
+(lo_from_bytea(0, 'data:image/jpeg;base64,test3')),
+(lo_from_bytea(0, 'data:image/jpeg;base64,test4'));
 
-
-insert into users(name, password, authority, date_of_birth, date_of_sign_up, money, coupon, is_activated_coupon) values
-('admin0', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
-('admin1', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
-('admin2', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
-('admin3', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
-('admin4', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
-('admin5', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
-('admin6', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
-('admin7', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
-('admin8', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
-('admin9', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
-('admin10', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
-('admin11', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
-('admin12', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
-('admin13', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
-('admin14', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false),
-('admin15', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false);
+insert into users(name, password, authority, date_of_birth, date_of_sign_up, money, coupon, is_activated_coupon, photo_id) values
+('admin0', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false, (select id from photo order by id limit 1)),
+('admin1', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false, (select id from photo order by id limit 1 offset 1)),
+('admin2', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false, (select id from photo order by id limit 1 offset 2)),
+('admin3', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false, (select id from photo order by id limit 1 offset 3)),
+('admin4', '$2a$10$dti34l30HkqgVLgmSD26GeO5uO4EOxA4ttVgyPuRPJ1WVrzgJTpE6', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:03.894', 50000, 0, false, (select id from photo order by id limit 1 offset 4));

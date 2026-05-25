@@ -1,6 +1,6 @@
 package hu.beni.tester.config;
 
-import hu.beni.tester.factory.ResourceFactory;
+import hu.beni.tester.factory.DtoFactory;
 import hu.beni.tester.properties.ApplicationProperties;
 import hu.beni.tester.service.AsyncService;
 import lombok.RequiredArgsConstructor;
@@ -23,37 +23,36 @@ public class AsyncServiceConfig {
 
     private final ApplicationContext ctx;
     private final ApplicationProperties properties;
-    private final ResourceFactory resourceFactory;
+    private final DtoFactory dtoFactory;
 
     @Bean
     public List<AsyncService> admins() {
-        return createAsyncServices(properties.getNumberOf().getAdmins(), this::createAdminEmail);
+        return createAsyncServices(properties.getNumberOf().getAdmins(), this::createAdminName);
     }
 
     @Bean
     public List<AsyncService> visitors() {
-        return createAsyncServices(properties.getNumberOf().getVisitors(), this::createVisitorEmail);
+        return createAsyncServices(properties.getNumberOf().getVisitors(), this::createVisitorName);
     }
 
-    private String createAdminEmail(int emailIndex) {
-        return ADMIN + emailIndex + GMAIL;
+    private String createAdminName(int nameIndex) {
+        return ADMIN + nameIndex;
     }
 
-    private String createVisitorEmail(int emailIndex) {
-        return VISITOR + emailIndex + GMAIL;
+    private String createVisitorName(int nameIndex) {
+        return VISITOR + nameIndex;
     }
 
-    private List<AsyncService> createAsyncServices(int numberOfInstance, IntFunction<String> emailProducer) {
-        return createEmailStream(numberOfInstance, emailProducer).map(this::createAsyncService).collect(toList());
-
+    private List<AsyncService> createAsyncServices(int numberOfInstance, IntFunction<String> nameProducer) {
+        return createNameStream(numberOfInstance, nameProducer).map(this::createAsyncService).collect(toList());
     }
 
-    private Stream<String> createEmailStream(int endExclusive, IntFunction<String> function) {
+    private Stream<String> createNameStream(int endExclusive, IntFunction<String> function) {
         return IntStream.range(0, endExclusive).mapToObj(function);
     }
 
-    private AsyncService createAsyncService(String email) {
-        return ctx.getBean(AsyncService.class, ctx.getBean(RestTemplate.class), email, resourceFactory, properties);
+    private AsyncService createAsyncService(String name) {
+        return ctx.getBean(AsyncService.class, ctx.getBean(RestTemplate.class), name, dtoFactory, properties);
     }
 
 }

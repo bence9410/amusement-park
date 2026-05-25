@@ -11,6 +11,4 @@ public class DataProperties {
 
     private MachineDataProperties machine;
 
-    private VisitorDataProperties visitor;
-
 }

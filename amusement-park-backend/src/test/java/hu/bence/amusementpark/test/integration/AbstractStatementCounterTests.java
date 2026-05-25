@@ -41,7 +41,7 @@ public abstract class AbstractStatementCounterTests {
     protected long update;
     protected long delete;
     @Autowired
-    private EntityManager entityManager;
+    protected EntityManager entityManager;
 
     @PostConstruct
     public void init() {

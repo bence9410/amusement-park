@@ -236,7 +236,7 @@ public class UserServiceUnitTests {
 
     @Test
     public void enterParkPositiveAddUserToKnown() {
-        Users ownerUser = Users.builder().coupon(10).money(10).build();
+        Users ownerUser = Users.builder().name("owner").coupon(10).money(10).build();
         AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).owner(ownerUser).build();
         Long amusementParkId = amusementPark.getId();
         Users user = Users.builder().name(NAME).money(100).coupon(0).build();
@@ -248,18 +248,17 @@ public class UserServiceUnitTests {
 
         assertEquals(50, user.getMoney());
         assertEquals(0, user.getCoupon());
-        assertEquals(60, ownerUser.getMoney());
-        assertEquals(10, ownerUser.getCoupon());
         assertEquals(amusementPark, user.getAmusementPark());
         verify(amusementParkRepository).findById(amusementParkId);
         verify(userRepository).findById(NAME);
         verify(amusementParkKnowUserRepository).countByAmusementParkIdAndUserName(amusementParkId, NAME);
         verify(amusementParkKnowUserRepository).save(any());
+        verify(userRepository).incrementMoneyByEmail(amusementPark.getEntranceFee(), ownerUser.getName());
     }
 
     @Test
     public void enterParkPositiveUserAlreadyKnown() {
-        Users ownerUser = Users.builder().coupon(10).money(10).build();
+        Users ownerUser = Users.builder().name("owner").coupon(10).money(10).build();
         AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).owner(ownerUser).build();
         Long amusementParkId = amusementPark.getId();
         Users user = Users.builder().name(NAME).money(100).coupon(0).build();
@@ -273,17 +272,16 @@ public class UserServiceUnitTests {
 
         assertEquals(50, user.getMoney());
         assertEquals(0, user.getCoupon());
-        assertEquals(60, ownerUser.getMoney());
-        assertEquals(10, ownerUser.getCoupon());
         assertEquals(amusementPark, user.getAmusementPark());
         verify(amusementParkRepository).findById(amusementParkId);
         verify(userRepository).findById(NAME);
         verify(amusementParkKnowUserRepository).countByAmusementParkIdAndUserName(amusementParkId, NAME);
+        verify(userRepository).incrementMoneyByEmail(amusementPark.getEntranceFee(), ownerUser.getName());
     }
 
     @Test
     public void enterParkPositivePayWithCoupon() {
-        Users ownerUser = Users.builder().coupon(10).money(10).build();
+        Users ownerUser = Users.builder().name("owner").coupon(10).money(10).build();
         AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).owner(ownerUser).build();
         Long amusementParkId = amusementPark.getId();
         Users user = Users.builder().name(NAME).coupon(50).money(100).build();
@@ -297,17 +295,16 @@ public class UserServiceUnitTests {
 
         assertEquals(100, user.getMoney());
         assertEquals(0, user.getCoupon());
-        assertEquals(10, ownerUser.getMoney());
-        assertEquals(60, ownerUser.getCoupon());
         assertEquals(amusementPark, user.getAmusementPark());
         verify(amusementParkRepository).findById(amusementParkId);
         verify(userRepository).findById(NAME);
         verify(amusementParkKnowUserRepository).countByAmusementParkIdAndUserName(amusementParkId, NAME);
+        verify(userRepository).incrementCouponByEmail(amusementPark.getEntranceFee(), ownerUser.getName());
     }
 
     @Test
     public void enterParkPositivePayWithLeftOverCoupon() {
-        Users ownerUser = Users.builder().coupon(10).money(10).build();
+        Users ownerUser = Users.builder().name("owner").coupon(10).money(10).build();
         AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).owner(ownerUser).build();
         Long amusementParkId = amusementPark.getId();
         Users user = Users.builder().name(NAME).coupon(40).money(100).build();
@@ -321,12 +318,12 @@ public class UserServiceUnitTests {
 
         assertEquals(90, user.getMoney());
         assertEquals(0, user.getCoupon());
-        assertEquals(20, ownerUser.getMoney());
-        assertEquals(50, ownerUser.getCoupon());
         assertEquals(amusementPark, user.getAmusementPark());
         verify(amusementParkRepository).findById(amusementParkId);
         verify(userRepository).findById(NAME);
         verify(amusementParkKnowUserRepository).countByAmusementParkIdAndUserName(amusementParkId, NAME);
+        verify(userRepository).incrementCouponByEmail(40, ownerUser.getName());
+        verify(userRepository).incrementMoneyByEmail(10, ownerUser.getName());
     }
 
     @Test
@@ -396,7 +393,7 @@ public class UserServiceUnitTests {
     }
 
     @Test
-    public void getOnMachineNegativeNotEnoughtMoney() {
+    public void getOnMachineNegativeNotEnoughMoney() {
         AmusementPark amusementPark = AmusementPark.builder().id(0L).build();
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().id(1L).ticketPrice(50).build();
@@ -439,7 +436,7 @@ public class UserServiceUnitTests {
 
     @Test
     public void getOnMachinePositive() {
-        Users ownerUser = Users.builder().coupon(10).money(10).build();
+        Users ownerUser = Users.builder().name("owner").coupon(10).money(10).build();
         AmusementPark amusementPark = AmusementPark.builder().id(0L).owner(ownerUser).build();
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().id(1L).ticketPrice(20).minimumRequiredAge(20).build();
@@ -456,17 +453,16 @@ public class UserServiceUnitTests {
 
         assertEquals(20, user.getMoney());
         assertEquals(0, user.getCoupon());
-        assertEquals(30, ownerUser.getMoney());
-        assertEquals(10, ownerUser.getCoupon());
         assertEquals(machine, user.getMachine());
         verify(amusementParkRepository).findById(amusementParkId);
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         verify(userRepository).findByAmusementParkIdAndUserName(amusementParkId, NAME);
+        verify(userRepository).incrementMoneyByEmail(machine.getTicketPrice(), ownerUser.getName());
     }
 
     @Test
     public void getOnMachinePositivePayWithCoupon() {
-        Users ownerUser = Users.builder().coupon(10).money(10).build();
+        Users ownerUser = Users.builder().name("owner").coupon(10).money(10).build();
         AmusementPark amusementPark = AmusementPark.builder().id(0L).owner(ownerUser).build();
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().id(1L).ticketPrice(20).minimumRequiredAge(20).build();
@@ -483,17 +479,16 @@ public class UserServiceUnitTests {
 
         assertEquals(40, user.getMoney());
         assertEquals(0, user.getCoupon());
-        assertEquals(10, ownerUser.getMoney());
-        assertEquals(30, ownerUser.getCoupon());
         assertEquals(machine, user.getMachine());
         verify(amusementParkRepository).findById(amusementParkId);
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         verify(userRepository).findByAmusementParkIdAndUserName(amusementParkId, NAME);
+        verify(userRepository).incrementCouponByEmail(machine.getTicketPrice(), ownerUser.getName());
     }
 
     @Test
     public void getOnMachinePositivePayWithLeftOverCoupon() {
-        Users ownerUser = Users.builder().coupon(10).money(10).build();
+        Users ownerUser = Users.builder().name("owner").coupon(10).money(10).build();
         AmusementPark amusementPark = AmusementPark.builder().id(0L).owner(ownerUser).build();
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().id(1L).ticketPrice(20).minimumRequiredAge(20).build();
@@ -510,12 +505,12 @@ public class UserServiceUnitTests {
 
         assertEquals(30, user.getMoney());
         assertEquals(0, user.getCoupon());
-        assertEquals(20, ownerUser.getMoney());
-        assertEquals(20, ownerUser.getCoupon());
         assertEquals(machine, user.getMachine());
         verify(amusementParkRepository).findById(amusementParkId);
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         verify(userRepository).findByAmusementParkIdAndUserName(amusementParkId, NAME);
+        verify(userRepository).incrementCouponByEmail(10, ownerUser.getName());
+        verify(userRepository).incrementMoneyByEmail(10, ownerUser.getName());
     }
 
     @Test

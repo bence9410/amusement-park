@@ -21,10 +21,6 @@ public class ApplicationProperties {
     public void init() {
         int numberOfAmusementParks = numberOf.getAdmins() * numberOf.getAmusementParksPerAdmin();
         numberOf.setAmusementParks(numberOfAmusementParks);
-        VisitorDataProperties visitorDataProperties = new VisitorDataProperties();
-        visitorDataProperties.setSpendingMoney(numberOfAmusementParks * data.getAmusementPark().getEntranceFee()
-                + numberOfAmusementParks * numberOf.getMachinesPerPark() * data.getMachine().getTicketPrice());
-        data.setVisitor(visitorDataProperties);
     }
 
 }

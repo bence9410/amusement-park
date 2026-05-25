@@ -7,8 +7,6 @@ tester:
     machines-per-park: 10
   data:
     amusement-park:
-      capital: 3000
-      entrance-fee: 50
+      entrance-fee: 5
     machine:
-      price: 250
-      ticket-price: 10
+      ticket-price: 1

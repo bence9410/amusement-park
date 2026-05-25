@@ -1,18 +1,10 @@
 package hu.beni.tester.service;
 
-import hu.beni.tester.dto.DeleteTime;
-import hu.beni.tester.dto.SumAndTime;
-import hu.beni.tester.dto.VisitorStuffTime;
-import hu.beni.tester.factory.ResourceFactory;
+import hu.beni.tester.dto.*;
+import hu.beni.tester.factory.DtoFactory;
 import hu.beni.tester.properties.ApplicationProperties;
-import hu.beni.tester.resource.AmusementParkResource;
-import hu.beni.tester.resource.MachineResource;
-import hu.beni.tester.resource.VisitorResource;
 import org.springframework.context.annotation.Scope;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.PagedModel;
-import org.springframework.hateoas.server.core.TypeReferences;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.Async;
@@ -21,15 +13,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static hu.beni.tester.constants.Constants.*;
-import static hu.beni.tester.constants.HATEOASLinkRelConstants.VISITOR;
-import static hu.beni.tester.constants.HATEOASLinkRelConstants.*;
-import static java.util.stream.Collectors.toMap;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 @Async
@@ -37,131 +27,86 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 @Scope(SCOPE_PROTOTYPE)
 public class AsyncService {
 
-    private static final TypeReferences.PagedModelType<EntityModel<AmusementParkResource>> PAGED_AMUSEMENT_PARK = new TypeReferences.PagedModelType<>() {
+    private static final ParameterizedTypeReference<RestResponsePage<AmusementParkDto>> PAGED_AMUSEMENT_PARK = new ParameterizedTypeReference<>() {
     };
-
-    public static final TypeReferences.PagedModelType<EntityModel<MachineResource>> PAGED_MACHINE = new TypeReferences.PagedModelType<>() {
+    private static final ParameterizedTypeReference<RestResponsePage<MachineDto>> PAGED_MACHINE = new ParameterizedTypeReference<>() {
     };
-
-    public static final TypeReferences.CollectionModelType<VisitorResource> LIST_VISITOR = new TypeReferences.CollectionModelType<>() {
-    };
-
-    private static final TypeReferences.EntityModelType<AmusementParkResource> SINGLE_AMUSEMENT_PARK = new TypeReferences.EntityModelType<>() {
-    };
-
-    private static final TypeReferences.EntityModelType<VisitorResource> SINGLE_VISITOR = new TypeReferences.EntityModelType<>() {
+    private static final ParameterizedTypeReference<RestResponsePage<UserDto>> PAGED_USER = new ParameterizedTypeReference<>() {
     };
 
     private final RestTemplate restTemplate;
-    private final String email;
-    private final ResourceFactory resourceFactory;
+    private final String name;
+    private final DtoFactory dtoFactory;
     private final ApplicationProperties properties;
-    private final Map<String, String> links;
-    private String uploadMoneyUrl;
 
-    public AsyncService(RestTemplate restTemplate, String email, ResourceFactory resourceFactory,
+    public AsyncService(RestTemplate restTemplate, String name, DtoFactory dtoFactory,
                         ApplicationProperties properties) {
         this.restTemplate = restTemplate;
-        this.email = email;
-        this.resourceFactory = resourceFactory;
+        this.name = name;
+        this.dtoFactory = dtoFactory;
         this.properties = properties;
-        links = getBaseLinks();
-    }
-
-    private Map<String, String> getBaseLinks() {
-        return Stream.of(restTemplate.getForObject(LINKS_URL, Link[].class))
-                .collect(toMap(link -> link.getRel().value(), Link::getHref));
     }
 
     public CompletableFuture<Void> login() {
-        restTemplate.postForEntity(links.get(LOGIN), createMapWithEmailAndPass(), Void.class);
+        restTemplate.postForEntity(BASE_URL + "login", createMapWithEmailAndPass(), Void.class);
         return CompletableFuture.completedFuture(null);
     }
 
     private MultiValueMap<String, String> createMapWithEmailAndPass() {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add(EMAIL, email);
+        map.add(NAME, name);
         map.add(PASSWORD_FIELD, VALID_PASSWORD);
         return map;
     }
 
     public CompletableFuture<Void> signUp() {
-        uploadMoneyUrl = restTemplate
-                .exchange(links.get(SIGN_UP), HttpMethod.POST, new HttpEntity<>(resourceFactory.createVisitor(email)), SINGLE_VISITOR)
-                .getBody().getLink(UPLOAD_MONEY).get().getHref();
-        return CompletableFuture.completedFuture(null);
-    }
-
-    public CompletableFuture<Void> uploadMoney() {
-        restTemplate.postForEntity(uploadMoneyUrl, properties.getData().getVisitor().getSpendingMoney(), Void.class);
+        restTemplate.exchange(BASE_URL + "sign-up", HttpMethod.POST,
+                new HttpEntity<>(dtoFactory.createVisitor(name)), Void.class);
         return CompletableFuture.completedFuture(null);
     }
 
     public CompletableFuture<?> logout() {
-        restTemplate.postForEntity(links.get(LOGOUT), null, null);
+        restTemplate.postForEntity(BASE_URL + "logout", null, Void.class);
         return CompletableFuture.completedFuture(null);
     }
 
-    public CompletableFuture<DeleteTime> deleteAllPark() {
-        List<Long> tenParkTimes = new LinkedList<>();
-        long start = now();
-        deleteAllOnUrl(links.get(AMUSEMENT_PARK), tenParkTimes);
-        return CompletableFuture.completedFuture(new DeleteTime(millisFrom(start), tenParkTimes));
+    public CompletableFuture<Void> createAmusementParksWithMachines() {
+        createAmusementParks().map(AmusementParkDto::getId).forEach(this::createMachines);
+        return CompletableFuture.completedFuture(null);
     }
 
-    private void deleteAllOnUrl(String url, List<Long> tenTimes) {
-        boolean thereIsStillData = true;
-        while (thereIsStillData) {
-            long tenStart = now();
-            thereIsStillData = getPageDeleteAllFalseIfNoMore(url);
-            if (thereIsStillData) {
-                tenTimes.add(millisFrom(tenStart));
-            }
-        }
-    }
-
-    private boolean getPageDeleteAllFalseIfNoMore(String url) {
-        Collection<EntityModel<AmusementParkResource>> data = restTemplate
-                .exchange(url, HttpMethod.GET, HttpEntity.EMPTY, PAGED_AMUSEMENT_PARK).getBody().getContent();
-        data.stream().map(apr -> apr.getLink(SELF).get().getHref()).forEach(restTemplate::delete);
-        return !data.isEmpty();
-    }
-
-    public CompletableFuture<Long> createAmusementParksWithMachines() {
-        long start = now();
-        createAmusementParks().map(a -> a.getLink(MACHINE).get().getHref()).forEach(this::createMachines);
-        return CompletableFuture.completedFuture(millisFrom(start));
-    }
-
-    private Stream<EntityModel<AmusementParkResource>> createAmusementParks() {
+    private Stream<AmusementParkDto> createAmusementParks() {
         return IntStream.range(0, properties.getNumberOf().getAmusementParksPerAdmin())
-                .mapToObj(i -> restTemplate.exchange(links.get(AMUSEMENT_PARK), HttpMethod.POST,
-                        new HttpEntity<>(resourceFactory.createAmusementPark()), SINGLE_AMUSEMENT_PARK).getBody());
+                .mapToObj(i -> {
+                    AmusementParkDto amusementParkDto = dtoFactory.createAmusementPark();
+                    amusementParkDto.setName(amusementParkDto.getName() + name + i);
+                    return restTemplate.exchange(BASE_URL + "amusement-parks", HttpMethod.POST,
+                            new HttpEntity<>(amusementParkDto), AmusementParkDto.class).getBody();
+                });
     }
 
-    private void createMachines(String machineUrl) {
+    public CompletableFuture giveMoneyToEveryVisitor() {
+        restTemplate.exchange(BASE_URL + "admin/users?size=100", HttpMethod.GET, HttpEntity.EMPTY, PAGED_USER)
+                .getBody().stream().filter(user -> user.getAuthority().equals("ROLE_VISITOR"))
+                .forEach(user -> restTemplate.patchForObject(BASE_URL + "admin/modify-money",
+                        ModifyMoneyRequestDto.builder().userName(user.getName()).value(50000).build(), Void.class));
+        return CompletableFuture.completedFuture(null);
+    }
+
+    public CompletableFuture<Integer> sumUsersMoney() {
+        return CompletableFuture.completedFuture(restTemplate.exchange(BASE_URL + "admin/users?size=100",
+                        HttpMethod.GET, HttpEntity.EMPTY, PAGED_USER)
+                .getBody().stream().mapToInt(UserDto::getMoney).sum());
+    }
+
+    private void createMachines(Long amusementParkId) {
         IntStream.range(0, properties.getNumberOf().getMachinesPerPark())
-                .forEach(i -> restTemplate.postForEntity(machineUrl, resourceFactory.createMachine(), Void.class));
-    }
-
-    public CompletableFuture<SumAndTime> sumAmusementParksCapital() {
-        long start = now();
-        long sum = sumCapital(links.get(AMUSEMENT_PARK));
-        return CompletableFuture.completedFuture(new SumAndTime(sum, millisFrom(start)));
-    }
-
-    private long sumCapital(String url) {
-        Optional<String> nextPageUrl = Optional.of(url);
-        long sum = 0;
-        while (nextPageUrl.isPresent()) {
-            PagedModel<EntityModel<AmusementParkResource>> page = restTemplate
-                    .exchange(nextPageUrl.get(), HttpMethod.GET, HttpEntity.EMPTY, PAGED_AMUSEMENT_PARK).getBody();
-            nextPageUrl = page.getNextLink().map(Link::getHref);
-            sum += page.getContent().stream()
-                    .map(EntityModel::getContent)
-                    .mapToInt(AmusementParkResource::getCapital).sum();
-        }
-        return sum;
+                .forEach(i -> {
+                    MachineDto machineDto = dtoFactory.createMachine();
+                    machineDto.setFantasyName(machineDto.getFantasyName() + name + amusementParkId + i);
+                    restTemplate.postForEntity(BASE_URL + "amusement-parks/" + amusementParkId + "/machines",
+                            machineDto, Void.class);
+                });
     }
 
     public CompletableFuture<VisitorStuffTime> visitAllStuffInEveryPark() {
@@ -173,61 +118,51 @@ public class AsyncService {
     }
 
     private void visitAllStuffInEveryPark(List<Long> oneParkTimes, List<Long> tenParkTimes) {
-        Optional<String> nextPageUrl = Optional.of(links.get(AMUSEMENT_PARK));
-        while (nextPageUrl.isPresent()) {
+        for (int i = 0; true; i++) {
             long tenParkStart = now();
-            PagedModel<EntityModel<AmusementParkResource>> page = restTemplate
-                    .exchange(nextPageUrl.get(), HttpMethod.GET, HttpEntity.EMPTY, PAGED_AMUSEMENT_PARK).getBody();
-            nextPageUrl = page.getNextLink().map(Link::getHref);
+            RestResponsePage<AmusementParkDto> page = restTemplate
+                    .exchange(BASE_URL + "amusement-parks?page=" + i, HttpMethod.GET,
+                            HttpEntity.EMPTY, PAGED_AMUSEMENT_PARK).getBody();
             visitEverythingInParks(page.getContent(), oneParkTimes);
             tenParkTimes.add(millisFrom(tenParkStart));
+            if (page.isLast()) {
+                break;
+            }
         }
     }
 
-    private void visitEverythingInParks(Collection<EntityModel<AmusementParkResource>> amusementParkResources,
+    private void visitEverythingInParks(List<AmusementParkDto> amusementParkPage,
                                         List<Long> oneParkTimes) {
-        amusementParkResources.stream().map(apr -> apr.getLink(VISITOR_ENTER_PARK).get().getHref())
-                .forEach(enterParkUrl -> visitEverythingInAPark(enterParkUrl, oneParkTimes));
+        amusementParkPage.stream().map(AmusementParkDto::getId)
+                .forEach(amusementParkId -> visitEverythingInAPark(amusementParkId, oneParkTimes));
     }
 
-    private void visitEverythingInAPark(String enterParkUrl, List<Long> oneParkTimes) {
+    private void visitEverythingInAPark(Long amusementParkId, List<Long> oneParkTimes) {
         long startPark = now();
-        EntityModel<VisitorResource> visitorResource = restTemplate
-                .exchange(enterParkUrl, HttpMethod.PUT, HttpEntity.EMPTY, SINGLE_VISITOR).getBody();
-        getMachinesAndGetOnAndOff(visitorResource.getLink(MACHINE).get().getHref());
-        addRegistryAndLeave(visitorResource);
+        restTemplate.put(BASE_URL + "amusement-parks/" + amusementParkId + "/enter-park", HttpEntity.EMPTY);
+        getMachinesAndGetOnAndOff(amusementParkId);
+        addRegistryAndLeave(amusementParkId);
         oneParkTimes.add(millisFrom(startPark));
     }
 
-    private void getMachinesAndGetOnAndOff(String machinesUrl) {
-        restTemplate.exchange(machinesUrl, HttpMethod.GET, HttpEntity.EMPTY, PAGED_MACHINE).getBody().getContent()
-                .stream().forEach(
-                        machineResource -> getOnAndOffMachine(machineResource.getLink(GET_ON_MACHINE).get().getHref()));
+    private void getMachinesAndGetOnAndOff(Long amusementParkId) {
+        restTemplate.exchange(BASE_URL + "amusement-parks/" + amusementParkId + "/machines?size=100",
+                        HttpMethod.GET, HttpEntity.EMPTY, PAGED_MACHINE).getBody().getContent()
+                .stream().map(MachineDto::getId)
+                .forEach(machineId -> getOnAndOffMachine(amusementParkId, machineId));
     }
 
-    private void getOnAndOffMachine(String getOnMachineUrl) {
-        EntityModel<VisitorResource> onMachineVisitor = restTemplate
-                .exchange(getOnMachineUrl, HttpMethod.PUT, HttpEntity.EMPTY, SINGLE_VISITOR).getBody();
-        restTemplate.put(onMachineVisitor.getLink(GET_OFF_MACHINE).get().getHref(), HttpEntity.EMPTY);
+    private void getOnAndOffMachine(Long amusementParkId, Long machineId) {
+        restTemplate.put(BASE_URL + "amusement-parks/" + amusementParkId +
+                "/machines/" + machineId + "/get-on-machine", HttpEntity.EMPTY);
+        restTemplate.put(BASE_URL + "amusement-parks/" + amusementParkId +
+                "/machines/" + machineId + "/get-off-machine", HttpEntity.EMPTY);
     }
 
-    private void addRegistryAndLeave(EntityModel<VisitorResource> visitorResourceEntityModel) {
-        restTemplate.postForEntity(visitorResourceEntityModel.getLink(ADD_REGISTRY).get().getHref(), GUEST_BOOK_REGISTRY_TEXT,
-                Void.class);
-        restTemplate.put(visitorResourceEntityModel.getLink(VISITOR_LEAVE_PARK).get().getHref(), HttpEntity.EMPTY);
-    }
-
-    public CompletableFuture<SumAndTime> sumVisitorsSpendingMoney() {
-        long start = now();
-        long sum = restTemplate.exchange(links.get(VISITOR), HttpMethod.GET, HttpEntity.EMPTY, LIST_VISITOR).getBody()
-                .getContent().stream().mapToInt(VisitorResource::getSpendingMoney).sum();
-        return CompletableFuture.completedFuture(new SumAndTime(sum, millisFrom(start)));
-    }
-
-    public CompletableFuture<Void> deleteAllVisitor() {
-        restTemplate.exchange(links.get(VISITOR), HttpMethod.GET, HttpEntity.EMPTY, LIST_VISITOR).getBody().getContent()
-                .stream().map(v -> v.getLink(SELF).get().getHref()).forEach(restTemplate::delete);
-        return CompletableFuture.completedFuture(null);
+    private void addRegistryAndLeave(Long amusementParkId) {
+        restTemplate.postForEntity(BASE_URL + "/amusement-parks/" + amusementParkId + "/guest-book-registries",
+                GUEST_BOOK_REGISTRY_TEXT, Void.class);
+        restTemplate.put(BASE_URL + "amusement-parks/" + amusementParkId + "/leave-park", HttpEntity.EMPTY);
     }
 
     private long now() {

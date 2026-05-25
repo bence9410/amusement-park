@@ -4,7 +4,6 @@ import hu.beni.tester.dto.TimeTo;
 import hu.beni.tester.output.ResultLogger;
 import hu.beni.tester.properties.ApplicationProperties;
 import hu.beni.tester.service.AsyncService;
-import hu.beni.tester.validator.CapitalAndSpendingMoneySumValidator;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -32,9 +31,6 @@ public class TesterApplicationTests {
     private ApplicationProperties properties;
 
     @Autowired
-    private CapitalAndSpendingMoneySumValidator validator;
-
-    @Autowired
     @Qualifier("admins")
     private List<AsyncService> admins;
 
@@ -56,30 +52,26 @@ public class TesterApplicationTests {
 
         loginAndSignUp();
 
-        IntStream.range(0, properties.getNumberOf().getRuns()).forEach(i -> performanceTest());
+        createAmusementParksWithMachines();
 
-        deleteVisitors();
+        IntStream.range(0, properties.getNumberOf().getRuns()).forEach(i -> performanceTest());
 
         logout();
     }
 
     private void performanceTest() {
-        uploadMoney();
+        admin.giveMoneyToEveryVisitor().join();
 
         timeTo = new TimeTo();
         long start = System.currentTimeMillis();
 
-        createAmusementParksWithMachines();
-
-        sumAmusementParksCapitalBeforeVisitorStuff();
+        int money = admin.sumUsersMoney().join();
 
         visitorsVisitAllStuffInEveryPark();
 
-        sumAmusementParksCapitalAfterVisitorStuff();
-
-        sumVisitorsSpendingMoney();
-
-        deleteParks();
+        if (money != admin.sumUsersMoney().join()) {
+            throw new RuntimeException("Problem with money!");
+        }
 
         timeTo.setFullRun(System.currentTimeMillis() - start);
 
@@ -92,21 +84,9 @@ public class TesterApplicationTests {
         executeVisitorsAsyncAndJoin(AsyncService::signUp);
     }
 
-    private void uploadMoney() {
-        log.info("uploadMoney");
-        executeVisitorsAsyncAndJoin(AsyncService::uploadMoney);
-    }
-
     private void createAmusementParksWithMachines() {
         log.info("createAmusementParksWithMachines");
-        timeTo.setCreateAmusementParksWithMachines(
-                executeAdminsAsyncAndJoin(AsyncService::createAmusementParksWithMachines));
-    }
-
-    private void sumAmusementParksCapitalBeforeVisitorStuff() {
-        log.info("sumAmusementParksCapitalBeforeVisitorStuff");
-        timeTo.setFindAllParksPagedBeforeVisitorStuff(executeAdminsAsyncJoinAndMap(
-                AsyncService::sumAmusementParksCapital, validator::checkCapitalSumBeforeVisitorsGetTime));
+        executeAdminsAsyncAndJoin(AsyncService::createAmusementParksWithMachines);
     }
 
     private void visitorsVisitAllStuffInEveryPark() {
@@ -124,28 +104,6 @@ public class TesterApplicationTests {
         timeTo.setOneParkVisitorStuff(oneParkTimes);
     }
 
-    private void sumAmusementParksCapitalAfterVisitorStuff() {
-        log.info("sumAmusementParksCapitalAfterVisitorStuff");
-        timeTo.setFindAllParksPagedAfterVisitorStuff(executeAdminsAsyncJoinAndMap(
-                AsyncService::sumAmusementParksCapital, validator::checkCapitalSumAfterVisitorsGetTime));
-    }
-
-    private void sumVisitorsSpendingMoney() {
-        log.info("sumVisitorsSpendingMoney");
-        timeTo.setFindAllVisitorsPaged(executeAdminsAsyncJoinAndMap(AsyncService::sumVisitorsSpendingMoney,
-                validator::checkSpendingMoneySumGetTime));
-    }
-
-    private void deleteParks() {
-        log.info("deleteParks");
-        timeTo.setDeleteParks(executeAdminAndJoin(AsyncService::deleteAllPark));
-    }
-
-    private void deleteVisitors() {
-        log.info("deleteVisitors");
-        executeAdminAndJoin(AsyncService::deleteAllVisitor);
-    }
-
     private void logout() {
         log.info("logout");
         executeAdminsAsyncAndJoin(AsyncService::logout);
@@ -155,31 +113,20 @@ public class TesterApplicationTests {
         log.info("log");
         ResultLogger resultLogger = new ResultLogger(timeTo, properties);
         resultLogger.logToConsole();
-        resultLogger.writeToFile();
-    }
-
-    private <R> R executeAdminAndJoin(Function<AsyncService, CompletableFuture<R>> asyncMethod) {
-        return asyncMethod.apply(admin).join();
     }
 
     private <R> List<R> executeAdminsAsyncAndJoin(Function<AsyncService, CompletableFuture<R>> asyncMethod) {
-        return admins.stream().map(asyncMethod).collect(toList()).stream().map(CompletableFuture::join)
+        return admins.stream().map(asyncMethod).toList().stream().map(CompletableFuture::join)
                 .collect(toList());
     }
 
-    private <R, T> List<T> executeAdminsAsyncJoinAndMap(Function<AsyncService, CompletableFuture<R>> asyncMethod,
-                                                        Function<R, T> asyncResultMapper) {
-        return admins.stream().map(asyncMethod).collect(toList()).stream().map(CompletableFuture::join)
-                .map(asyncResultMapper).collect(toList());
-    }
-
     private <R> void executeVisitorsAsyncAndJoin(Function<AsyncService, CompletableFuture<R>> asyncMethod) {
-        visitors.stream().map(asyncMethod).collect(toList()).stream().map(CompletableFuture::join).collect(toList());
+        visitors.stream().map(asyncMethod).toList().stream().map(CompletableFuture::join).toList();
     }
 
     private <R> void executeVisitorsAsyncJoinAndForEach(Function<AsyncService, CompletableFuture<R>> asyncMethod,
                                                         Consumer<R> asyncResultConsumer) {
-        visitors.stream().map(asyncMethod).collect(toList()).stream().map(CompletableFuture::join)
+        visitors.stream().map(asyncMethod).toList().stream().map(CompletableFuture::join)
                 .forEach(asyncResultConsumer);
     }
 

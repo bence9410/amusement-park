@@ -7,8 +7,6 @@ import lombok.Setter;
 @Setter
 public class MachineDataProperties {
 
-    private Integer price;
-
     private Integer ticketPrice;
 
 }
