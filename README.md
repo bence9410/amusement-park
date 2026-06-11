@@ -32,7 +32,7 @@ The app will start on port 5000. Use the users mentioned below or sign up with a
 
 #### Users:
 
-- Admin: email:'nembence1994@gmail.com', password:'Pass1234'
+- Admin: name:'Bence', password:'Pass1234'
 
 #### PostgreSQL dev run
 
