@@ -18,6 +18,7 @@ If a visitor is in an amusement park or on a machine, then they are connected in
 
 - JDK-25
 - Maven 3
+- Node.js 27
 - Docker in Swarm mode runnable without sudo
 
 ### Local run
