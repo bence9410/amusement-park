@@ -1,3 +1,4 @@
+server.port: 8080
 amusement-park:
   transaction-logging: true
 spring:

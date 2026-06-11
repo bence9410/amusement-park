@@ -141,7 +141,7 @@
             color="green"
             :disabled="!modifyMoneyFormIsInvalid"
             :loading="modifyMoneyFormIsLoading"
-            text="Upload"
+            text="Modify"
             type="submit"
             variant="flat"
           />
