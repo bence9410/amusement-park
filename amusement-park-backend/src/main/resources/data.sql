@@ -8,22 +8,22 @@ values ('Bence', 'ROLE_ADMIN', '1994-10-22', '2020-05-06 15:33:00',
         (select id from photo order by id limit 1) );
 
 insert into amusement_park(name, entrance_fee, owner_name)
-values ('Bence''s park', 100, 'Bence');
+values ('Bence''s park', 5, 'Bence');
 
 insert into machine(fantasy_name, minimum_required_age, ticket_price, video, video_length_in_seconds, amusement_park_id)
-values ('Retro carousel', 12, 15, 'oNY_R3MmIbM', 300, (select id from amusement_park));
+values ('Retro carousel', 12, 3, 'oNY_R3MmIbM', 329, (select id from amusement_park));
 
 insert into machine(fantasy_name, minimum_required_age, ticket_price, video, video_length_in_seconds, amusement_park_id)
-values ('Magical dodgem', 12, 20, 'FATfO8ScbCI', 106, (select id from amusement_park));
+values ('Magical dodgem', 12, 1, 'FATfO8ScbCI', 116, (select id from amusement_park));
 
 insert into machine(fantasy_name, minimum_required_age, ticket_price, video, video_length_in_seconds, amusement_park_id)
-values ('Electric gocart', 16, 25, 'Qa2kYagOCiw', 175, (select id from amusement_park));
+values ('Electric gocart', 16, 1, 'Qa2kYagOCiw', 185, (select id from amusement_park));
 
 insert into machine(fantasy_name, minimum_required_age, ticket_price, video, video_length_in_seconds, amusement_park_id)
-values ('Titanic', 14, 30, 'UYWkF0BATDc', 219, (select id from amusement_park));
+values ('Titanic', 14, 2, 'UYWkF0BATDc', 229, (select id from amusement_park));
 
 insert into machine(fantasy_name, minimum_required_age, ticket_price, video, video_length_in_seconds, amusement_park_id)
-values ('Super roller coaster', 14, 30, 's9njwl_VzZA', 207, (select id from amusement_park));
+values ('Super roller coaster', 14, 2, 's9njwl_VzZA', 217, (select id from amusement_park));
 
 insert into amusement_park_know_user(date_of_first_enter, amusement_park_id, user_name)
 values ('2020-05-06 15:33:00', (select id from amusement_park), 'Bence');
