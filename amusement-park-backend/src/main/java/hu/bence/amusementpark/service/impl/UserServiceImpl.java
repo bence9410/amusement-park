@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
         user.setCoupon(0);
         if (Objects.nonNull(couponCode) && !couponCode.isEmpty()) {
             ifNotEquals(couponCode, "EMPLOY_ME", WRONG_COUPON_CODE);
-            user.setCoupon(10);
+            user.setCoupon(15);
             user.setActivatedCoupon(true);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
                 String.format(COULD_NOT_FIND_USER, userName));
         ifNotEquals(couponCode, "EMPLOY_ME", WRONG_COUPON_CODE);
         ifTrue(user.isActivatedCoupon(), ALREADY_ACTIVATED_COUPON_CODE);
-        user.setCoupon(user.getCoupon() + 10);
+        user.setCoupon(15);
         user.setActivatedCoupon(true);
         return user;
     }
