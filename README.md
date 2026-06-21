@@ -3,7 +3,9 @@
 This project is an old learning project, I was mainly playing with Spring Boot, HATEOAS and JPA, this was my thesis for my university degree, I showed it on AWS.
 Later I learned Vue.js with it and migrated to Spring Boot 4.
 
-If you want to visit my online amusement park, you have to register. After you register you will have 0 money. 
+## [Available at: amusement-park.eu-central-1.elasticbeanstalk.com](http://amusement-park.eu-central-1.elasticbeanstalk.com)
+
+If you want to visit my online amusement park, you have to sign up. After you signed up you will have 0 money. 
 You can upload more money as described in the info menu.
 On the main page, there are amusement parks in a filterable and pageable table, expand a row to see the guest book registries of the amusement park.
 You can enter by clicking on the 'Enter park' button, but be careful, the amusement park's entrance fee will be subtracted from your money if you enter.

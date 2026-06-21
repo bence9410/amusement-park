@@ -41,7 +41,7 @@ public class Machine {
     private String video;
 
     @NotNull
-    @Range(min = 5, max = 300)
+    @Range(min = 5, max = 400)
     private Integer videoLengthInSeconds;
 
     @ManyToOne(fetch = LAZY, optional = false)

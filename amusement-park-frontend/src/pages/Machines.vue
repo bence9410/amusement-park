@@ -158,8 +158,8 @@
               required
               :rules="[
                 (v) =>
-                  (!!v && Number(v) >= 5 && Number(v) <= 300) ||
-                  'Video length must be between 5 and 300.',
+                  (!!v && Number(v) >= 5 && Number(v) <= 400) ||
+                  'Video length must be between 5 and 400.',
               ]"
             />
             <img src="../assets/videoHint.png">

@@ -126,12 +126,12 @@
         <v-card-text>
           <v-text-field
             v-model="modifyMoneyValue"
-            label="Coupon code"
+            label="Money"
             :readonly="modifyMoneyFormIsLoading"
             required
             :rules="[
               (v) =>
-                (!!v) || 'Coupon code is required.',
+                (!!v) || 'Amount is required.',
             ]"
           />
         </v-card-text>
