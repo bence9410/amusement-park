@@ -13,7 +13,7 @@ public class AmusementParkMapper {
                 .entranceFee(dto.getEntranceFee()).build();
     }
 
-    public static AmusementParkSearchResponseDto toDto(AmusementPark entity){
+    public static AmusementParkSearchResponseDto toDto(AmusementPark entity) {
         return AmusementParkSearchResponseDto.builder()
                 .id(entity.getId())
                 .name(entity.getName())

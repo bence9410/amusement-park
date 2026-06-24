@@ -14,6 +14,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
     public UserDetails loadUserByUsername(@NonNull String name) {
         Users user = userRepository.findById(name)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(COULD_NOT_FIND_USER, name)));
-        return new org.springframework.security.core.userdetails.User(name, user.getPassword(), List.of(new SimpleGrantedAuthority(user.getAuthority())));
+        return new User(name, user.getPassword(), List.of(new SimpleGrantedAuthority(user.getAuthority())));
     }
 
     @Override

@@ -128,7 +128,7 @@ public class UserServiceUnitTests {
 
         assertEquals("ROLE_VISITOR", user.getAuthority());
         assertEquals(0, user.getMoney());
-        assertEquals(10, user.getCoupon());
+        assertEquals(15, user.getCoupon());
         verify(userRepository).countByName(user.getName());
         verify(userRepository).save(user);
     }
@@ -173,7 +173,7 @@ public class UserServiceUnitTests {
 
         user = userService.activateCoupon(NAME, "EMPLOY_ME");
 
-        assertEquals(10, user.getCoupon());
+        assertEquals(15, user.getCoupon());
         assertTrue(user.isActivatedCoupon());
         verify(userRepository).findById(NAME);
     }

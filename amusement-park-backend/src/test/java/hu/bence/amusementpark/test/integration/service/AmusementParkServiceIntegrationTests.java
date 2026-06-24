@@ -28,7 +28,7 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
         amusementParkService.save(amusementPark, NAME);
 
         assertNotNull(amusementPark.getOwner());
-        select+=2;
+        select += 2;
         insert++;
         assertStatements();
     }

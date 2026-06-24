@@ -45,10 +45,10 @@ The app will start on port 5000. Use the users mentioned below or sign up with a
 
 ### Performance test
 
-Build all images with the dockerBuildAll.sh, then run the dockerRunAppAndDB.sh.
+Build all images with the dockerBuildAll.sh, then run the dockerRunAppAndDBForPerformanceTest.sh.
 It starts the app in docker with 2 replicas and the performance-test db with admin users in it.
 Execute the performance tests in the tester folder with 'mvn test'.
 Run times are written to the console, it would be better to monitor the app with Dynatrace or with similar tool.
 In the beginning it was nice to see the memory consumption in JConsole and see how performance changes when changing memory limits.
 This test uses multiple threads, when I started I let JPA do the updates on managed entities, but that was modifying the
-read out values and it was not thread safe, I modify the value in db with a query now. 
+read out values and it was not thread safe, Pessimistic locking the entity solves it, but littlebit slower than modifying the value in db with a query. 

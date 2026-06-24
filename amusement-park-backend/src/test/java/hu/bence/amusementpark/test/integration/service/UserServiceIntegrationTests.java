@@ -47,7 +47,7 @@ public class UserServiceIntegrationTests extends AbstractStatementCounterTests {
         update++;
         assertStatements();
 
-        assertEquals(10, user.getCoupon());
+        assertEquals(15, user.getCoupon());
         assertTrue(user.isActivatedCoupon());
     }
 

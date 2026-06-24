@@ -1,7 +1,6 @@
 package hu.bence.amusementpark.config;
 
 import lombok.RequiredArgsConstructor;
-import org.hibernate.cfg.Environment;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -21,9 +20,9 @@ public class DataSourceInitializator implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         try (Connection conn = dataSource.getConnection()) {
-            if (Arrays.asList(environment.getActiveProfiles()).contains("postgres")){
+            if (Arrays.asList(environment.getActiveProfiles()).contains("postgres")) {
                 ScriptUtils.executeSqlScript(conn, new ClassPathResource("test-data-postgres.sql"));
-            }else {
+            } else {
                 ScriptUtils.executeSqlScript(conn, new ClassPathResource("test-data.sql"));
             }
         }
