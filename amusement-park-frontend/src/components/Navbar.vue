@@ -3,18 +3,24 @@
     <v-avatar class="mr-4 ml-5">
       <v-img alt="Profile picture" :src="store.getUser.photo" />
     </v-avatar>
+
     <span>
       {{ store.getUser.name }}
     </span>
+
     <span class="ml-3">
       {{ store.getUser.money }}
     </span>
+
     <v-icon icon="mdi-currency-eur" />
+
     <span class="ml-2">
       {{ store.getUser.coupon }}
     </span>
+
     <v-icon icon="mdi-ticket-percent" />
     <v-spacer />
+
     <v-btn
       v-if="isMachinePage"
       class="ma-1"
@@ -23,6 +29,7 @@
       variant="flat"
       @click="store.setGuestBookWritingShow(true)"
     />
+
     <v-btn
       v-if="isMachinePage"
       class="ma-1"
@@ -31,6 +38,7 @@
       variant="flat"
       @click="leavePark"
     />
+
     <v-btn
       v-if="showCreate"
       class="ma-1"
@@ -39,6 +47,7 @@
       variant="flat"
       @click="store.setCreateShow(true)"
     />
+
     <v-btn
       v-if="showCoupon"
       class="ma-1"
@@ -47,6 +56,7 @@
       variant="flat"
       @click="activateCouponForm.reset(), activateCouponDialogShow = true"
     />
+
     <v-btn
       class="ma-1"
       color="black"
@@ -54,6 +64,7 @@
       variant="flat"
       @click="infoDialogShow = true"
     />
+
     <v-btn
       v-if="isAdmin"
       class="ma-1"
@@ -62,6 +73,7 @@
       variant="flat"
       @click="router.push('/admin')"
     />
+
     <v-btn
       v-if="isAdminPage"
       class="ma-1"
@@ -70,6 +82,7 @@
       variant="flat"
       @click="router.push('/amusement-parks')"
     />
+
     <v-btn
       class="ma-1 mr-3"
       color="black"
@@ -85,20 +98,28 @@
       <div class="text-right" style="width: 100%">
         <v-btn class="ma-2" icon="mdi-close" @click="infoDialogShow = false" />
       </div>
+
       <v-card-title class="text-h5">Upload money</v-card-title>
+
       <v-card-text>
         Send money on Revolut in euros to @bence1022 or send an email to nembence1994@gmail.com to discuss bank transfer.
       </v-card-text>
+
       <v-card-title class="text-h5">Withdraw money</v-card-title>
+
       <v-card-text>
         Send mesage on Revolut to @bence1022 or send an email to nembence1994@gmail.com to discuss bank transfer.
       </v-card-text>
+
       <v-card-title class="text-h5">Become an amusement park creator</v-card-title>
+
       <v-card-text>
         Send 100 euro on Revolut to @bence1022 or send an email to nembence1994@gmail.com to discuss bank transfer.
       </v-card-text>
+
       <v-card-actions>
         <v-spacer />
+
         <v-btn
           color="green"
           text="Close"
@@ -108,12 +129,15 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+
   <v-dialog v-model="activateCouponDialogShow" eager persistent width="50%">
     <v-card>
       <div class="text-right" style="width: 100%">
         <v-btn class="ma-2" icon="mdi-close" @click="activateCouponDialogShow = false" />
       </div>
+
       <v-card-title class="text-h5">Activate coupon</v-card-title>
+
       <v-form ref="activateCouponForm" v-model="activateCouponFormIsInvalid" @submit.prevent="activateCoupon">
         <v-card-text>
           <v-text-field
@@ -127,8 +151,10 @@
             ]"
           />
         </v-card-text>
+
         <v-card-actions>
           <v-spacer />
+
           <v-btn
             color="green"
             :disabled="!activateCouponFormIsInvalid"

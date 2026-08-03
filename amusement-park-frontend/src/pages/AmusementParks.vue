@@ -2,6 +2,7 @@
   <div class="text-center py-5" style="background-color: #e9ecef">
     <h1>Amusement park</h1>
   </div>
+
   <v-container>
     <v-data-table-server
       v-model:items-per-page="amusementParkTableItemsPerPage"
@@ -40,6 +41,7 @@
           <td class="py-2" :colspan="columns.length - 2">
             <guest-book-registry-table :link="'/api/amusement-parks/' + (item as any).id + '/guest-book-registries'" />
           </td>
+
           <td :colspan="2">
             <v-btn
               block
@@ -62,6 +64,7 @@
               placeholder="Like name"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="amusementParkSearch.minEntranceFee"
@@ -70,6 +73,7 @@
               placeholder="Min entrance fee"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="amusementParkSearch.minMachines"
@@ -78,6 +82,7 @@
               placeholder="Min machines"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="amusementParkSearch.minGuestBookRegistries"
@@ -86,6 +91,7 @@
               placeholder="Min guest book registries"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="amusementParkSearch.minActiveUsers"
@@ -94,6 +100,7 @@
               placeholder="Min active users"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="amusementParkSearch.minKnownUsers"
@@ -103,8 +110,10 @@
             />
           </td>
         </tr>
+
         <tr>
           <td />
+
           <td>
             <v-text-field
               v-model="amusementParkSearch.maxEntranceFee"
@@ -113,6 +122,7 @@
               placeholder="Max entrance fee"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="amusementParkSearch.maxMachines"
@@ -121,6 +131,7 @@
               placeholder="Max machines"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="amusementParkSearch.maxGuestBookRegistries"
@@ -129,6 +140,7 @@
               placeholder="Max guest book registries"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="amusementParkSearch.maxActiveUsers"
@@ -137,6 +149,7 @@
               placeholder="Max active users"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="amusementParkSearch.maxKnownUsers"
@@ -149,15 +162,18 @@
       </template>
     </v-data-table-server>
   </v-container>
+
   <v-dialog v-model="store.getCreateShow" eager persistent width="50%">
     <v-card>
       <v-container>
         <div class="text-right" style="width: 100%">
           <v-btn class="ma-2" icon="mdi-close" @click="store.setCreateShow(false)" />
         </div>
+
         <v-card-title>
           <h2 style="background-color: #e9ecef">Create amusement park</h2>
         </v-card-title>
+
         <v-form
           ref="amusementParkCreateForm"
           v-model="amusementParkCreateFormIsInvalid"
@@ -176,6 +192,7 @@
                   'Name length must be between 5 and 50.',
               ]"
             />
+
             <v-text-field
               v-model="amusementParkCreate.entranceFee"
               label="Entrance fee"
@@ -188,8 +205,10 @@
               ]"
             />
           </v-card-text>
+
           <v-card-actions>
             <v-spacer />
+
             <v-btn
               class="px-4"
               color="green"

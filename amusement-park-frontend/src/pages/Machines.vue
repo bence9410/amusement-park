@@ -2,6 +2,7 @@
   <div class="text-center py-5" style="background-color: #e9ecef">
     <h1>Machines</h1>
   </div>
+
   <v-container>
     <v-data-table-server
       v-model:items-per-page="machineTableItemsPerPage"
@@ -36,6 +37,7 @@
               placeholder="Like fantasy name"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="machineSearch.minMinimumRequiredAge"
@@ -44,6 +46,7 @@
               placeholder="Min minimum required age"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="machineSearch.minTicketPrice"
@@ -52,6 +55,7 @@
               placeholder="Min ticket price"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="machineSearch.minNumberOfUsersOnMachine"
@@ -61,8 +65,10 @@
             />
           </td>
         </tr>
+
         <tr>
           <td />
+
           <td>
             <v-text-field
               v-model="machineSearch.maxMinimumRequiredAge"
@@ -71,6 +77,7 @@
               placeholder="Max minimum required age"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="machineSearch.maxTicketPrice"
@@ -79,6 +86,7 @@
               placeholder="Max ticket price"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="machineSearch.maxNumberOfUsersOnMachine"
@@ -91,15 +99,18 @@
       </template>
     </v-data-table-server>
   </v-container>
+
   <v-dialog v-model="store.getCreateShow" eager persistent width="50%">
     <v-card>
       <v-container>
         <div class="text-right" style="width: 100%">
           <v-btn class="ma-2" icon="mdi-close" @click="store.setCreateShow(false)" />
         </div>
+
         <v-card-title>
           <h2 style="background-color: #e9ecef">Create machine</h2>
         </v-card-title>
+
         <v-form
           ref="machineCreateForm"
           v-model="machineCreateFormIsInvalid"
@@ -118,6 +129,7 @@
                   'Fantasy name size must be between 5 and 50.',
               ]"
             />
+
             <v-text-field
               v-model="machineCreate.minimumRequiredAge"
               label="Minumum required age"
@@ -129,6 +141,7 @@
                   'Minimum required age must be between 0 and 25.',
               ]"
             />
+
             <v-text-field
               v-model="machineCreate.ticketPrice"
               label="Ticket price"
@@ -140,6 +153,7 @@
                   'Ticket price must be between 1 and 30.',
               ]"
             />
+
             <v-text-field
               v-model="machineCreate.video"
               label="YouTube video id"
@@ -151,6 +165,7 @@
                   'Video is required.'
               ]"
             />
+
             <v-text-field
               v-model="machineCreate.videoLengthInSeconds"
               label="Video length is seconds"
@@ -162,7 +177,9 @@
                   'Video length must be between 5 and 400.',
               ]"
             />
+
             <img src="../assets/videoHint.png">
+
             <iframe
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure 'none'"
               allowfullscreen
@@ -173,6 +190,7 @@
 
           <v-card-actions>
             <v-spacer />
+
             <v-btn
               class="px-4"
               color="green"
@@ -187,6 +205,7 @@
       </v-container>
     </v-card>
   </v-dialog>
+
   <v-dialog
     v-model="onMachineDialog"
     fullscreen
@@ -198,7 +217,9 @@
           icon="mdi-close"
           @click="onMachineDialog = false"
         />
+
         <v-toolbar-title>{{ onMachineFantasyName }}</v-toolbar-title>
+
         <v-toolbar-items>
           <v-btn
             color="black"
@@ -208,6 +229,7 @@
           />
         </v-toolbar-items>
       </v-toolbar>
+
       <iframe
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure 'none'"
         allowfullscreen
@@ -218,15 +240,18 @@
       />
     </v-card>
   </v-dialog>
+
   <v-dialog v-model="store.getGuestBookWritingShow" eager persistent width="50%">
     <v-card>
       <v-container>
         <div class="text-right" style="width: 100%">
           <v-btn class="ma-2" icon="mdi-close" @click="store.setGuestBookWritingShow(false)" />
         </div>
+
         <v-card-title>
           <h2 style="background-color: #e9ecef">Guest book registry</h2>
         </v-card-title>
+
         <v-form
           ref="guestBookRegistryCreateForm"
           v-model="guestBookRegistryCreateFormIsInvalid"
@@ -246,8 +271,10 @@
               ]"
             />
           </v-card-text>
+
           <v-card-actions>
             <v-spacer />
+
             <v-btn
               class="px-4"
               color="green"
@@ -259,6 +286,7 @@
             />
           </v-card-actions>
         </v-form>
+
         <guest-book-registry-table :force-update="forceUpdate" :link="'/api/amusement-parks/' + store.getAmusementParkId + '/guest-book-registries'" />
       </v-container>
     </v-card>

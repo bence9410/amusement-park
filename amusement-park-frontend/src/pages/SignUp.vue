@@ -2,6 +2,7 @@
   <div class="text-center py-5" style="background-color: #e9ecef">
     <h1>Welcome</h1>
   </div>
+
   <v-row>
     <v-col md="4" offset-md="4" sm="12">
       <v-card class="mt-8">
@@ -19,6 +20,7 @@
                   'Name length must be between 3 and 50.',
               ]"
             />
+
             <v-text-field
               v-model="signUpData.password"
               :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
@@ -35,6 +37,7 @@
               :type="passwordShow ? 'text' : 'password'"
               @click:append="passwordShow = !passwordShow"
             />
+
             <v-text-field
               v-model="signUpData.confirmPassword"
               :append-icon="confirmPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
@@ -53,6 +56,7 @@
               :type="confirmPasswordShow ? 'text' : 'password'"
               @click:append="confirmPasswordShow = !confirmPasswordShow"
             />
+
             <v-date-input
               v-model="signUpData.dateOfBirth"
               input-format="yyyy-mm-dd"
@@ -63,11 +67,13 @@
               required
               :rules="[(v) => !!v || 'Cannot be empty.']"
             />
+
             <v-text-field
               v-model="signUpData.couponCode"
               label="Coupon code"
               :readonly="signUpFormIsLoading"
             />
+
             <v-file-input
               v-model="image"
               accept="image/png,image/jpeg,image/bmp"
@@ -84,13 +90,16 @@
               ]"
               @change="showImg"
             />
+
             <v-col v-if="signUpData.photo != ''" align="center">
               <v-img class="rounded-circle mb-2" height="100" :src="signUpData.photo" width="100" />
             </v-col>
+
             <v-row>
               <v-col cols="6">
                 <v-btn block color="green" text="Back" to="/" />
               </v-col>
+
               <v-col cols="6">
                 <v-btn
                   block

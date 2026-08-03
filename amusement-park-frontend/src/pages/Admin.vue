@@ -2,6 +2,7 @@
   <div class="text-center py-5" style="background-color: #e9ecef">
     <h1>Users</h1>
   </div>
+
   <v-container>
     <v-data-table-server
       v-model:items-per-page="userTableItemsPerPage"
@@ -38,6 +39,7 @@
           variant="flat"
           @click="modifyMoneyForm.reset(), modifyMoneyDialogShow = true, modifyMoneyUserName = (item as any).name"
         />
+
         <v-btn
           v-if="(item as any).authority === 'ROLE_VISITOR'"
           class="ma-1"
@@ -51,6 +53,7 @@
       <template #tfoot>
         <tr>
           <td />
+
           <td>
             <v-text-field
               v-model="userSearch.name"
@@ -59,6 +62,7 @@
               placeholder="Like name"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="userSearch.authority"
@@ -67,6 +71,7 @@
               placeholder="Like authority"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="userSearch.minMoney"
@@ -75,6 +80,7 @@
               placeholder="Min money"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="userSearch.minCoupon"
@@ -83,6 +89,7 @@
               placeholder="Min coupon"
             />
           </td>
+
           <td>
             <v-select
               v-model="userSearch.isActivatedCoupon"
@@ -93,9 +100,12 @@
             />
           </td>
         </tr>
+
         <tr>
           <td />
           <td />
+          <td />
+
           <td>
             <v-text-field
               v-model="userSearch.maxMoney"
@@ -104,6 +114,7 @@
               placeholder="Max money"
             />
           </td>
+
           <td>
             <v-text-field
               v-model="userSearch.maxCoupon"
@@ -116,12 +127,15 @@
       </template>
     </v-data-table-server>
   </v-container>
+
   <v-dialog v-model="modifyMoneyDialogShow" eager persistent width="50%">
     <v-card>
       <div class="text-right" style="width: 100%">
         <v-btn class="ma-2" icon="mdi-close" @click="modifyMoneyDialogShow = false" />
       </div>
+
       <v-card-title class="text-h5">Modify money</v-card-title>
+
       <v-form ref="modifyMoneyForm" v-model="modifyMoneyFormIsInvalid" @submit.prevent="modifyMoney">
         <v-card-text>
           <v-text-field
@@ -135,8 +149,10 @@
             ]"
           />
         </v-card-text>
+
         <v-card-actions>
           <v-spacer />
+
           <v-btn
             color="green"
             :disabled="!modifyMoneyFormIsInvalid"

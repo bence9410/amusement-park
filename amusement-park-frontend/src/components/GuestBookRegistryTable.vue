@@ -2,6 +2,7 @@
   <div class="text-center py-5" style="background-color: #e9ecef">
     <h1>Guest book registries</h1>
   </div>
+
   <v-data-table-server
     v-model:items-per-page="guestBookRegistryTableItemsPerPage"
     v-model:page="guestBookRegistryTablePage"
@@ -30,6 +31,7 @@
             type="datetime-local"
           />
         </td>
+
         <td>
           <v-text-field
             v-model="guestBookRegistrySearch.textOfRegistry"
@@ -38,6 +40,7 @@
             placeholder="Like content"
           />
         </td>
+
         <td>
           <v-text-field
             v-model="guestBookRegistrySearch.userName"
@@ -47,6 +50,7 @@
           />
         </td>
       </tr>
+
       <tr>
         <td>
           <v-text-field

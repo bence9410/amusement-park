@@ -2,6 +2,7 @@
   <div class="text-center py-5" style="background-color: #e9ecef">
     <h1>Welcome</h1>
   </div>
+
   <v-row>
     <v-col md="4" offset-md="4" sm="12">
       <v-card class="mt-8">
@@ -19,6 +20,7 @@
                   'Name length must be between 3 and 50.',
               ]"
             />
+
             <v-text-field
               v-model="password"
               :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -35,10 +37,12 @@
               :type="showPassword ? 'text' : 'password'"
               @click:append="showPassword = !showPassword"
             />
+
             <v-row>
               <v-col cols="6">
                 <v-btn block color="green" text="Sign up" to="sign-up" />
               </v-col>
+
               <v-col cols="6">
                 <v-btn
                   block
